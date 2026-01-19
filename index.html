@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoService Houte | Uw Auto, Onze Zorg</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <main class="home">
+    <!-- Hero Section -->
+    <section class="hero">
+      <img src="/images/ash light theme image.png" alt="AutoService Houte" class="hero-image" />
+      <div class="hero-content">
+        <h1>Uw Auto<br>Onze Zorg</h1>
+        <p>Betrouwbare reparatie en onderhoud in Heemskerk - snel, vakkundig en eerlijk geprijsd</p>
+        <a href="#contact" class="btn btn-primary">Afspraak Inplanen</a>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+      <div class="container">
+        <h2>Onze diensten</h2>
+        <p class="section-subtitle">Complete auto-service met focus op kwaliteit, veiligheid en betrouwbaarheid.</p>
+        
+        <div class="services-grid">
+          <div class="service-card">
+          <img src="./public/svg/svg apk.svg" alt="">
+            <h3>APK</h3>
+          </div>
+          
+          <div class="service-card">
+      <img src="./public/svg/svg banden.svg" alt="">
+            <h3>Banden</h3>
+          </div>
+          
+          <div class="service-card">
+           <img src="./public/svg/svg onderhoud.svg" alt="">
+            <h3>Onderhoud</h3>
+          </div>
+          
+          <div class="service-card">
+         <img src="./public/svg/svg airco.svg" alt="">
+            <h3>Airconditioning</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+      <div class="container">
+        <h2>Ervaringen van Echte Mensen</h2>
+        <div class="trustpilot-badge">
+          <span class="stars">★★★★★</span>
+          <span class="rating">4.9</span>
+          <span class="label">Trustpilot - based op 50 reviews</span>
+        </div>
+
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="card-header">
+              <span class="name">KristofKing984</span>
+              <span class="stars-small">★★★★★</span>
+            </div>
+            <p>Erg snel geholpen en met een echte deskundige man om mee te praten. Duidelijk uitgelegd wat er aan mijn auto gebeurd is. Prima zaak!</p>
+          </div>
+
+          <div class="testimonial-card testimonial-featured">
+            <div class="card-header">
+              <span class="name">Henk Gors</span>
+              <span class="stars-small">★★★★★</span>
+            </div>
+            <p>Een perfect advies voor architectuur en werkstukken. Alles wat nodig was gecontroleerd en goed uitgelegd. Zeer betrouwbaar en goed. Ze maken ervan dat ik mij veilig voel.</p>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="card-header">
+              <span class="name">Randy Maartensson</span>
+              <span class="stars-small">★★★★★</span>
+            </div>
+            <p>Snel geholpen en erg vriendelijk behandeld. Heel eerlijk in het verhaal, niks onnodig gedaan. Prima bedrijf waar ik zeker weer kom!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+      <div class="container">
+        <h2>Altijd bereikbaar</h2>
+        <p class="section-subtitle">Wie of wilt ons, wanneer het u uitkomt?</p>
+
+        <div class="contact-grid">
+          <!-- Left: Contact Info -->
+          <div class="contact-info">
+            <div class="info-box">
+              <h4>📧 E-mail</h4>
+              <p>AutoserviceHoute@gmail.com</p>
+            </div>
+            <div class="info-box">
+              <h4>📞 Telefoonnummer</h4>
+              <p>+31 6 25882702</p>
+            </div>
+          </div>
+
+          <!-- Center: Map -->
+          <div class="contact-map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2435.6456!2d4.60287!3d52.51514!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c5c7c8c8c8c8c9%3A0x1a2b3c4d5e6f7g8h!2sAmbachtsring%209-K%2C%201969%20NH%20Heemskerk!5e0!3m2!1sen!2snl!4v1234567890" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+
+          <!-- Right: Contact Form -->
+          <div class="contact-form">
+            <form>
+              <div class="form-group">
+                <label>Uw naam</label>
+                <input type="text" placeholder="Uw naam">
+              </div>
+              <div class="form-group">
+                <label>Onderwerp</label>
+                <select>
+                  <option>Kies een onderwerp</option>
+                  <option>APK</option>
+                  <option>Banden</option>
+                  <option>Onderhoud</option>
+                  <option>Airconditioning</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>E-mail adres</label>
+                <input type="email" placeholder="uw@email.com">
+              </div>
+              <div class="form-group">
+                <label>Telefoonnummer</label>
+                <input type="tel" placeholder="+31 6 ...">
+              </div>
+              <div class="form-group">
+                <label>Uw bericht</label>
+                <textarea placeholder="Beschrijf uw vraag of probleem..." rows="5"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Versturen</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/src/js/main.js"></script>
+</body>
+</html>
