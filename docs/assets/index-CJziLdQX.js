@@ -1,5 +1,4 @@
-(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const C of document.querySelectorAll('link[rel="modulepreload"]'))n(C);new MutationObserver(C=>{for(const l of C)if(l.type==="childList")for(const a of l.addedNodes)a.tagName==="LINK"&&a.rel==="modulepreload"&&n(a)}).observe(document,{childList:!0,subtree:!0});function e(C){const l={};return C.integrity&&(l.integrity=C.integrity),C.referrerPolicy&&(l.referrerPolicy=C.referrerPolicy),C.crossOrigin==="use-credentials"?l.credentials="include":C.crossOrigin==="anonymous"?l.credentials="omit":l.credentials="same-origin",l}function n(C){if(C.ep)return;C.ep=!0;const l=e(C);fetch(C.href,l)}})();function r(){document.body.insertAdjacentHTML("afterbegin",`
-    <nav class="navbar">
+(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const C of document.querySelectorAll('link[rel="modulepreload"]'))e(C);new MutationObserver(C=>{for(const l of C)if(l.type==="childList")for(const a of l.addedNodes)a.tagName==="LINK"&&a.rel==="modulepreload"&&e(a)}).observe(document,{childList:!0,subtree:!0});function i(C){const l={};return C.integrity&&(l.integrity=C.integrity),C.referrerPolicy&&(l.referrerPolicy=C.referrerPolicy),C.crossOrigin==="use-credentials"?l.credentials="include":C.crossOrigin==="anonymous"?l.credentials="omit":l.credentials="same-origin",l}function e(C){if(C.ep)return;C.ep=!0;const l=i(C);fetch(C.href,l)}})();function r(){document.body.insertAdjacentHTML("afterbegin",`<nav class="navbar">
       <div class="navbar-container">
         <a href="/" class="logo-link">
           <svg width="32" height="46" viewBox="0 0 32 46" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -71,5 +70,4 @@
 
         <a href="#contact" class="btn btn-primary btn-nav">Afspraak Inplanen</a>
       </div>
-    </nav>
-    `);const i=document.getElementById("hamburger"),t=document.getElementById("navMenu");i.addEventListener("click",()=>{i.classList.toggle("active"),t.classList.toggle("active")}),document.querySelectorAll(".nav-link").forEach(e=>{e.addEventListener("click",()=>{i.classList.remove("active"),t.classList.remove("active")})})}r();
+    </nav>`);const t=document.getElementById("hamburger"),i=document.getElementById("navMenu");t&&i&&(t.addEventListener("click",()=>{t.classList.toggle("active"),i.classList.toggle("active")}),document.querySelectorAll(".nav-link").forEach(e=>{e.addEventListener("click",()=>{t.classList.remove("active"),i.classList.remove("active")})}))}r();

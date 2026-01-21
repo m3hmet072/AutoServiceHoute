@@ -5,7 +5,7 @@
   border-radius: 6px;
   text-decoration: none;
   font-weight: 600;
-  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  font-size: 16px;
   transition: all 0.2s ease;
   border: none;
   cursor: pointer;
@@ -24,7 +24,7 @@
 /* Hero Section */
 .hero {
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
@@ -34,7 +34,8 @@
   color: white;
   overflow: hidden;
   margin-top: 0;
-  min-height: 400px;
+  padding-top: 80px;
+  padding-bottom: 80px;
 }
 
 .hero-image {
@@ -70,36 +71,48 @@
   padding: clamp(1rem, 4vw, 2rem);
   width: 100%;
   max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .hero h1 {
-  font-size: clamp(2.5rem, 12vw, 128px);
+  font-family: 'Manrope', sans-serif;
+  font-size: 8vw;
   font-weight: bold;
   width: 100%;
   text-align: center;
   color: #15141A;
-  margin-bottom: clamp(0.75rem, 3vw, 1.5rem);
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
+  margin: 0;
+  line-height: 0.92;
+  letter-spacing: -2%;
   text-overflow: ellipsis;
 }
 
 .hero p {
-  font-size: clamp(0.9rem, 2.5vw, 20px);
-  margin-bottom: clamp(1rem, 3vw, 2rem);
+  font-size: 20px;
+  margin: 0;
   color: #15141A;
   font-weight: bold;
   line-height: 1.4;
 }
 
+.hero .btn-primary {
+  background: #374CFF;
+  color: #F1F5F8;
+  font-size: 14px;
+  font-weight: bold;
+  width: fit-content;
+  margin: 0 auto;
+}
+
 @media (max-width: 1024px) {
   .hero h1 {
-    font-size: clamp(2.5rem, 10vw, 96px);
+    font-size: 10vw;
   }
 
   .hero p {
-    font-size: clamp(0.9rem, 2.2vw, 16px);
+    font-size: 20px;
   }
 
   .hero {
@@ -113,15 +126,15 @@
   }
 
   .hero h1 {
-    font-size: clamp(2rem, 8vw, 64px);
+    font-size: 12vw;
   }
 
   .hero p {
-    font-size: clamp(0.85rem, 2vw, 1rem);
+    font-size: 20px;
   }
 
   .hero-content {
-    padding: clamp(1rem, 3vw, 1.5rem);
+    padding: 20px;
   }
 }
 
@@ -131,19 +144,19 @@
   }
 
   .hero h1 {
-    font-size: clamp(1.5rem, 6vw, 48px);
+    font-size: 15vw;
   }
 
   .hero p {
-    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+    font-size: 20px;
   }
 
   .hero-content {
-    padding: clamp(0.75rem, 2vw, 1rem);
+    padding: 15px;
   }
 
   .btn {
-    padding: clamp(0.5rem, 1.2vw, 0.6rem) clamp(0.8rem, 1.8vw, 1.2rem);
-    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+    padding: 12px 20px;
+    font-size: 16px;
   }
 }

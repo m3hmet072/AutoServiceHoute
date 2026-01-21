@@ -6,10 +6,11 @@
 .services {
   padding: clamp(3rem, 8vw, 80px) 0;
   background: #E1E5F5;
+  margin-bottom: 150px;
 }
 
 .services h2 {
-  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-size: 48px;
   text-align: center;
   margin-bottom: clamp(0.75rem, 2vw, 1rem);
   color: #15141A;
@@ -18,7 +19,7 @@
 .section-subtitle {
   text-align: center;
   color: #505050;
-  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  font-size: 18px;
   margin-bottom: clamp(1.5rem, 4vw, 3rem);
   padding: 0 clamp(0.5rem, 2vw, 1rem);
 }
@@ -55,84 +56,109 @@
 
 .service-card h3 {
   color: #E1E5F5;
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-size: 18px;
   font-weight: 600;
 }
 
 @media (max-width: 768px) {
   .services {
-    padding: clamp(2rem, 5vw, 60px) 0;
+    padding: 50px 0;
   }
 
   .services h2 {
-    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-size: 32px;
   }
 
   .services-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: clamp(1rem, 2vw, 1.5rem);
+    gap: 20px;
   }
 
   .service-card {
-    padding: clamp(1.25rem, 3vw, 2rem) clamp(0.75rem, 2vw, 1.5rem);
+    padding: 25px 20px;
   }
 }
 
 @media (max-width: 480px) {
   .services-grid {
     grid-template-columns: 1fr;
-    gap: clamp(0.75rem, 2vw, 1rem);
+    gap: 15px;
   }
 
   .service-card {
-    padding: clamp(1rem, 2.5vw, 1.5rem);
+    padding: 20px;
     width: 100%;
   }
 
   .section-subtitle {
-    font-size: clamp(0.8rem, 2vw, 0.9rem);
-    padding: 0 clamp(0.5rem, 1.5vw, 1rem);
+    font-size: 16px;
+    padding: 0 15px;
   }
 }
 
 /* Testimonials Section */
 .testimonials {
   padding: clamp(3rem, 8vw, 80px) 0;
-  background: #F5F5F5;
+  background: #E1E5F5;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 150px;
 }
 
+.trustpilot-watermark {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1200px;
+  height: auto;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 0;
+}
+
+
 .testimonials h2 {
-  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-size: 48px;
   text-align: center;
   margin-bottom: clamp(1.5rem, 3vw, 2rem);
   color: #15141A;
+  position: relative;
+  z-index: 1;
 }
 
 .trustpilot-badge {
   text-align: center;
   margin-bottom: clamp(1.5rem, 4vw, 3rem);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   gap: clamp(0.5rem, 1.5vw, 0.75rem);
   flex-wrap: wrap;
   padding: 0 clamp(0.5rem, 2vw, 1rem);
-}
-
-.trustpilot-badge .stars {
-  color: #FFB81C;
-  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  position: relative;
+  z-index: 1;
 }
 
 .trustpilot-badge .rating {
-  font-size: clamp(0.95rem, 2vw, 1.2rem);
-  font-weight: 600;
-  color: #15141A;
+  font-size: 18px;
+  color: #505050;
+  line-height: 1;
+  padding-bottom: 2px;
+}
+
+.trustpilot-logo {
+  width: 142px;
+  height: auto;
+  display: block;
 }
 
 .trustpilot-badge .label {
-  color: #666;
-  font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+  color: #505050;
+  font-size: 18px;
+  line-height: 1;
+  padding-bottom: 2px;
 }
 
 .testimonials-grid {
@@ -142,6 +168,8 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 clamp(1rem, 3vw, 2rem);
+  position: relative;
+  z-index: 1;
 }
 
 .testimonial-card {
@@ -173,17 +201,17 @@
 .card-header .name {
   font-weight: 600;
   color: #ffffff;
-  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-size: 14px;
 }
 
 .stars-small {
   color: #FFB81C;
-  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  font-size: 12px;
   white-space: nowrap;
 }
 
 .testimonial-card p {
-  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  font-size: 14px;
   line-height: 1.6;
   color: #ccc;
 }
@@ -200,30 +228,30 @@
 
 @media (max-width: 768px) {
   .testimonials {
-    padding: clamp(2rem, 5vw, 60px) 0;
+    padding: 50px 0;
   }
 
   .testimonials h2 {
-    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-size: 32px;
   }
 
   .testimonials-grid {
     grid-template-columns: 1fr;
-    gap: clamp(1rem, 2vw, 1.5rem);
+    gap: 20px;
   }
 
   .testimonial-card {
-    padding: clamp(1rem, 2.5vw, 1.5rem);
+    padding: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .testimonials-grid {
-    gap: clamp(0.75rem, 2vw, 1rem);
+    gap: 15px;
   }
 
   .testimonial-card {
-    padding: clamp(0.75rem, 2vw, 1rem);
+    padding: 15px;
   }
 
   .card-header {
@@ -236,10 +264,11 @@
 .contact {
   padding: clamp(3rem, 8vw, 80px) 0;
   background: #E1E5F5;
+  margin-bottom: 150px;
 }
 
 .contact h2 {
-  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-size: 48px;
   text-align: center;
   margin-bottom: clamp(0.25rem, 1vw, 0.5rem);
   color: #15141A;
@@ -258,10 +287,18 @@
   padding: 0 clamp(1rem, 3vw, 2rem);
 }
 
+.contact-left {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2rem);
+  height: 100%;
+}
+
 .contact-info {
   display: flex;
   flex-direction: column;
   gap: clamp(1rem, 2vw, 1.5rem);
+  flex-shrink: 0;
 }
 
 .info-box {
@@ -274,12 +311,12 @@
 .info-box h4 {
   color: #ffffff;
   margin-bottom: clamp(0.5rem, 1vw, 0.75rem);
-  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-size: 14px;
 }
 
 .info-box p {
   color: #ccc;
-  font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+  font-size: 14px;
   word-break: break-word;
 }
 
@@ -287,7 +324,8 @@
   border-radius: 12px;
   overflow: hidden;
   background: #999;
-  min-height: clamp(250px, 50vw, 400px);
+  flex: 1;
+  min-height: 0;
 }
 
 .contact-map img {
@@ -306,6 +344,9 @@
   border-radius: 12px;
   padding: clamp(1.25rem, 3vw, 2rem);
   color: #E1E5F5;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group {
@@ -317,7 +358,7 @@
   margin-bottom: clamp(0.35rem, 1vw, 0.5rem);
   color: #E1E5F5;
   font-weight: 500;
-  font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+  font-size: 14px;
 }
 
 .form-group input,
@@ -329,7 +370,7 @@
   border: 1px solid rgba(225, 229, 245, 0.2);
   border-radius: 6px;
   color: #E1E5F5;
-  font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+  font-size: 14px;
   transition: all 0.2s ease;
   font-family: 'Comfortaa', cursive;
 }
@@ -373,38 +414,38 @@
 
 @media (max-width: 768px) {
   .contact {
-    padding: clamp(2rem, 5vw, 60px) 0;
+    padding: 50px 0;
   }
 
   .contact h2 {
-    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-size: 32px;
   }
 
   .contact-grid {
     grid-template-columns: 1fr;
-    gap: clamp(1rem, 2vw, 1.5rem);
+    gap: 20px;
   }
 
   .contact-map {
-    min-height: clamp(250px, 50vw, 300px);
+    min-height: 300px;
   }
 
   .contact-form {
-    padding: clamp(1rem, 2.5vw, 1.5rem);
+    padding: 20px;
   }
 
   .info-box {
-    padding: clamp(1rem, 2.5vw, 1.5rem);
+    padding: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .contact-form {
-    padding: clamp(0.75rem, 2vw, 1.25rem);
+    padding: 15px;
   }
 
   .info-box {
-    padding: clamp(0.75rem, 2vw, 1.25rem);
+    padding: 15px;
   }
 
   .contact-map {
@@ -412,7 +453,7 @@
   }
 
   .form-group {
-    margin-bottom: clamp(0.75rem, 1.5vw, 1rem);
+    margin-bottom: 15px;
   }
 }
 

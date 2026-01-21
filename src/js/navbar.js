@@ -1,8 +1,5 @@
 export function loadNavbar() {
-  document.body.insertAdjacentHTML(
-    'afterbegin',
-    `
-    <nav class="navbar">
+  const navHTML = `<nav class="navbar">
       <div class="navbar-container">
         <a href="/" class="logo-link">
           <svg width="32" height="46" viewBox="0 0 32 46" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,24 +71,27 @@ export function loadNavbar() {
 
         <a href="#contact" class="btn btn-primary btn-nav">Afspraak Inplanen</a>
       </div>
-    </nav>
-    `
-  )
+    </nav>`
+
+  // Insert navbar at the beginning of the body
+  document.body.insertAdjacentHTML('afterbegin', navHTML)
 
   // Hamburger menu functionality
   const hamburger = document.getElementById('hamburger')
   const navMenu = document.getElementById('navMenu')
 
-  hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active')
-    navMenu.classList.toggle('active')
-  })
-
-  // Close menu when clicking on a link
-  document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      hamburger.classList.remove('active')
-      navMenu.classList.remove('active')
+  if (hamburger && navMenu) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active')
+      navMenu.classList.toggle('active')
     })
-  })
+
+    // Close menu when clicking on a link
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active')
+        navMenu.classList.remove('active')
+      })
+    })
+  }
 }
