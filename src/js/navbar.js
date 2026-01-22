@@ -1,7 +1,8 @@
 export function loadNavbar() {
+  const base = import.meta.env.BASE_URL || '/'
   const navHTML = `<nav class="navbar">
       <div class="navbar-container">
-        <a href="/" class="logo-link">
+        <a href="${base}" class="logo-link">
           <svg width="32" height="46" viewBox="0 0 32 46" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M32 8L30 4L28 0H4L2 4L0 8H32Z" fill="#15141A"/>
             <path d="M19.5 14L23.5 16L27.5 18V42L23.5 44L19.5 46V14Z" fill="#15141A"/>
@@ -62,10 +63,10 @@ export function loadNavbar() {
         </div>
 
         <ul class="nav-menu" id="navMenu">
-          <li><a href="/" class="nav-link">APK</a></li>
-          <li><a href="/" class="nav-link">Banden</a></li>
-          <li><a href="/airco.html" class="nav-link">Airconditionering</a></li>
-          <li><a href="/" class="nav-link">Occasies</a></li>
+          <li><a href="${base}apk.html" class="nav-link">APK</a></li>
+          <li><a href="${base}" class="nav-link">Banden</a></li>
+          <li><a href="${base}airco.html" class="nav-link">Airconditionering</a></li>
+          <li><a href="${base}" class="nav-link">Occasies</a></li>
           <li><a href="#contact" class="btn btn-primary btn-nav">Afspraak Inplanen</a></li>
         </ul>
 
