@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/AutoServiceHoute/' : '/',
+  base: '/AutoServiceHoute/',
   publicDir: 'public',
   build: {
     outDir: 'docs',
     assetsDir: 'assets',
-    emptyOutDir: true
+    emptyOutDir: false
   }
 })
