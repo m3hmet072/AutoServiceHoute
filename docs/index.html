@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AutoService Houte | Uw Auto, Onze Zorg</title>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/AutoServiceHoute/assets/index-Ctuttdfo.js"></script>
-  <link rel="stylesheet" crossorigin href="/AutoServiceHoute/assets/index-C2gn6Sfs.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="module" crossorigin src="/AutoServiceHoute/assets/index-BBoBt98I.js"></script>
+  <link rel="stylesheet" crossorigin href="/AutoServiceHoute/assets/index-qLOdwf4i.css">
 </head>
 <body>
   <main class="home" style="flex: 1;">
@@ -116,34 +117,44 @@
 
           <!-- Right Column: Contact Form -->
           <div class="contact-form">
-            <form>
+            <form id="contact-form">
               <div class="form-group">
-                <label>Uw naam</label>
-                <input type="text" placeholder="Uw naam">
+                <label>Uw naam *</label>
+                <input type="text" name="naam" placeholder="Uw naam" required>
               </div>
               <div class="form-group">
-                <label>Onderwerp</label>
-                <select>
-                  <option>Kies een onderwerp</option>
-                  <option>APK</option>
-                  <option>Banden</option>
-                  <option>Onderhoud</option>
-                  <option>Airconditioning</option>
+                <label>Kenteken *</label>
+                <input type="text" name="kenteken" id="kenteken" placeholder="XX-XX-XX" required>
+                <small id="kenteken-status" class="kenteken-status"></small>
+              </div>
+              <div id="vehicle-info" class="vehicle-info" style="display: none;">
+                <p><strong>Merk:</strong> <span id="merk"></span></p>
+                <p><strong>Model:</strong> <span id="handelsbenaming"></span></p>
+                <p><strong>Bouwjaar:</strong> <span id="datum_eerste_toelating"></span></p>
+              </div>
+              <div class="form-group">
+                <label>Onderwerp *</label>
+                <select name="onderwerp" required>
+                  <option value="">Kies een onderwerp</option>
+                  <option value="APK">APK</option>
+                  <option value="Banden">Banden</option>
+                  <option value="Onderhoud">Onderhoud</option>
+                  <option value="Airconditioning">Airconditioning</option>
                 </select>
               </div>
               <div class="form-group">
-                <label>E-mail adres</label>
-                <input type="email" placeholder="uw@email.com">
+                <label>E-mail adres *</label>
+                <input type="email" name="email" placeholder="uw@email.com" required>
               </div>
               <div class="form-group">
-                <label>Telefoonnummer</label>
-                <input type="tel" placeholder="+31 6 ...">
+                <label>Telefoonnummer *</label>
+                <input type="tel" name="telefoon" placeholder="+31 6 ..." required>
               </div>
               <div class="form-group">
-                <label>Uw bericht</label>
-                <textarea placeholder="Beschrijf uw vraag of probleem..." rows="5"></textarea>
+                <label>Uw bericht *</label>
+                <textarea name="bericht" placeholder="Beschrijf uw vraag of probleem..." rows="5" required></textarea>
               </div>
-              <button type="submit" class="btn btn-primary">Versturen</button>
+              <button type="submit" class="btn btn-primary" id="submit-btn">Versturen</button>
             </form>
           </div>
         </div>
