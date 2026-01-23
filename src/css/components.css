@@ -126,15 +126,18 @@
   }
 
   .hero h1 {
-    font-size: 12vw;
+    font-size: clamp(32px, 10vw, 60px);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .hero p {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .hero-content {
     padding: 20px;
+    max-width: 95%;
   }
 }
 
@@ -144,15 +147,19 @@
   }
 
   .hero h1 {
-    font-size: 15vw;
+    font-size: clamp(28px, 9vw, 48px);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   .hero p {
-    font-size: 20px;
+    font-size: 16px;
   }
 
   .hero-content {
     padding: 15px;
+    max-width: 100%;
   }
 
   .btn {
