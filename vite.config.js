@@ -12,7 +12,9 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         apk: resolve(__dirname, 'apk.html'),
-        airco: resolve(__dirname, 'airco.html')
+        airco: resolve(__dirname, 'airco.html'),
+        banden: resolve(__dirname, 'banden.html'),
+        occasions: resolve(__dirname, 'occasions.html')
       }
     }
   }
