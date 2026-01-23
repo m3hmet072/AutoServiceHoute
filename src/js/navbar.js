@@ -64,9 +64,9 @@ export function loadNavbar() {
 
         <ul class="nav-menu" id="navMenu">
           <li><a href="${base}apk.html" class="nav-link">APK</a></li>
-          <li><a href="${base}" class="nav-link">Banden</a></li>
+          <li><a href="${base}banden.html" class="nav-link">Banden</a></li>
           <li><a href="${base}airco.html" class="nav-link">Airconditionering</a></li>
-          <li><a href="${base}" class="nav-link">Occasies</a></li>
+          <li><a href="${base}occasions.html" class="nav-link">Occasions</a></li>
           <li><a href="#contact" class="btn btn-primary btn-nav">Afspraak Inplanen</a></li>
         </ul>
 

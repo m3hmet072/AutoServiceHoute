@@ -1,14 +1,18 @@
-/* Airco Page Styling */
-.airco-page {
+/* Banden Page Styling */
+.banden-page {
   min-height: 100vh;
   background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
 }
 
 /* Service Card Hover Effects */
-.airco-service-card:hover {
+.service-card-hover {
+  transition: all 0.3s ease;
+}
+
+.service-card-hover:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 157, 255, 0.2);
-  border-color: #009DFF;
+  box-shadow: 0 10px 30px rgba(55, 76, 255, 0.2);
+  border-color: #374CFF;
 }
 
 /* Hide desktop-only br on mobile */
@@ -44,16 +48,5 @@
 
   .benefit-card {
     padding: 20px !important;
-  }
-}
-
-  }
-
-  .airco-page h1 {
-    font-size: clamp(1.25rem, 4vw, 1.5rem);
-  }
-
-  .airco-page ul {
-    padding-left: clamp(1rem, 2vw, 1.5rem);
   }
 }

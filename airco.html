@@ -3,49 +3,214 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Airconditioning | AutoService Houte</title>
+  <title>Airconditioning Service | AutoService Houte</title>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-DX0I21f6.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DNGcCJod.css">
-  <link rel="stylesheet" crossorigin href="./src/css/footer.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="module" src="/src/js/main.js"></script>
 </head>
 <body>
-  <div style="display: flex; flex-direction: column; min-height: 100vh;">
-    <main class="airco-page" style="flex: 1;">
-    <h1>Airconditioning</h1>
-    <p>
-      Wij controleren, vullen en repareren auto airconditioning systemen
-      voor optimaal rijcomfort. Met moderne apparatuur en vakkundig personeel
-      zorgen we ervoor dat uw airconditioner optimaal presteert.
-    </p>
-    
-    <h2>Onze Airconditioning Diensten</h2>
-    <ul>
-      <li>Controle en diagnose van airconditioningsystemen</li>
-      <li>Vullen en bijvullen van koudemiddel</li>
-      <li>Reparatie en onderhoud van AC-componenten</li>
-      <li>Vervanging van compressor en andere onderdelen</li>
-      <li>Desinfectie van airconditioningsystemen</li>
-      <li>Preventief onderhoud voor langere levensduur</li>
-    </ul>
+  <main class="home" style="flex: 1;">
+    <!-- Hero Section -->
+    <section class="hero">
+      <img src="/images/ash-light-theme-image.png" alt="Airconditioning Service" class="hero-image" />
+      <div class="hero-content">
+        <h1>Airco Service</h1>
+        <p>Professioneel onderhoud en reparatie van uw auto airconditioning - Voor optimaal rijcomfort het hele jaar door</p>
+        <a href="#contact-airco" class="btn btn-primary">Maak Afspraak</a>
+      </div>
+    </section>
 
-    <h2>Waarom regelmatig onderhoud?</h2>
-    <p>
-      Regelmatig onderhoud van uw airconditioningsysteem is essentieel voor:
-    </p>
-    <ul>
-      <li>Optimale koelprestaties</li>
-      <li>Verbeterde brandstofeconomie</li>
-      <li>Verlenging van de levensduur van het systeem</li>
-      <li>Gezonde en schone binnenlucht</li>
-      <li>Voorkoming van dure reparaties</li>
-    </ul>
+    <!-- Airco Offer Card Section -->
+    <section class="airco-offer" style="padding: 0 0 100px 0; background: #E1E5F5;">
+      <div class="container" style="max-width: 700px; margin: 0 auto; padding: 0 clamp(1rem, 3vw, 2rem);">
+        <div class="offer-card" style="background: #374CFF; border: #505CE4 2px solid; border-radius: 20px; gap: 20px; display: flex; flex-direction: column; padding: clamp(25px, 5vw, 50px) clamp(20px, 4vw, 50px); text-align: center; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);">
+          <h2 style="font-size: clamp(24px, 5vw, 36px); color: #F5F6FB; text-align: center; font-weight: 700; line-height: 1.2;">Airco Service & Onderhoud</h2>
+          <p style="font-size: clamp(16px, 3vw, 18px); color: #f5f6fbdc; line-height: 1.6;">
+            Complete airco service inclusief controle, <br class="desktop-only"> vullen en desinfectie vanaf <strong style="color: #F5F6FB; font-size: clamp(16px, 3vw, 18px);">€ 75</strong>
+          </p>
+          <a href="index.html#contact" class="btn btn-primary" style="font-size: 14px; background-color: #F5F6FB; box-shadow: 0 0 0 2px rgb(80, 92, 228, 0.5); color: #374CFF; padding: 10px 15px;">Afspraak Inplannen</a>
+        </div>
+      </div>
+    </section>
 
-    <h2>Contact</h2>
-    <p>
-      Heeft u vragen over onze airconditioningdiensten? 
-      <a href="index.html#contact" style="color: #4B5AFF; text-decoration: none;">Neem contact met ons op</a>
-    </p>
+    <!-- Services Section -->
+    <section style="padding: 80px clamp(1rem, 3vw, 2rem); background: white;">
+      <div class="container" style="max-width: 1200px; margin: 0 auto;">
+        <h2 style="font-size: clamp(28px, 5vw, 42px); text-align: center; color: #15141A; margin-bottom: 50px; font-weight: 700;">Onze Airco Services</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+          <!-- Service Card 1 -->
+          <div style="background: #F5F6FB; border-radius: 15px; padding: 30px; border: 2px solid #E1E5F5; transition: all 0.3s ease;">
+            <div style="width: 60px; height: 60px; background: #009DFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F6FB" stroke-width="2">
+                <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+              </svg>
+            </div>
+            <h3 style="font-size: 22px; color: #15141A; margin-bottom: 15px; font-weight: 600;">Controle & Diagnose</h3>
+            <p style="color: #505663; line-height: 1.6; margin: 0;">Uitgebreide controle van uw airconditioningsysteem met professionele diagnoseapparatuur.</p>
+          </div>
+
+          <!-- Service Card 2 -->
+          <div style="background: #F5F6FB; border-radius: 15px; padding: 30px; border: 2px solid #E1E5F5; transition: all 0.3s ease;">
+            <div style="width: 60px; height: 60px; background: #009DFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F6FB" stroke-width="2">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0016.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 002 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"></path>
+              </svg>
+            </div>
+            <h3 style="font-size: 22px; color: #15141A; margin-bottom: 15px; font-weight: 600;">Vullen Koudemiddel</h3>
+            <p style="color: #505663; line-height: 1.6; margin: 0;">Professioneel bijvullen van koudemiddel volgens de laatste milieunormen en fabrikantspecificaties.</p>
+          </div>
+
+          <!-- Service Card 3 -->
+          <div style="background: #F5F6FB; border-radius: 15px; padding: 30px; border: 2px solid #E1E5F5; transition: all 0.3s ease;">
+            <div style="width: 60px; height: 60px; background: #009DFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F6FB" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"></path>
+              </svg>
+            </div>
+            <h3 style="font-size: 22px; color: #15141A; margin-bottom: 15px; font-weight: 600;">Desinfectie</h3>
+            <p style="color: #505663; line-height: 1.6; margin: 0;">Grondige reiniging en desinfectie voor een frisse geur en gezonde lucht in uw auto.</p>
+          </div>
+
+          <!-- Service Card 4 -->
+          <div style="background: #F5F6FB; border-radius: 15px; padding: 30px; border: 2px solid #E1E5F5; transition: all 0.3s ease;">
+            <div style="width: 60px; height: 60px; background: #009DFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F6FB" stroke-width="2">
+                <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"></path>
+              </svg>
+            </div>
+            <h3 style="font-size: 22px; color: #15141A; margin-bottom: 15px; font-weight: 600;">Reparatie & Onderhoud</h3>
+            <p style="color: #505663; line-height: 1.6; margin: 0;">Vakkundige reparatie van defecte componenten en preventief onderhoud voor optimale werking.</p>
+          </div>
+
+          <!-- Service Card 5 -->
+          <div style="background: #F5F6FB; border-radius: 15px; padding: 30px; border: 2px solid #E1E5F5; transition: all 0.3s ease;">
+            <div style="width: 60px; height: 60px; background: #009DFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F6FB" stroke-width="2">
+                <path d="M12 2v20M2 12h20"></path>
+                <circle cx="12" cy="12" r="4"></circle>
+              </svg>
+            </div>
+            <h3 style="font-size: 22px; color: #15141A; margin-bottom: 15px; font-weight: 600;">Compressor Vervanging</h3>
+            <p style="color: #505663; line-height: 1.6; margin: 0;">Vervanging van defecte compressoren en andere belangrijke airco-onderdelen.</p>
+          </div>
+
+          <!-- Service Card 6 -->
+          <div style="background: #F5F6FB; border-radius: 15px; padding: 30px; border: 2px solid #E1E5F5; transition: all 0.3s ease;">
+            <div style="width: 60px; height: 60px; background: #009DFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F6FB" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <h3 style="font-size: 22px; color: #15141A; margin-bottom: 15px; font-weight: 600;">Lekdetectie</h3>
+            <p style="color: #505663; line-height: 1.6; margin: 0;">Opsporen en repareren van lekken in uw airconditioningsysteem met moderne detectieapparatuur.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Regular Maintenance Section -->
+    <section style="padding: 80px clamp(1rem, 3vw, 2rem); background: #E1E5F5;">
+      <div class="container" style="max-width: 1000px; margin: 0 auto;">
+        <h2 style="font-size: clamp(28px, 5vw, 42px); text-align: center; color: #15141A; margin-bottom: 20px; font-weight: 700;">Waarom Regelmatig Onderhoud?</h2>
+        <p style="text-align: center; color: #505663; font-size: 18px; margin-bottom: 50px; max-width: 700px; margin-left: auto; margin-right: auto;">
+          Regelmatig onderhoud van uw airconditioning zorgt voor optimaal comfort en voorkomt dure reparaties.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px;">
+          <!-- Benefit 1 -->
+          <div style="background: white; border-radius: 12px; padding: 25px; display: flex; align-items: start; gap: 15px; border: 2px solid #D1D5E8;">
+            <div style="min-width: 40px; height: 40px; background: #009DFF; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5F6FB" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div>
+              <h4 style="font-size: 18px; color: #15141A; margin: 0 0 8px 0; font-weight: 600;">Optimale Koeling</h4>
+              <p style="color: #505663; margin: 0; font-size: 15px; line-height: 1.5;">Blijf altijd comfortabel rijden, ook in de zomer</p>
+            </div>
+          </div>
+
+          <!-- Benefit 2 -->
+          <div style="background: white; border-radius: 12px; padding: 25px; display: flex; align-items: start; gap: 15px; border: 2px solid #D1D5E8;">
+            <div style="min-width: 40px; height: 40px; background: #009DFF; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5F6FB" stroke-width="2">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0118.8-4.3M22 12.5a10 10 0 01-18.8 4.2"></path>
+              </svg>
+            </div>
+            <div>
+              <h4 style="font-size: 18px; color: #15141A; margin: 0 0 8px 0; font-weight: 600;">Betere Brandstof</h4>
+              <p style="color: #505663; margin: 0; font-size: 15px; line-height: 1.5;">Een goed werkende airco bespaart brandstof</p>
+            </div>
+          </div>
+
+          <!-- Benefit 3 -->
+          <div style="background: white; border-radius: 12px; padding: 25px; display: flex; align-items: start; gap: 15px; border: 2px solid #D1D5E8;">
+            <div style="min-width: 40px; height: 40px; background: #009DFF; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5F6FB" stroke-width="2">
+                <path d="M9 11l3 3L22 4"></path>
+                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+              </svg>
+            </div>
+            <div>
+              <h4 style="font-size: 18px; color: #15141A; margin: 0 0 8px 0; font-weight: 600;">Gezonde Lucht</h4>
+              <p style="color: #505663; margin: 0; font-size: 15px; line-height: 1.5;">Schone en frisse lucht in uw auto</p>
+            </div>
+          </div>
+
+          <!-- Benefit 4 -->
+          <div style="background: white; border-radius: 12px; padding: 25px; display: flex; align-items: start; gap: 15px; border: 2px solid #D1D5E8;">
+            <div style="min-width: 40px; height: 40px; background: #009DFF; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5F6FB" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <div>
+              <h4 style="font-size: 18px; color: #15141A; margin: 0 0 8px 0; font-weight: 600;">Langere Levensduur</h4>
+              <p style="color: #505663; margin: 0; font-size: 15px; line-height: 1.5;">Voorkom dure reparaties door preventief onderhoud</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact-airco" style="padding: 80px clamp(1rem, 3vw, 2rem); background: white;">
+      <div class="container" style="max-width: 600px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: clamp(28px, 5vw, 42px); color: #15141A; margin-bottom: 20px; font-weight: 700;">Afspraak Maken?</h2>
+        <p style="color: #505663; font-size: 18px; margin-bottom: 40px; line-height: 1.6;">
+          Heeft u vragen over airco onderhoud of wilt u een afspraak maken? Neem vrijblijvend contact met ons op!
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 20px; max-width: 400px; margin: 0 auto;">
+          <a href="tel:+31611023141" style="background: #009DFF; color: white; padding: 18px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.2s ease;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            Bel Direct
+          </a>
+
+          <a href="mailto:Autoservicehoute@gmail.com" style="background: white; color: #009DFF; padding: 18px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; border: 2px solid #009DFF; display: flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.2s ease;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            Email Ons
+          </a>
+
+          <a href="index.html#contact" style="background: #F5F6FB; color: #009DFF; padding: 18px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; border: 2px solid #E1E5F5; display: flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.2s ease;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Contactformulier
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -57,65 +222,57 @@
             🔧 <span class="footer-logo-text">AutoService Houte</span>
           </a>
           <p class="footer-description">
-            Betrouwbare auto-service in Heemskerk. Vakkundig, eerlijk en snel.
+            Uw vertrouwde partner voor professionele autoservice in Heemskerk. 
+            Kwaliteit, betrouwbaarheid en klantgerichtheid staan bij ons voorop.
           </p>
           <div class="footer-social">
-            <a href="#" title="Facebook">f</a>
-            <a href="#" title="Instagram">📷</a>
-            <a href="#" title="WhatsApp">💬</a>
+            <a href="#" title="Facebook" aria-label="Facebook" class="social-facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="#" title="X" aria-label="X" class="social-x">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.6l-5.165-6.75-5.917 6.75h-3.31l7.73-8.835L2.542 2.25h6.773l4.67 6.18 5.529-6.18zM16.377 20.033h1.83L5.994 3.974H4.05z"/>
+              </svg>
+            </a>
+            <a href="#" title="YouTube" aria-label="YouTube" class="social-youtube">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </a>
+            <a href="#" title="LinkedIn" aria-label="LinkedIn" class="social-linkedin">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.986-2.236-1.081 0-1.722.722-2.004 1.418-.103.249-.129.597-.129.946v5.441h-3.554s.05-8.814 0-9.752h3.554v1.375c.427-.659 1.19-1.596 2.898-1.596 2.117 0 3.704 1.384 3.704 4.362v5.611zM5.337 8.855c-1.144 0-1.915-.762-1.915-1.715 0-.953.77-1.715 1.958-1.715 1.187 0 1.915.762 1.915 1.715 0 .953-.728 1.715-1.958 1.715zm1.6 11.597H3.73V9.557h3.207v10.895zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+              </svg>
+            </a>
           </div>
-          <div class="footer-badge">All systems operational</div>
         </div>
 
-        <!-- Diensten Section -->
-        <div class="footer-section">
-          <h3>Diensten</h3>
-          <ul>
-            <li><a href="apk.html">APK Keuring</a></li>
-            <li><a href="#">Bandenservice</a></li>
-            <li><a href="#">Onderhoud</a></li>
-            <li><a href="airco.html">Airconditioning</a></li>
-          </ul>
+        <!-- Quick Links -->
+        <div class="footer-nav">
+          <h4>Snelle Links</h4>
+          <a href="index.html">Homepage</a>
+          <a href="apk.html">APK Keuring</a>
+          <a href="airco.html">Airconditioning</a>
+          <a href="banden.html">Banden Service</a>
+          <a href="occasions.html">Occasions</a>
+          <a href="index.html#about">Over ons</a>
+          <a href="index.html#contact">Contact</a>
         </div>
 
-        <!-- Bedrijf Section -->
-        <div class="footer-section">
-          <h3>Bedrijf</h3>
-          <ul>
-            <li><a href="#about">Over ons</a></li>
-            <li><a href="#">Contacteer ons</a></li>
-            <li><a href="#">Vacatures</a></li>
-          </ul>
-        </div>
-
-        <!-- Contact Section -->
-        <div class="footer-section">
-          <h3>Contact</h3>
-          <ul>
-            <li><a href="mailto:Autoservicehoute@gmail.com">Email</a></li>
-            <li><a href="tel:+31611023141">+31 6 11023141</a></li>
-            <li><a href="index.html#contact">Afspraak maken</a></li>
-          </ul>
-        </div>
-
-        <!-- Ondersteuning Section -->
-        <div class="footer-section">
-          <h3>Ondersteuning</h3>
-          <ul>
-            <li><a href="#">Help Centrum</a></li>
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
+        <!-- Contact Info -->
+        <div class="footer-nav">
+          <h4>Contact</h4>
+          <a href="mailto:Autoservicehoute@gmail.com">Autoservicehoute@gmail.com</a>
+          <a href="tel:+31611023141">+31 6 11023141</a>
+          <a href="#">Ambachtsring 9-K<br>1969 NH Heemskerk</a>
         </div>
       </div>
 
-      <div class="footer-divider"></div>
-
       <div class="footer-bottom">
-        <div class="footer-bottom-left">
-          &copy; 2024 AutoService Houte. Alle rechten voorbehouden.
-        </div>
-        <div class="footer-bottom-right">
+        <p>&copy; 2024 AutoService Houte. Alle rechten voorbehouden.</p>
+        <div class="footer-links">
           <a href="#">Privacy Policy</a>
           <a href="#">Gebruiksvoorwaarden</a>
           <a href="#">Cookie Beleid</a>
