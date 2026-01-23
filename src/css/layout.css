@@ -1,11 +1,11 @@
 /* Navbar Styles */
 .navbar {
-  background: rgba(225, 229, 245, 0.95);
+  background: rgb(225, 229, 245);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(21, 20, 26, 0.1);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 2000;
   transition: background 0.3s ease;
 }
 
@@ -120,22 +120,22 @@
   }
 
   .nav-menu {
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 68px;
     left: 0;
-    width: 100%;
-    background: rgba(225, 229, 245, 0.98);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(21, 20, 26, 0.1);
+    width: 100vw;
+    height: calc(100vh - 68px);
+    background: #E1E5F5;
     flex-direction: column;
     gap: 0;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
+    z-index: 1000;
   }
 
   .nav-menu.active {
-    max-height: 350px;
+    max-height: calc(100vh - 68px);
     padding: 1rem 0;
   }
 
