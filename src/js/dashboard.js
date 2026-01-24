@@ -1251,28 +1251,17 @@ class DashboardManager {
 
   // Dashboard Stats & Recent Items
   updateStats() {
-    const newRequests = this.appointments.filter(apt => apt.status === 'nieuwe-aanvraag').length;
-    const confirmed = this.appointments.filter(apt => apt.status === 'bevestigd').length;
-    const inProgress = this.appointments.filter(apt => apt.status === 'in-behandeling').length;
-    
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    weekAgo.setHours(0, 0, 0, 0);
-    const completed = this.appointments.filter(apt => {
-      if (apt.status !== 'afgerond') return false;
-      const [year, month, day] = apt.date.split('-').map(Number);
-      const aptDate = new Date(year, month - 1, day);
-      aptDate.setHours(0, 0, 0, 0);
-      return aptDate >= weekAgo;
-    }).length;
-    
+    const totalAppointments = this.appointments.length;
+    const completed = this.appointments.filter(apt => apt.status === 'afgerond').length;
+    const totalEmails = this.emails.length;
     const unreadEmails = this.emails.filter(email => !email.read).length;
+    
     const totalActiveAppointments = this.appointments.filter(apt => apt.status !== 'afgerond').length;
     
-    document.getElementById('stat-new-requests').textContent = newRequests;
-    document.getElementById('stat-confirmed').textContent = confirmed;
-    document.getElementById('stat-in-progress').textContent = inProgress;
+    document.getElementById('stat-total-appointments').textContent = totalAppointments;
     document.getElementById('stat-completed').textContent = completed;
+    document.getElementById('stat-total-emails').textContent = totalEmails;
+    document.getElementById('stat-unread-emails').textContent = unreadEmails;
     
     // Update sidebar badges
     const appointmentsBadge = document.getElementById('appointments-badge');

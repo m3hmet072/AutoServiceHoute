@@ -580,44 +580,6 @@
   margin-bottom: 2rem;
 }
 
-.stat-card {
-  background: #15141A;
-  border-radius: 12px;
-  padding: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid transparent;
-}
-
-
-
-.stat-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  flex-shrink: 0;
-}
-
-.stat-content h3 {
-  font-size: 2rem;
-  color: #E1E5F5;
-  margin: 0;
-  font-weight: 700;
-}
-
-.stat-content p {
-  color: #989898;
-  font-size: 0.875rem;
-  margin: 0.25rem 0 0 0;
-}
-
 /* Dashboard Grid Layout */
 .dashboard-grid {
   display: grid;

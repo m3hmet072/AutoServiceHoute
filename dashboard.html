@@ -104,112 +104,66 @@
 
   <!-- Main Content -->
   <main class="main-content">
-    
-    <!-- Dashboard Header -->
-    <header class="dashboard-header">
-      <h1 class="dashboard-title">Dashboard</h1>
-      <div class="dashboard-header-actions">
-        <div class="search-box">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="M21 21l-4.35-4.35"/>
-          </svg>
-          <input type="text" placeholder="Search anything here...">
-        </div>
-        <button class="header-icon-btn" onclick="dashboard.showNotifications()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-          <span class="badge-dot" id="notification-dot"></span>
-        </button>
-        <div class="header-avatar" style="background: linear-gradient(135deg, #374CFF 0%, #5B6DFF 100%); display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-weight: 600; font-size: 0.875rem;">AH</div>
-      </div>
-    </header>
 
     <!-- Dashboard Section -->
     <section class="content-section active" id="section-dashboard">
-      <div class="content-section" style="padding: 2rem;">
-        
-        <!-- Stats Cards -->
-        <div class="stats-cards">
-          <div class="stat-card">
-            <div class="stat-card-header">
-              <p class="stat-card-title">Nieuwe Aanvragen</p>
-              <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-            </div>
-            <h3 class="stat-card-value" id="stat-new-requests">0</h3>
-            <div class="stat-card-footer">
-              <span class="stat-change positive">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="18 15 12 9 6 15"/>
-                </svg>
-                --
-              </span>
-              <span class="stat-period">Since last week</span>
-            </div>
+      <!-- Stats Cards -->
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <p class="stat-card-title">Totaal Afspraken</p>
+            <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
           </div>
-
-          <div class="stat-card">
-            <div class="stat-card-header">
-              <p class="stat-card-title">Bevestigd</p>
-              <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 11l3 3L22 4"/>
-                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-              </svg>
-            </div>
-            <h3 class="stat-card-value" id="stat-confirmed">0</h3>
-            <div class="stat-card-footer">
-              <span class="stat-change positive">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="18 15 12 9 6 15"/>
-                </svg>
-                --
-              </span>
-              <span class="stat-period">Since last week</span>
-            </div>
+          <h3 class="stat-card-value" id="stat-total-appointments">0</h3>
+          <div class="stat-card-footer">
+            <span class="stat-period">Alle afspraken</span>
           </div>
+        </div>
 
-          <div class="stat-card">
-            <div class="stat-card-header">
-              <p class="stat-card-title">In Behandeling</p>
-              <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-            </div>
-            <h3 class="stat-card-value" id="stat-in-progress">0</h3>
-            <div class="stat-card-footer">
-              <span class="stat-change positive">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="18 15 12 9 6 15"/>
-                </svg>
-                --
-              </span>
-              <span class="stat-period">Since last week</span>
-            </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <p class="stat-card-title">Afgerond</p>
+            <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
           </div>
+          <h3 class="stat-card-value" id="stat-completed">0</h3>
+          <div class="stat-card-footer">
+            <span class="stat-period">Voltooide afspraken</span>
+          </div>
+        </div>
 
-          <div class="stat-card">
-            <div class="stat-card-header">
-              <p class="stat-card-title">Afgerond Deze Week</p>
-              <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-            </div>
-            <h3 class="stat-card-value" id="stat-completed">0</h3>
-            <div class="stat-card-footer">
-              <span class="stat-change positive">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="18 15 12 9 6 15"/>
-                </svg>
-                --
-              </span>
-              <span class="stat-period">Since last week</span>
-            </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <p class="stat-card-title">E-mails Ontvangen</p>
+            <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <h3 class="stat-card-value" id="stat-total-emails">0</h3>
+          <div class="stat-card-footer">
+            <span class="stat-period">Alle e-mails</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <p class="stat-card-title">Ongelezen E-mails</p>
+            <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+              <circle cx="18" cy="8" r="3" fill="#EF4444"/>
+            </svg>
+          </div>
+          <h3 class="stat-card-value" id="stat-unread-emails">0</h3>
+          <div class="stat-card-footer">
+            <span class="stat-period">Nog te lezen</span>
           </div>
         </div>
       </div>
