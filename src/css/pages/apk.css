@@ -15,6 +15,7 @@
   align-items: center;
   position: relative;
   overflow: hidden;
+  min-height: 100vh;
 }
 
 .apk-hero::before {
@@ -115,6 +116,10 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 3rem);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .info-intro h2 {
@@ -137,6 +142,10 @@
   margin: 0 auto;
   padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 3rem);
   background: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .apk-checkpoints h2 {
@@ -199,6 +208,10 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 3rem);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .apk-benefits h2 {
@@ -266,6 +279,10 @@
   padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 3rem);
   background: linear-gradient(135deg, #15141A 0%, #2a2833 100%);
   border-radius: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .apk-procedure h2 {
@@ -332,6 +349,10 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 3rem);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .contact-card {

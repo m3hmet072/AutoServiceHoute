@@ -24,7 +24,7 @@
 /* Hero Section */
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 90vh;
   width: 100%;
   display: flex;
   align-items: center;
@@ -116,13 +116,13 @@
   }
 
   .hero {
-    min-height: 500px;
+    min-height: 90vh;
   }
 }
 
 @media (max-width: 768px) {
   .hero {
-    min-height: 400px;
+    min-height: 90vh;
   }
 
   .hero h1 {
@@ -143,7 +143,7 @@
 
 @media (max-width: 480px) {
   .hero {
-    min-height: 300px;
+    min-height: 90vh;
   }
 
   .hero h1 {

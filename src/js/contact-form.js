@@ -164,19 +164,14 @@ async function sendEmail(formData) {
     throw new Error('EmailJS library not loaded');
   }
   
-  // Prepare email template parameters
+  // Prepare email template parameters matching the EmailJS template variables
   const templateParams = {
-    to_email: 'hihibibihahahaha@gmail.com',
-    from_name: formData.naam,
-    from_email: formData.email,
-    phone: formData.telefoon,
-    kenteken: formData.kenteken,
+    name: formData.naam,
     subject: formData.onderwerp,
-    message: formData.bericht,
-    // Vehicle information
-    vehicle_merk: vehicleData ? vehicleData.merk : 'Niet gevonden',
-    vehicle_model: vehicleData ? vehicleData.handelsbenaming : 'Niet gevonden',
-    vehicle_year: vehicleData ? vehicleData.datum_eerste_toelating : 'Niet gevonden'
+    email: formData.email,
+    phone: formData.telefoon,
+    license: formData.kenteken,
+    message: formData.bericht
   };
   
   try {
@@ -191,6 +186,38 @@ async function sendEmail(formData) {
   } catch (error) {
     console.error('EmailJS Error:', error);
     throw error;
+  }
+}
+
+// Save form data to admin dashboard
+function saveToAdminDashboard(formData) {
+  try {
+    // Get existing emails from localStorage
+    const existingEmails = localStorage.getItem('ash_emails');
+    const emails = existingEmails ? JSON.parse(existingEmails) : [];
+    
+    // Create new email object matching dashboard format
+    const newEmail = {
+      id: Date.now(),
+      name: formData.naam,
+      email: formData.email,
+      phone: formData.telefoon,
+      subject: formData.onderwerp,
+      description: formData.bericht,
+      license: formData.kenteken,
+      date: new Date().toISOString(),
+      read: false
+    };
+    
+    // Add to beginning of array (newest first)
+    emails.unshift(newEmail);
+    
+    // Save back to localStorage
+    localStorage.setItem('ash_emails', JSON.stringify(emails));
+    
+    console.log('Form data saved to admin dashboard');
+  } catch (error) {
+    console.error('Error saving to dashboard:', error);
   }
 }
 
@@ -237,6 +264,9 @@ export function initContactForm() {
       const result = await sendEmail(data);
       
       if (result.success) {
+        // Save to dashboard
+        saveToAdminDashboard(data);
+        
         showToast('Uw bericht is succesvol verzonden! We nemen zo spoedig mogelijk contact met u op.', 'success');
         form.reset();
         vehicleData = null;

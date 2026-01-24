@@ -4,9 +4,12 @@
 
 /* Services Section */
 .services {
-  padding: clamp(3rem, 8vw, 80px) 0;
+  padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 3rem);
   background: #E1E5F5;
-  margin-bottom: 150px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .services h2 {
@@ -100,11 +103,14 @@
 
 /* Testimonials Section */
 .testimonials {
-  padding: clamp(3rem, 8vw, 80px) 0;
+  padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 3rem);
   background: #E1E5F5;
   position: relative;
   overflow: hidden;
-  margin-bottom: 150px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .testimonials h2 {
@@ -250,9 +256,12 @@
 
 /* Contact Section */
 .contact {
-  padding: clamp(3rem, 8vw, 80px) 0;
+  padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 5vw, 3rem);
   background: #E1E5F5;
-  margin-bottom: 150px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .contact h2 {
