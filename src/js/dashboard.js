@@ -247,13 +247,16 @@ class DashboardManager {
         const date = new Date(weekStart);
         date.setDate(date.getDate() + i);
         const dateStr = this.formatDateString(date);
-        const timeHour = hour.split(':')[0];
+        const timeHour = parseInt(hour.split(':')[0]);
         
-        const dayAppointments = this.appointments.filter(apt => 
-          apt.date === dateStr && apt.time.startsWith(timeHour)
-        );
+        // Filter appointments for this day and hour
+        const dayAppointments = this.appointments.filter(apt => {
+          if (apt.date !== dateStr) return false;
+          const aptHour = parseInt(apt.time.split(':')[0]);
+          return aptHour === timeHour;
+        });
         
-        html += `<div class="week-day-cell">`;
+        html += `<div class="week-day-cell" data-date="${dateStr}" data-hour="${hour}">`;
         dayAppointments.forEach(apt => {
           html += `<div class="appointment-pill ${apt.status}" data-id="${apt.id}">
             ${apt.time} ${apt.name}
