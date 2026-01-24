@@ -1,73 +1,87 @@
 <!DOCTYPE html>
 <html lang="nl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - AutoServiceHoute</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="./src/css/base.css">
   <link rel="stylesheet" href="./src/css/components.css">
   <link rel="stylesheet" href="./src/css/pages/dashboard.css">
 </head>
+
 <body class="dashboard-body">
-  
+
   <!-- Sidebar Navigation -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <svg width="40" height="46" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M33.5 3.5L6.19167 17.6667V47.0833L33.5 61.25L60.8083 47.0833V17.6667L33.5 3.5Z" fill="#15141A" stroke="#15141A" stroke-width="2.5" stroke-linejoin="round"/>
-        <path d="M33.5 31.8315L14.8212 50.5103C13.9759 51.3556 13.5013 52.5008 13.5013 53.6968C13.5013 54.8913 13.9759 56.0366 14.8212 56.8819L17.461 59.5217C18.3063 60.367 19.4515 60.8416 20.6461 60.8416C21.8407 60.8416 22.986 60.367 23.8313 59.5217L42.51 40.8429" stroke="#CC3300" stroke-width="2.5" stroke-linejoin="round"/>
-        <path d="M32.8315 41.8411L51.5103 60.5199C52.3556 61.3652 53.5008 61.8398 54.6968 61.8398C55.8913 61.8398 57.0366 61.3652 57.8819 60.5199L60.5217 57.8801C61.367 57.0348 61.8416 55.8895 61.8416 54.6949C61.8416 53.5003 61.367 52.3551 60.5217 51.5098L41.8429 32.8311" stroke="#CC3300" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M33.5 3.5L6.19167 17.6667V47.0833L33.5 61.25L60.8083 47.0833V17.6667L33.5 3.5Z" fill="#15141A"
+          stroke="#15141A" stroke-width="2.5" stroke-linejoin="round" />
+        <path
+          d="M33.5 31.8315L14.8212 50.5103C13.9759 51.3556 13.5013 52.5008 13.5013 53.6968C13.5013 54.8913 13.9759 56.0366 14.8212 56.8819L17.461 59.5217C18.3063 60.367 19.4515 60.8416 20.6461 60.8416C21.8407 60.8416 22.986 60.367 23.8313 59.5217L42.51 40.8429"
+          stroke="#CC3300" stroke-width="2.5" stroke-linejoin="round" />
+        <path
+          d="M32.8315 41.8411L51.5103 60.5199C52.3556 61.3652 53.5008 61.8398 54.6968 61.8398C55.8913 61.8398 57.0366 61.3652 57.8819 60.5199L60.5217 57.8801C61.367 57.0348 61.8416 55.8895 61.8416 54.6949C61.8416 53.5003 61.367 52.3551 60.5217 51.5098L41.8429 32.8311"
+          stroke="#CC3300" stroke-width="2.5" stroke-linejoin="round" />
       </svg>
       <h2>AutoServiceHoute</h2>
     </div>
 
     <nav class="sidebar-nav">
       <a href="#" class="nav-item active" data-section="dashboard">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="7" height="7" rx="1"/>
-          <rect x="14" y="3" width="7" height="7" rx="1"/>
-          <rect x="14" y="14" width="7" height="7" rx="1"/>
-          <rect x="3" y="14" width="7" height="7" rx="1"/>
+        <svg width="24" height="24" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 6C0 2.68629 2.68629 0 6 0C6.55228 0 7 0.447715 7 1V29C7 29.5523 6.55228 30 6 30C2.68629 30 0 27.3137 0 24V6Z" fill="currentColor"/>
+          <path d="M9 1C9 0.447716 9.44772 0 10 0H24C27.3137 0 30 2.68629 30 6V24C30 27.3137 27.3137 30 24 30H10C9.44772 30 9 29.5523 9 29V1Z" fill="currentColor"/>
         </svg>
+
         <span>Dashboard</span>
       </a>
 
       <a href="#" class="nav-item" data-section="calendar">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="4" width="18" height="18" rx="2"/>
-          <line x1="16" y1="2" x2="16" y2="6"/>
-          <line x1="8" y1="2" x2="8" y2="6"/>
-          <line x1="3" y1="10" x2="21" y2="10"/>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 2V6M8 2V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22H13C16.7712 22 18.6569 22 19.8284 20.8284C21 19.6569 21 17.7712 21 14V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 10H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M11.9955 14H12.0045M11.9955 18H12.0045M15.991 14H16M8 14H8.00897M8 18H8.00897" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
+
         <span>Kalender</span>
       </a>
 
       <a href="#" class="nav-item" data-section="appointments">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 11l3 3L22 4"/>
-          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 2V6M8 2V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21 13V12C21 8.22876 21 6.34315 19.8284 5.17157C18.6569 4 16.7712 4 13 4H11C7.22876 4 5.34315 4 4.17157 5.17157C3 6.34315 3 8.22876 3 12V14C3 17.7712 3 19.6569 4.17157 20.8284C5.34315 22 7.22876 22 11 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 10H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13 19.5C13 19.5 14.3485 20.0067 15 22C15 22 18.1765 17 21 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
+
         <span>Afspraken</span>
         <span class="badge" id="appointments-badge">0</span>
       </a>
 
       <a href="#" class="nav-item" data-section="emails">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-          <polyline points="22,6 12,13 2,6"/>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 6L8.91302 9.91697C11.4616 11.361 12.5384 11.361 15.087 9.91697L22 6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M2.01577 13.4756C2.08114 16.5412 2.11383 18.0739 3.24496 19.2094C4.37608 20.3448 5.95033 20.3843 9.09883 20.4634C11.0393 20.5122 12.9607 20.5122 14.9012 20.4634C18.0497 20.3843 19.6239 20.3448 20.7551 19.2094C21.8862 18.0739 21.9189 16.5412 21.9842 13.4756C22.0053 12.4899 22.0053 11.5101 21.9842 10.5244C21.9189 7.45886 21.8862 5.92609 20.7551 4.79066C19.6239 3.65523 18.0497 3.61568 14.9012 3.53657C12.9607 3.48781 11.0393 3.48781 9.09882 3.53656C5.95033 3.61566 4.37608 3.65521 3.24495 4.79065C2.11382 5.92608 2.08114 7.45885 2.01576 10.5244C1.99474 11.5101 1.99475 12.4899 2.01577 13.4756Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
         </svg>
+
         <span>E-mails</span>
         <span class="badge badge-new" id="emails-badge">0</span>
       </a>
 
       <a href="#" class="nav-item" data-section="settings">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 1v6m0 6v6m-9-9h6m6 0h6"/>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21.3175 7.14139L20.8239 6.28479C20.4506 5.63696 20.264 5.31305 19.9464 5.18388C19.6288 5.05472 19.2696 5.15664 18.5513 5.36048L17.3311 5.70418C16.8725 5.80994 16.3913 5.74994 15.9726 5.53479L15.6357 5.34042C15.2766 5.11043 15.0004 4.77133 14.8475 4.37274L14.5136 3.37536C14.294 2.71534 14.1842 2.38533 13.9228 2.19657C13.6615 2.00781 13.3143 2.00781 12.6199 2.00781H11.5051C10.8108 2.00781 10.4636 2.00781 10.2022 2.19657C9.94085 2.38533 9.83106 2.71534 9.61149 3.37536L9.27753 4.37274C9.12465 4.77133 8.84845 5.11043 8.48937 5.34042L8.15249 5.53479C7.73374 5.74994 7.25259 5.80994 6.79398 5.70418L5.57375 5.36048C4.85541 5.15664 4.49625 5.05472 4.17867 5.18388C3.86109 5.31305 3.67445 5.63696 3.30115 6.28479L2.80757 7.14139C2.45766 7.74864 2.2827 8.05227 2.31666 8.37549C2.35061 8.69871 2.58483 8.95918 3.05326 9.48012L4.0843 10.6328C4.3363 10.9518 4.51521 11.5078 4.51521 12.0077C4.51521 12.5078 4.33636 13.0636 4.08433 13.3827L3.05326 14.5354C2.58483 15.0564 2.35062 15.3168 2.31666 15.6401C2.2827 15.9633 2.45766 16.2669 2.80757 16.8741L3.30114 17.7307C3.67443 18.3785 3.86109 18.7025 4.17867 18.8316C4.49625 18.9608 4.85542 18.8589 5.57377 18.655L6.79394 18.3113C7.25263 18.2055 7.73387 18.2656 8.15267 18.4808L8.4895 18.6752C8.84851 18.9052 9.12464 19.2442 9.2775 19.6428L9.61149 20.6403C9.83106 21.3003 9.94085 21.6303 10.2022 21.8191C10.4636 22.0078 10.8108 22.0078 11.5051 22.0078H12.6199C13.3143 22.0078 13.6615 22.0078 13.9228 21.8191C14.1842 21.6303 14.294 21.3003 14.5136 20.6403L14.8476 19.6428C15.0004 19.2442 15.2765 18.9052 15.6356 18.6752L15.9724 18.4808C16.3912 18.2656 16.8724 18.2055 17.3311 18.3113L18.5513 18.655C19.2696 18.8589 19.6288 18.9608 19.9464 18.8316C20.264 18.7025 20.4506 18.3785 20.8239 17.7307L21.3175 16.8741C21.6674 16.2669 21.8423 15.9633 21.8084 15.6401C21.7744 15.3168 21.5402 15.0564 21.0718 14.5354L20.0407 13.3827C19.7887 13.0636 19.6098 12.5078 19.6098 12.0077C19.6098 11.5078 19.7888 10.9518 20.0407 10.6328L21.0718 9.48012C21.5402 8.95918 21.7744 8.69871 21.8084 8.37549C21.8423 8.05227 21.6674 7.74864 21.3175 7.14139Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M15.5195 12C15.5195 13.933 13.9525 15.5 12.0195 15.5C10.0865 15.5 8.51953 13.933 8.51953 12C8.51953 10.067 10.0865 8.5 12.0195 8.5C13.9525 8.5 15.5195 10.067 15.5195 12Z" stroke="currentColor" stroke-width="1.5"/>
         </svg>
+
         <span>Instellingen</span>
       </a>
     </nav>
@@ -86,15 +100,15 @@
   <!-- Mobile Toggle -->
   <button class="mobile-toggle" id="mobile-toggle">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <line x1="3" y1="12" x2="21" y2="12"/>
-      <line x1="3" y1="6" x2="21" y2="6"/>
-      <line x1="3" y1="18" x2="21" y2="18"/>
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="18" x2="21" y2="18" />
     </svg>
   </button>
 
   <!-- Main Content -->
   <main class="main-content">
-    
+
     <!-- Dashboard Section -->
     <section class="content-section active" id="section-dashboard">
       <div class="section-header">
@@ -106,25 +120,25 @@
       <div class="quick-actions-bar">
         <button class="quick-action-btn" onclick="dashboard.showNewEmailsOnly()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
           </svg>
           <span class="quick-badge" id="quick-new-emails">0</span>
           Nieuwe Berichten
         </button>
         <button class="quick-action-btn" onclick="dashboard.showTodayAppointments()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
           </svg>
           <span class="quick-badge" id="quick-today-appointments">0</span>
           Vandaag
         </button>
         <button class="quick-action-btn" onclick="dashboard.showPendingActions()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
           <span class="quick-badge" id="quick-pending">0</span>
           Te Bevestigen
@@ -134,10 +148,14 @@
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon" style="background: linear-gradient(135deg, #FF9500 0%, #FF6B00 100%);">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2.5 6.75L11.1413 11.6462C14.327 13.4513 15.673 13.4513 18.8588 11.6462L27.5 6.75"
+                stroke="#0A0B14" stroke-width="2" stroke-linejoin="round" />
+              <path
+                d="M2.51971 16.0945C2.60142 19.9265 2.64229 21.8424 4.0562 23.2618C5.4701 24.681 7.43791 24.7304 11.3735 24.8293C13.7991 24.8903 16.2009 24.8903 18.6265 24.8293C22.5621 24.7304 24.5299 24.681 25.9439 23.2618C27.3577 21.8424 27.3986 19.9265 27.4802 16.0945C27.5066 14.8624 27.5066 13.6376 27.4802 12.4055C27.3986 8.57358 27.3577 6.65762 25.9439 5.23833C24.5299 3.81904 22.5621 3.7696 18.6265 3.67071C16.2009 3.60976 13.7991 3.60976 11.3735 3.6707C7.43791 3.76958 5.4701 3.81901 4.05619 5.23831C2.64228 6.6576 2.60142 8.57357 2.5197 12.4055C2.49342 13.6376 2.49344 14.8624 2.51971 16.0945Z"
+                stroke="#0A0B14" stroke-width="2" stroke-linejoin="round" />
             </svg>
+
           </div>
           <div class="stat-content">
             <h3 id="stat-new-requests">0</h3>
@@ -148,8 +166,8 @@
         <div class="stat-card">
           <div class="stat-icon" style="background: linear-gradient(135deg, #4B5AFF 0%, #3D47CC 100%);">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 11l3 3L22 4"/>
-              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
             </svg>
           </div>
           <div class="stat-content">
@@ -161,8 +179,8 @@
         <div class="stat-card">
           <div class="stat-icon" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
             </svg>
           </div>
           <div class="stat-content">
@@ -174,7 +192,7 @@
         <div class="stat-card">
           <div class="stat-icon" style="background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="20 6 9 17 4 12"/>
+              <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
           <div class="stat-content">
@@ -213,13 +231,13 @@
           <div class="calendar-nav">
             <button class="nav-btn" id="prev-period">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="15 18 9 12 15 6"/>
+                <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
             <span class="current-period" id="current-period">Januari 2026</span>
             <button class="nav-btn" id="next-period">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9 18 15 12 9 6"/>
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
           </div>
@@ -334,8 +352,8 @@
         <h2 id="modal-title">Afspraak Details</h2>
         <button class="modal-close" id="modal-close">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
       </div>
@@ -352,8 +370,8 @@
         <h2 id="day-modal-title">Afspraken</h2>
         <button class="modal-close" id="day-modal-close">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
       </div>
@@ -365,4 +383,5 @@
 
   <script type="module" src="./src/js/dashboard.js"></script>
 </body>
+
 </html>
