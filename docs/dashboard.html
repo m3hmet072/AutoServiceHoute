@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - AutoServiceHoute</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/base.css">
+  <link rel="stylesheet" href="./assets/components.css">
+  <link rel="stylesheet" href="./assets/dashboard.css">
+</head>
+<body class="dashboard-body">
+  
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <svg width="40" height="46" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M33.5 3.5L6.19167 17.6667V47.0833L33.5 61.25L60.8083 47.0833V17.6667L33.5 3.5Z" fill="#15141A" stroke="#15141A" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M33.5 31.8315L14.8212 50.5103C13.9759 51.3556 13.5013 52.5008 13.5013 53.6968C13.5013 54.8913 13.9759 56.0366 14.8212 56.8819L17.461 59.5217C18.3063 60.367 19.4515 60.8416 20.6461 60.8416C21.8407 60.8416 22.986 60.367 23.8313 59.5217L42.51 40.8429" stroke="#CC3300" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M32.8315 41.8411L51.5103 60.5199C52.3556 61.3652 53.5008 61.8398 54.6968 61.8398C55.8913 61.8398 57.0366 61.3652 57.8819 60.5199L60.5217 57.8801C61.367 57.0348 61.8416 55.8895 61.8416 54.6949C61.8416 53.5003 61.367 52.3551 60.5217 51.5098L41.8429 32.8311" stroke="#CC3300" stroke-width="2.5" stroke-linejoin="round"/>
+      </svg>
+      <h2>AutoServiceHoute</h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-section="dashboard">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="#" class="nav-item" data-section="calendar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span>Kalender</span>
+      </a>
+
+      <a href="#" class="nav-item" data-section="appointments">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        </svg>
+        <span>Afspraken</span>
+        <span class="badge" id="appointments-badge">0</span>
+      </a>
+
+      <a href="#" class="nav-item" data-section="emails">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        <span>E-mails</span>
+        <span class="badge badge-new" id="emails-badge">0</span>
+      </a>
+
+      <a href="#" class="nav-item" data-section="settings">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 1v6m0 6v6m-9-9h6m6 0h6"/>
+        </svg>
+        <span>Instellingen</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">AH</div>
+        <div class="user-details">
+          <span class="user-name">Admin</span>
+          <span class="user-role">Eigenaar</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Toggle -->
+  <button class="mobile-toggle" id="mobile-toggle">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Dashboard Section -->
+    <section class="content-section active" id="section-dashboard">
+      <div class="section-header">
+        <h1>Dashboard</h1>
+        <p class="section-subtitle">Welkom terug! Hier is een overzicht van vandaag</p>
+      </div>
+
+      <!-- Snelle Acties -->
+      <div class="quick-actions-bar">
+        <button class="quick-action-btn" onclick="dashboard.showNewEmailsOnly()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <span class="quick-badge" id="quick-new-emails">0</span>
+          Nieuwe Berichten
+        </button>
+        <button class="quick-action-btn" onclick="dashboard.showTodayAppointments()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span class="quick-badge" id="quick-today-appointments">0</span>
+          Vandaag
+        </button>
+        <button class="quick-action-btn" onclick="dashboard.showPendingActions()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span class="quick-badge" id="quick-pending">0</span>
+          Te Bevestigen
+        </button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #FF9500 0%, #FF6B00 100%);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <h3 id="stat-new-requests">0</h3>
+            <p>Nieuwe Aanvragen</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #4B5AFF 0%, #3D47CC 100%);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <h3 id="stat-confirmed">0</h3>
+            <p>Bevestigde Afspraken</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <h3 id="stat-in-progress">0</h3>
+            <p>In Behandeling</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <h3 id="stat-completed">0</h3>
+            <p>Afgerond Deze Week</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <h2>Afspraken Vandaag</h2>
+          <div class="appointments-today" id="appointments-today">
+            <p class="empty-state">Geen afspraken voor vandaag</p>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <h2>Recente E-mails</h2>
+          <div class="recent-emails" id="recent-emails">
+            <p class="empty-state">Geen nieuwe e-mails</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Calendar Section -->
+    <section class="content-section" id="section-calendar">
+      <div class="section-header">
+        <h1>Kalender</h1>
+        <div class="calendar-controls">
+          <div class="view-toggle">
+            <button class="view-btn active" data-view="month">Maand</button>
+            <button class="view-btn" data-view="week">Week</button>
+          </div>
+          <div class="calendar-nav">
+            <button class="nav-btn" id="prev-period">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+            <span class="current-period" id="current-period">Januari 2026</span>
+            <button class="nav-btn" id="next-period">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+          <button class="btn btn-primary" id="today-btn">Vandaag</button>
+        </div>
+      </div>
+
+      <div class="calendar-container">
+        <div class="calendar-view" id="calendar-view">
+          <!-- Calendar will be rendered here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Appointments Section -->
+    <section class="content-section" id="section-appointments">
+      <div class="section-header">
+        <h1>Afspraken</h1>
+        <div class="filter-controls">
+          <select class="filter-select" id="date-filter">
+            <option value="all">Alle Data</option>
+            <option value="today">Vandaag</option>
+            <option value="tomorrow">Morgen</option>
+            <option value="this-week">Deze Week</option>
+            <option value="next-week">Volgende Week</option>
+          </select>
+          <select class="filter-select" id="time-filter">
+            <option value="all">Alle Tijden</option>
+            <option value="morning">Ochtend (9:00-12:00)</option>
+            <option value="afternoon">Middag (12:00-17:00)</option>
+          </select>
+          <select class="filter-select" id="status-filter">
+            <option value="all">Actieve Afspraken</option>
+            <option value="nieuwe-aanvraag">Nieuwe Aanvragen</option>
+            <option value="bevestigd">Bevestigd</option>
+            <option value="in-behandeling">In Behandeling</option>
+            <option value="afgerond">Afgeronde Afspraken</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="appointments-list" id="appointments-list">
+        <!-- Appointments will be rendered here -->
+      </div>
+    </section>
+
+    <!-- Emails Section -->
+    <section class="content-section" id="section-emails">
+      <div class="section-header">
+        <h1>E-mails</h1>
+        <button class="btn btn-primary" id="test-email-btn">Test E-mail Toevoegen</button>
+      </div>
+
+      <div class="emails-container" id="emails-container">
+        <!-- Emails will be rendered here -->
+      </div>
+    </section>
+
+    <!-- Settings Section -->
+    <section class="content-section" id="section-settings">
+      <div class="section-header">
+        <h1>Instellingen</h1>
+      </div>
+
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h2>Garage Informatie</h2>
+          <div class="form-group">
+            <label>Bedrijfsnaam</label>
+            <input type="text" value="AutoServiceHoute" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>E-mailadres</label>
+            <input type="email" value="info@autoservicehoute.nl" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Telefoonnummer</label>
+            <input type="tel" value="+31 20 123 4567" class="form-control">
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h2>Openingstijden</h2>
+          <div class="form-group">
+            <label>Maandag - Vrijdag</label>
+            <input type="text" value="08:00 - 17:00" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Zaterdag</label>
+            <input type="text" value="09:00 - 13:00" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Zondag</label>
+            <input type="text" value="Gesloten" class="form-control">
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h2>Data Beheer</h2>
+          <button class="btn btn-danger" id="clear-data-btn">Alle Data Verwijderen</button>
+          <p class="help-text">Let op: Deze actie kan niet ongedaan worden gemaakt.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Appointment Detail Modal -->
+  <div class="modal" id="appointment-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Afspraak Details</h2>
+        <button class="modal-close" id="modal-close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Content will be injected here -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./assets/dashboard.js"></script>
+</body>
+</html>
