@@ -7,7 +7,7 @@ class DashboardManager {
     this.emails = this.loadData('emails') || [];
     this.init();
   }
-
+  
   // Helper: Format date to YYYY-MM-DD without timezone issues
   formatDateString(date) {
     const year = date.getFullYear();
