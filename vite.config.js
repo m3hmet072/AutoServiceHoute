@@ -14,7 +14,8 @@ export default defineConfig({
         apk: resolve(__dirname, 'apk.html'),
         airco: resolve(__dirname, 'airco.html'),
         banden: resolve(__dirname, 'banden.html'),
-        occasions: resolve(__dirname, 'occasions.html')
+        occasions: resolve(__dirname, 'occasions.html'),
+        dashboard: resolve(__dirname, 'dashboard.html')
       }
     }
   }
