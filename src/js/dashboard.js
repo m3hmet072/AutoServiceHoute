@@ -1,37 +1,11 @@
 // Dashboard Manager for AutoServiceHoute
 class DashboardManager {
   constructor() {
-    // Check authentication before initializing
-    if (!this.checkAuth()) {
-      window.location.href = './login.html';
-      return;
-    }
-    
     this.currentView = 'month';
     this.currentDate = new Date();
     this.appointments = this.loadData('appointments') || [];
     this.emails = this.loadData('emails') || [];
     this.init();
-  }
-
-  // Authentication check
-  checkAuth() {
-    const session = sessionStorage.getItem('ash_session');
-    if (!session) return false;
-
-    try {
-      const sessionData = JSON.parse(session);
-      return sessionData.username && sessionData.sessionToken;
-    } catch {
-      return false;
-    }
-  }
-
-  // Logout function
-  logout() {
-    sessionStorage.removeItem('ash_session');
-    localStorage.removeItem('ash_session_check');
-    window.location.href = './login.html';
   }
 
   // Helper: Format date to YYYY-MM-DD without timezone issues

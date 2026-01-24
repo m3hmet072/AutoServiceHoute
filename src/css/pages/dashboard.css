@@ -102,17 +102,12 @@
 .sidebar-footer {
   padding: 1.5rem;
   border-top: 1px solid rgba(225, 229, 245, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
 }
 
 .user-info {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex: 1;
 }
 
 .user-avatar {
@@ -141,34 +136,6 @@
 .user-role {
   font-size: 0.75rem;
   color: rgba(225, 229, 245, 0.6);
-}
-
-.logout-btn {
-  background: rgba(225, 229, 245, 0.1);
-  border: 1px solid rgba(225, 229, 245, 0.15);
-  color: rgba(225, 229, 245, 0.7);
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  flex-shrink: 0;
-}
-
-.logout-btn:hover {
-  background: rgba(255, 82, 82, 0.15);
-  border-color: rgba(255, 82, 82, 0.3);
-  color: #FF5252;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 82, 82, 0.2);
-}
-
-.logout-btn svg {
-  width: 20px;
-  height: 20px;
 }
 
 /* Mobile Toggle */
