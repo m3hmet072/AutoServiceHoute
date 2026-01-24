@@ -15,7 +15,8 @@ export default defineConfig({
         airco: resolve(__dirname, 'airco.html'),
         banden: resolve(__dirname, 'banden.html'),
         occasions: resolve(__dirname, 'occasions.html'),
-        dashboard: resolve(__dirname, 'dashboard.html')
+        dashboard: resolve(__dirname, 'dashboard.html'),
+        login: resolve(__dirname, 'login.html')
       }
     }
   }
