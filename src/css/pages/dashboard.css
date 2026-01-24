@@ -1658,6 +1658,92 @@
   overflow-y: auto;
 }
 
+/* Day Appointments List in Modal */
+.day-appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.day-appointment-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #F9FAFB;
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.day-appointment-item:hover {
+  background: #F3F4F6;
+  border-color: #D1D5DB;
+  transform: translateX(4px);
+}
+
+.day-appointment-time {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #15141A;
+  min-width: 60px;
+  font-family: 'Manrope', sans-serif;
+}
+
+.day-appointment-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.day-appointment-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #15141A;
+  font-family: 'Manrope', sans-serif;
+}
+
+.day-appointment-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.day-appointment-subject {
+  font-size: 0.8125rem;
+  color: #6B7280;
+  font-family: 'Manrope', sans-serif;
+}
+
+.day-appointment-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #6B7280;
+}
+
+.day-appointment-view:hover {
+  background: #CC3300;
+  border-color: #CC3300;
+  color: white;
+  transform: scale(1.1);
+}
+
+.day-appointment-view svg {
+  width: 20px;
+  height: 20px;
+}
+
 @media (max-width: 768px) {
   .dashboard-toast {
     top: 1rem;
@@ -1672,5 +1758,18 @@
   
   .confirm-dialog-actions .action-btn {
     width: 100%;
+  }
+
+  .day-appointment-item {
+    padding: 0.875rem;
+  }
+
+  .day-appointment-time {
+    min-width: 50px;
+    font-size: 0.875rem;
+  }
+
+  .day-appointment-name {
+    font-size: 0.875rem;
   }
 }

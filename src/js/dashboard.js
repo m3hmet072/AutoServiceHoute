@@ -210,10 +210,18 @@ class DashboardManager {
     // Add click handlers
     document.querySelectorAll('.calendar-day').forEach(day => {
       day.addEventListener('click', (e) => {
-        if (e.target.classList.contains('appointment-pill')) {
-          const id = e.target.dataset.id;
-          if (id) {
+        const dateStr = day.dataset.date;
+        if (dateStr) {
+          // If clicked on a specific appointment pill, show detail modal
+          if (e.target.classList.contains('appointment-pill') && e.target.dataset.id) {
+            const id = e.target.dataset.id;
             this.showAppointmentModal(id);
+          } else {
+            // If clicked on the day itself (or the +X meer), show day appointments list
+            const dayAppointments = this.appointments.filter(apt => apt.date === dateStr);
+            if (dayAppointments.length > 0) {
+              this.showDayAppointmentsModal(dateStr, dayAppointments);
+            }
           }
         }
       });
@@ -814,11 +822,95 @@ class DashboardManager {
         modal.classList.remove('active');
       }
     });
+
+    // Setup day appointments modal
+    const dayModal = document.getElementById('day-appointments-modal');
+    const dayCloseBtn = document.getElementById('day-modal-close');
+    
+    if (dayModal && dayCloseBtn) {
+      dayCloseBtn.addEventListener('click', () => {
+        dayModal.classList.remove('active');
+      });
+      
+      dayModal.addEventListener('click', (e) => {
+        if (e.target === dayModal) {
+          dayModal.classList.remove('active');
+        }
+      });
+    }
+  }
+
+  showDayAppointmentsModal(dateStr, dayAppointments) {
+    const modal = document.getElementById('day-appointments-modal');
+    const modalTitle = document.getElementById('day-modal-title');
+    const modalBody = document.getElementById('day-modal-body');
+    
+    if (!modal || !modalTitle || !modalBody) return;
+
+    // Parse date
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    const formattedDate = date.toLocaleDateString('nl-NL', { 
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    modalTitle.textContent = `Afspraken op ${formattedDate}`;
+
+    // Sort appointments by time
+    const sortedAppointments = [...dayAppointments].sort((a, b) => {
+      const timeA = a.time.split(':').map(Number);
+      const timeB = b.time.split(':').map(Number);
+      return timeA[0] * 60 + timeA[1] - (timeB[0] * 60 + timeB[1]);
+    });
+
+    // Build appointment list HTML
+    let html = '<div class="day-appointments-list">';
+    
+    sortedAppointments.forEach(apt => {
+      const statusText = {
+        'nieuwe-aanvraag': 'Nieuwe Aanvraag',
+        'bevestigd': 'Bevestigd',
+        'in-behandeling': 'In Behandeling',
+        'afgerond': 'Afgerond'
+      }[apt.status] || apt.status;
+
+      html += `
+        <div class="day-appointment-item" data-id="${apt.id}">
+          <div class="day-appointment-time">${apt.time}</div>
+          <div class="day-appointment-details">
+            <div class="day-appointment-name">${apt.name}</div>
+            <div class="day-appointment-info">
+              <span class="status-badge ${apt.status}">${statusText}</span>
+              ${apt.subject ? `<span class="day-appointment-subject">${apt.subject}</span>` : ''}
+            </div>
+          </div>
+          <button class="day-appointment-view" onclick="dashboard.showAppointmentModal('${apt.id}')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        </div>
+      `;
+    });
+
+    html += '</div>';
+    
+    modalBody.innerHTML = html;
+    modal.classList.add('active');
   }
 
   showAppointmentModal(appointmentId, editMode = false) {
     const appointment = this.appointments.find(apt => apt.id == appointmentId);
     if (!appointment) return;
+    
+    // Close day appointments modal if it's open
+    const dayModal = document.getElementById('day-appointments-modal');
+    if (dayModal) {
+      dayModal.classList.remove('active');
+    }
     
     const modal = document.getElementById('appointment-modal');
     const modalTitle = document.getElementById('modal-title');
