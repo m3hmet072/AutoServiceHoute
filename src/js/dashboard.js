@@ -651,7 +651,7 @@ class DashboardManager {
     
     let html = '';
     this.emails.forEach(email => {
-      const emailDate = new Date(email.date);
+      const emailDate = new Date(email.created_at);
       const formattedDate = emailDate.toLocaleDateString('nl-NL', { 
         day: 'numeric',
         month: 'short',
@@ -673,10 +673,10 @@ class DashboardManager {
               <div class="email-meta">
                 <span>📧 ${email.email}</span>
                 ${email.phone ? `<span>📞 ${email.phone}</span>` : ''}
-                ${email.license ? `<span>🚗 ${email.license}</span>` : ''}
+                ${email.kenteken ? `<span>🚗 ${email.kenteken}</span>` : ''}
                 <span class="subject-badge">${email.subject}</span>
               </div>
-              <p class="email-message">${email.description}</p>
+              <p class="email-message">${email.message}</p>
             </div>
           </div>
           <div class="email-right">
@@ -728,11 +728,11 @@ class DashboardManager {
       name: email.name,
       email: email.email,
       phone: email.phone,
-      license: email.license || '',
+      license: email.kenteken || '',
       date: this.formatDateString(new Date()),
       time: '09:00',
       subject: email.subject,
-      description: email.description,
+      description: email.message,
       status: 'nieuwe-aanvraag',
       createdFrom: 'email',
       emailId: email.id
@@ -789,11 +789,11 @@ class DashboardManager {
       name: email.name,
       email: email.email,
       phone: email.phone,
-      license: email.license || '',
+      license: email.kenteken || '',
       date: today,
       time: nextAvailableTime,
       subject: email.subject,
-      description: email.description,
+      description: email.message,
       status: 'bevestigd',
       createdFrom: 'email',
       emailId: email.id
@@ -842,11 +842,11 @@ class DashboardManager {
       name: email.name,
       email: email.email,
       phone: email.phone,
-      license: email.license || '',
+      license: email.kenteken || '',
       date: tomorrowStr,
       time: nextAvailableTime,
       subject: email.subject,
-      description: email.description,
+      description: email.message,
       status: 'bevestigd',
       createdFrom: 'email',
       emailId: email.id
@@ -926,7 +926,7 @@ class DashboardManager {
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.getElementById('modal-body');
     
-    const emailDate = new Date(email.date);
+    const emailDate = new Date(email.created_at);
     const formattedDate = emailDate.toLocaleDateString('nl-NL', {
       weekday: 'long',
       year: 'numeric',
@@ -954,7 +954,7 @@ class DashboardManager {
         </div>
         <div class="detail-row">
           <span class="detail-label">Kenteken</span>
-          <span class="detail-value">${email.license || '-'}</span>
+          <span class="detail-value">${email.kenteken || '-'}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">Onderwerp</span>
@@ -966,7 +966,7 @@ class DashboardManager {
         </div>
         <div class="detail-row">
           <span class="detail-label">Bericht</span>
-          <div class="detail-value message-box">${email.description}</div>
+          <div class="detail-value message-box">${email.message}</div>
         </div>
       </div>
       
@@ -1707,7 +1707,7 @@ class DashboardManager {
     } else {
       let html = '';
       recentEmails.forEach(email => {
-        const date = new Date(email.date);
+        const date = new Date(email.created_at);
         const timeAgo = this.getTimeAgo(date);
         
         html += `<div class="email-item" onclick="dashboard.createAppointmentFromEmail('${email.id}')">
