@@ -1,12 +1,14 @@
 // Dashboard Manager for AutoServiceHoute
 import translations from './translations.js';
+import * as api from './api.js';
 
 class DashboardManager {
   constructor() {
     this.currentView = 'month';
     this.currentDate = new Date();
-    this.appointments = this.loadData('appointments') || [];
-    this.emails = this.loadData('emails') || [];
+    this.appointments = [];
+    this.emails = [];
+    this.workDays = [];
     this.currentLanguage = this.loadData('language') || 'en';
     this.translations = translations;
     this.init();
@@ -21,39 +23,126 @@ class DashboardManager {
   }
 
   init() {
-    this.setupLanguage();
-    this.setupNavigation();
-    this.setupCalendar();
-    this.setupAppointments();
-    this.setupEmails();
-    this.setupSettings();
-    this.setupModal();
-    this.updateStats();
-    this.renderDashboard();
-    this.renderCalendar();
-    this.applyTranslations();
+    this.loadAllData().then(() => {
+      this.setupLanguage();
+      this.setupNavigation();
+      this.setupCalendar();
+      this.setupAppointments();
+      this.setupEmails();
+      this.setupSettings();
+      this.setupModal();
+      this.updateStats();
+      this.renderDashboard();
+      this.renderCalendar();
+      this.applyTranslations();
+    });
+  }
+
+  // Load all data from API
+  async loadAllData() {
+    try {
+      [this.appointments, this.emails, this.workDays] = await Promise.all([
+        api.fetchAppointments(),
+        api.fetchEmails(),
+        api.fetchWorkDays()
+      ]);
+      console.log('✓ Data loaded from database');
+    } catch (error) {
+      console.error('Error loading data:', error);
+      // Fallback to localStorage if API fails
+      this.appointments = this.loadData('appointments') || [];
+      this.emails = this.loadData('emails') || [];
+      this.workDays = this.loadData('workDays') || [];
+    }
   }
 
   // Language Management
   setupLanguage() {
     const languageSelect = document.getElementById('language-select');
-    if (languageSelect) {
-      // Set current language
-      languageSelect.value = this.currentLanguage;
-      
-      // Listen for language changes
-      languageSelect.addEventListener('change', (e) => {
-        this.currentLanguage = e.target.value;
+    if (!languageSelect) return;
+
+    const trigger = languageSelect.querySelector('.select-trigger');
+    const options = languageSelect.querySelectorAll('.select-option');
+    const selectedValue = languageSelect.querySelector('.selected-value');
+    
+    // Language data with flags
+    const languages = {
+      en: { flag: '🇬🇧', name: 'English' },
+      tr: { flag: '🇹🇷', name: 'Türkçe' },
+      nl: { flag: '🇳🇱', name: 'Nederlands' }
+    };
+
+    // Set current language
+    const currentLang = languages[this.currentLanguage];
+    if (currentLang) {
+      selectedValue.innerHTML = `
+        <span class="flag-icon">${currentLang.flag}</span>
+        <span class="lang-text">${currentLang.name}</span>
+      `;
+    }
+
+    // Mark current option as selected
+    options.forEach(option => {
+      if (option.dataset.value === this.currentLanguage) {
+        option.classList.add('selected');
+      }
+    });
+
+    // Toggle dropdown
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      languageSelect.classList.toggle('open');
+    });
+
+    // Handle option selection
+    options.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const value = option.dataset.value;
+        
+        // Update UI
+        options.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+        
+        const lang = languages[value];
+        selectedValue.innerHTML = `
+          <span class="flag-icon">${lang.flag}</span>
+          <span class="lang-text">${lang.name}</span>
+        `;
+        
+        // Close dropdown
+        languageSelect.classList.remove('open');
+        
+        // Update language
+        this.currentLanguage = value;
         this.saveData('language', this.currentLanguage);
         this.applyTranslations();
         
         // Re-render dynamic content
         this.renderDashboard();
         this.renderCalendar();
-        this.renderAppointments();
-        this.renderEmails();
+        if (document.getElementById('section-appointments').classList.contains('active')) {
+          this.renderAppointments();
+        }
+        if (document.getElementById('section-emails').classList.contains('active')) {
+          this.renderEmails();
+        }
       });
-    }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!languageSelect.contains(e.target)) {
+        languageSelect.classList.remove('open');
+      }
+    });
+
+    // Close dropdown on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && languageSelect.classList.contains('open')) {
+        languageSelect.classList.remove('open');
+      }
+    });
   }
 
   applyTranslations() {
@@ -229,9 +318,26 @@ class DashboardManager {
       const isToday = date.toDateString() === today.toDateString();
       const dayAppointments = this.appointments.filter(apt => apt.date === dateStr);
       
-      html += `<div class="calendar-day ${isToday ? 'today' : ''}" data-date="${dateStr}">
-        <div class="day-number">${day}</div>
-        <div class="day-appointments">`;
+      // Check if this is a work day
+      const workDay = this.workDays.find(wd => wd.date === dateStr);
+      const workDayClass = workDay ? 'work-day' : '';
+      
+      html += `<div class="calendar-day ${isToday ? 'today' : ''} ${workDayClass}" data-date="${dateStr}">`;
+      
+      // Day number with work day label if present
+      html += `<div class="day-header">
+        <div class="day-number">${day}</div>`;
+      
+      if (workDay) {
+        const shiftLabel = workDay.shift.includes('Ochtend') ? 'Ochtend' : 
+                          workDay.shift.includes('Middag') ? 'Middag' : 
+                          workDay.shift.includes('Nacht') ? 'Nacht' : 'Werk';
+        html += `<div class="work-day-label">${shiftLabel}</div>`;
+      }
+      
+      html += `</div>`; // Close day-header
+      
+      html += `<div class="day-appointments">`;
       
       dayAppointments.slice(0, 3).forEach(apt => {
         html += `<div class="appointment-pill ${apt.status}" data-id="${apt.id}">
@@ -606,7 +712,7 @@ class DashboardManager {
     container.innerHTML = html;
   }
 
-  createAppointmentFromEmail(emailId) {
+  async createAppointmentFromEmail(emailId) {
     const email = this.emails.find(e => e.id == emailId);
     if (!email) return;
     
@@ -632,12 +738,19 @@ class DashboardManager {
       emailId: email.id
     };
     
-    this.appointments.push(appointment);
-    this.saveData('appointments', this.appointments);
-    
-    // Verwijder email uit emails lijst
-    this.emails = this.emails.filter(e => e.id != emailId);
-    this.saveData('emails', this.emails);
+    try {
+      await api.createAppointment(appointment);
+      this.appointments.push(appointment);
+      
+      await api.deleteEmail(emailId);
+      this.emails = this.emails.filter(e => e.id != emailId);
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+      this.appointments.push(appointment);
+      this.saveData('appointments', this.appointments);
+      this.emails = this.emails.filter(e => e.id != emailId);
+      this.saveData('emails', this.emails);
+    }
     
     this.updateStats();
     this.renderEmails();
@@ -647,7 +760,7 @@ class DashboardManager {
     this.showAppointmentModal(appointment.id);
   }
 
-  quickPlanToday(emailId, buttonElement) {
+  async quickPlanToday(emailId, buttonElement) {
     const email = this.emails.find(e => e.id == emailId);
     if (!email) return;
     
@@ -686,12 +799,19 @@ class DashboardManager {
       emailId: email.id
     };
     
-    this.appointments.push(appointment);
-    this.saveData('appointments', this.appointments);
-    
-    // Verwijder email uit emails lijst
-    this.emails = this.emails.filter(e => e.id != emailId);
-    this.saveData('emails', this.emails);
+    try {
+      await api.createAppointment(appointment);
+      this.appointments.push(appointment);
+      
+      await api.deleteEmail(emailId);
+      this.emails = this.emails.filter(e => e.id != emailId);
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+      this.appointments.push(appointment);
+      this.saveData('appointments', this.appointments);
+      this.emails = this.emails.filter(e => e.id != emailId);
+      this.saveData('emails', this.emails);
+    }
     
     this.updateStats();
     this.renderEmails();
@@ -700,7 +820,7 @@ class DashboardManager {
     this.showNotification(`Afspraak gepland voor vandaag om ${nextAvailableTime}. Email verplaatst naar afspraken.`, 'success');
   }
 
-  quickPlanTomorrow(emailId) {
+  async quickPlanTomorrow(emailId) {
     const email = this.emails.find(e => e.id == emailId);
     if (!email) return;
     
@@ -732,12 +852,19 @@ class DashboardManager {
       emailId: email.id
     };
     
-    this.appointments.push(appointment);
-    this.saveData('appointments', this.appointments);
-    
-    // Verwijder email uit emails lijst
-    this.emails = this.emails.filter(e => e.id != emailId);
-    this.saveData('emails', this.emails);
+    try {
+      await api.createAppointment(appointment);
+      this.appointments.push(appointment);
+      
+      await api.deleteEmail(emailId);
+      this.emails = this.emails.filter(e => e.id != emailId);
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+      this.appointments.push(appointment);
+      this.saveData('appointments', this.appointments);
+      this.emails = this.emails.filter(e => e.id != emailId);
+      this.saveData('emails', this.emails);
+    }
     
     this.updateStats();
     this.renderEmails();
@@ -1110,11 +1237,19 @@ class DashboardManager {
     modal.classList.add('active');
   }
 
-  updateAppointmentStatus(appointmentId, newStatus) {
+  async updateAppointmentStatus(appointmentId, newStatus) {
     const appointment = this.appointments.find(apt => apt.id == appointmentId);
     if (appointment) {
       appointment.status = newStatus;
-      this.saveData('appointments', this.appointments);
+      
+      try {
+        await api.updateAppointment(appointmentId, { status: newStatus });
+        await this.loadAllData();
+      } catch (error) {
+        console.error('Error updating appointment:', error);
+        this.saveData('appointments', this.appointments);
+      }
+      
       this.updateStats();
       this.renderCalendar();
       this.renderAppointments();
@@ -1193,9 +1328,15 @@ class DashboardManager {
     );
   }
 
-  deleteAppointment(appointmentId) {
-    this.appointments = this.appointments.filter(apt => apt.id != appointmentId);
-    this.saveData('appointments', this.appointments);
+  async deleteAppointment(appointmentId) {
+    try {
+      await api.deleteAppointment(appointmentId);
+      this.appointments = this.appointments.filter(apt => apt.id != appointmentId);
+    } catch (error) {
+      console.error('Error deleting appointment:', error);
+      this.appointments = this.appointments.filter(apt => apt.id != appointmentId);
+      this.saveData('appointments', this.appointments);
+    }
     
     const modal = document.getElementById('appointment-modal');
     modal.classList.remove('active');
@@ -1207,12 +1348,18 @@ class DashboardManager {
     this.showNotification('Afspraak verwijderd');
   }
 
-  archiveEmail(emailId) {
+  async archiveEmail(emailId) {
     this.showConfirmDialog(
       'Weet je zeker dat je deze e-mail wilt verwijderen?',
-      () => {
-        this.emails = this.emails.filter(e => e.id != emailId);
-        this.saveData('emails', this.emails);
+      async () => {
+        try {
+          await api.deleteEmail(emailId);
+          this.emails = this.emails.filter(e => e.id != emailId);
+        } catch (error) {
+          console.error('Error deleting email:', error);
+          this.emails = this.emails.filter(e => e.id != emailId);
+          this.saveData('emails', this.emails);
+        }
         this.renderEmails();
         this.updateStats();
         this.showNotification('E-mail verwijderd');
@@ -1223,6 +1370,72 @@ class DashboardManager {
   // Settings
   setupSettings() {
     const clearDataBtn = document.getElementById('clear-data-btn');
+    const importIcsBtn = document.getElementById('import-ics-btn');
+    const icsFileInput = document.getElementById('ics-file-input');
+    
+    // iCalendar Import
+    if (importIcsBtn && icsFileInput) {
+      importIcsBtn.addEventListener('click', () => {
+        icsFileInput.click();
+      });
+
+      icsFileInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const statusEl = document.getElementById('import-status');
+        
+        try {
+          const text = await file.text();
+          const events = this.parseICalendar(text);
+          
+          if (events.length > 0) {
+            // Store as work days in database
+            try {
+              await api.importWorkDaysBulk(events);
+              this.workDays = events;
+              
+              this.renderCalendar(); // Re-render to show work day highlights
+              
+              if (statusEl) {
+                statusEl.textContent = `✓ ${events.length} werkdagen geïmporteerd`;
+                statusEl.style.color = '#10B981';
+                setTimeout(() => statusEl.textContent = '', 5000);
+              }
+              
+              this.showNotification(`${events.length} werkdagen toegevoegd aan kalender!`);
+            } catch (dbError) {
+              console.error('Database error:', dbError);
+              // Fallback to localStorage
+              this.workDays = events;
+              this.saveData('workDays', this.workDays);
+              this.renderCalendar();
+              
+              if (statusEl) {
+                statusEl.textContent = `✓ ${events.length} werkdagen geïmporteerd (lokaal)`;
+                statusEl.style.color = '#10B981';
+                setTimeout(() => statusEl.textContent = '', 5000);
+              }
+            }
+          } else {
+            if (statusEl) {
+              statusEl.textContent = '✗ Geen gebeurtenissen gevonden';
+              statusEl.style.color = '#EF4444';
+              setTimeout(() => statusEl.textContent = '', 5000);
+            }
+          }
+          
+          icsFileInput.value = '';
+        } catch (error) {
+          console.error('Error importing iCalendar:', error);
+          if (statusEl) {
+            statusEl.textContent = '✗ Fout bij importeren';
+            statusEl.style.color = '#EF4444';
+            setTimeout(() => statusEl.textContent = '', 5000);
+          }
+        }
+      });
+    }
     
     if (clearDataBtn) {
       clearDataBtn.addEventListener('click', () => {
@@ -1243,6 +1456,54 @@ class DashboardManager {
         );
       });
     }
+  }
+
+  // Parse iCalendar (.ics) file - Store as work day indicators, not appointments
+  parseICalendar(icsText) {
+    const workDays = [];
+    const lines = icsText.split(/\r\n|\n|\r/);
+    let currentEvent = null;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+
+      if (line === 'BEGIN:VEVENT') {
+        currentEvent = {};
+      } else if (line === 'END:VEVENT' && currentEvent) {
+        if (currentEvent.start && currentEvent.description) {
+          // Store as work day indicator (not appointment)
+          workDays.push({
+            date: currentEvent.start,
+            shift: currentEvent.description, // e.g., "Ochtend door ploeg Blauw"
+            startTime: currentEvent.startTime,
+            endTime: currentEvent.endTime
+          });
+        }
+        currentEvent = null;
+      } else if (currentEvent) {
+        // Parse DTSTART
+        if (line.startsWith('DTSTART')) {
+          const dateMatch = line.match(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/);
+          if (dateMatch) {
+            currentEvent.start = `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
+            currentEvent.startTime = `${dateMatch[4]}:${dateMatch[5]}`;
+          }
+        }
+        // Parse DTEND
+        else if (line.startsWith('DTEND')) {
+          const dateMatch = line.match(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/);
+          if (dateMatch) {
+            currentEvent.endTime = `${dateMatch[4]}:${dateMatch[5]}`;
+          }
+        } 
+        // Parse DESCRIPTION
+        else if (line.startsWith('DESCRIPTION:')) {
+          currentEvent.description = line.substring(12);
+        }
+      }
+    }
+
+    return workDays;
   }
 
   // Confirm Dialog
