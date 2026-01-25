@@ -163,9 +163,16 @@ class DashboardManager {
     document.documentElement.lang = lang;
   }
 
-  translate(key) {
+  translate(key, replacements = {}) {
     const trans = this.translations[this.currentLanguage];
-    return trans && trans[key] ? trans[key] : key;
+    let text = trans && trans[key] ? trans[key] : key;
+    
+    // Replace placeholders like {time}, {count}, {status}
+    Object.keys(replacements).forEach(placeholder => {
+      text = text.replace(`{${placeholder}}`, replacements[placeholder]);
+    });
+    
+    return text;
   }
 
   // Local Storage
@@ -638,7 +645,7 @@ class DashboardManager {
     this.saveData('emails', this.emails);
     this.renderEmails();
     this.updateStats();
-    this.showNotification('Nieuwe test e-mail toegevoegd!');
+    this.showNotification(this.translate('newTestEmailAdded'));
   }
 
   renderEmails() {
@@ -719,7 +726,7 @@ class DashboardManager {
     // Check if appointment already exists for this email
     const existingAppointment = this.appointments.find(a => a.emailId == emailId);
     if (existingAppointment) {
-      this.showNotification('Er bestaat al een afspraak voor dit bericht', 'warning');
+      this.showNotification(this.translate('appointmentAlreadyExists'), 'warning');
       return;
     }
     
@@ -756,7 +763,7 @@ class DashboardManager {
     this.renderEmails();
     this.renderCalendar();
     this.renderAppointments();
-    this.showNotification('Afspraak aangemaakt! Email verplaatst naar afspraken.');
+    this.showNotification(this.translate('appointmentCreated'));
     this.showAppointmentModal(appointment.id);
   }
 
@@ -767,7 +774,7 @@ class DashboardManager {
     // Check if appointment already exists for this email
     const existingAppointment = this.appointments.find(a => a.emailId == emailId);
     if (existingAppointment) {
-      this.showNotification('Er bestaat al een afspraak voor dit bericht', 'warning');
+      this.showNotification(this.translate('appointmentAlreadyExists'), 'warning');
       return;
     }
     
@@ -817,7 +824,7 @@ class DashboardManager {
     this.renderEmails();
     this.renderCalendar();
     this.renderAppointments();
-    this.showNotification(`Afspraak gepland voor vandaag om ${nextAvailableTime}. Email verplaatst naar afspraken.`, 'success');
+    this.showNotification(this.translate('appointmentScheduledToday', { time: nextAvailableTime }), 'success');
   }
 
   async quickPlanTomorrow(emailId) {
@@ -870,7 +877,7 @@ class DashboardManager {
     this.renderEmails();
     this.renderCalendar();
     this.renderAppointments();
-    this.showNotification(`Afspraak gepland voor morgen om ${nextAvailableTime}. Email verplaatst naar afspraken.`, 'success');
+    this.showNotification(this.translate('appointmentScheduledTomorrow', { time: nextAvailableTime }), 'success');
   }
 
   findNextAvailableTime(date) {
@@ -907,7 +914,7 @@ class DashboardManager {
         this.saveData('emails', this.emails);
         this.renderEmails();
         this.updateStats();
-        this.showNotification('Aanvraag afgewezen en verwijderd');
+        this.showNotification(this.translate('requestRejectedDeleted'));
       }
     );
   }
@@ -1257,13 +1264,13 @@ class DashboardManager {
       this.showAppointmentModal(appointmentId);
       
       const statusText = {
-        'nieuwe-aanvraag': 'Nieuwe Aanvraag',
-        'bevestigd': 'Bevestigd',
-        'in-behandeling': 'In Behandeling',
-        'afgerond': 'Afgerond'
+        'nieuwe-aanvraag': this.translate('statusNew'),
+        'bevestigd': this.translate('statusConfirmed'),
+        'in-behandeling': this.translate('statusInProgress'),
+        'afgerond': this.translate('statusCompleted')
       }[newStatus];
       
-      this.showNotification(`Status bijgewerkt naar: ${statusText}`);
+      this.showNotification(this.translate('statusUpdated', { status: statusText }));
     }
   }
 
@@ -1278,7 +1285,7 @@ class DashboardManager {
     
     // Validate
     if (!name || !date || !time) {
-      this.showNotification('Vul alle verplichte velden in', 'error');
+      this.showNotification(this.translate('fillAllFields'), 'error');
       return;
     }
     
@@ -1327,7 +1334,7 @@ class DashboardManager {
     this.renderAppointments();
     this.renderDashboard();
     this.showAppointmentModal(appointment.id, false);
-    this.showNotification('Afspraak succesvol bijgewerkt');
+    this.showNotification(this.translate('appointmentUpdated'));
   }
 
   confirmDelete(appointmentId) {
@@ -1356,7 +1363,7 @@ class DashboardManager {
     this.renderCalendar();
     this.renderAppointments();
     this.renderDashboard();
-    this.showNotification('Afspraak verwijderd');
+    this.showNotification(this.translate('appointmentDeleted'));
   }
 
   async archiveEmail(emailId) {
@@ -1373,7 +1380,7 @@ class DashboardManager {
         }
         this.renderEmails();
         this.updateStats();
-        this.showNotification('E-mail verwijderd');
+        this.showNotification(this.translate('emailDeleted'));
       }
     );
   }
@@ -1414,7 +1421,7 @@ class DashboardManager {
                 setTimeout(() => statusEl.textContent = '', 5000);
               }
               
-              this.showNotification(`${events.length} werkdagen toegevoegd aan kalender!`);
+              this.showNotification(this.translate('workDaysAdded', { count: events.length }));
             } catch (dbError) {
               console.error('Database error:', dbError);
               // Fallback to localStorage
@@ -1462,7 +1469,7 @@ class DashboardManager {
             this.renderAppointments();
             this.renderEmails();
             this.renderDashboard();
-            this.showNotification('Alle data verwijderd');
+            this.showNotification(this.translate('allDataCleared'));
           }
         );
       });

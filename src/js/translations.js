@@ -97,7 +97,81 @@ const translations = {
     september: 'September',
     october: 'October',
     november: 'November',
-    december: 'December'
+    december: 'December',
+    
+    // Notifications & Messages
+    newTestEmailAdded: 'New test e-mail added!',
+    appointmentAlreadyExists: 'An appointment already exists for this message',
+    appointmentCreated: 'Appointment created! Email moved to appointments.',
+    appointmentScheduledToday: 'Appointment scheduled for today at {time}. Email moved to appointments.',
+    appointmentScheduledTomorrow: 'Appointment scheduled for tomorrow at {time}. Email moved to appointments.',
+    requestRejectedDeleted: 'Request rejected and deleted',
+    statusUpdated: 'Status updated to: {status}',
+    fillAllFields: 'Please fill in all required fields',
+    appointmentUpdated: 'Appointment successfully updated',
+    appointmentDeleted: 'Appointment deleted',
+    emailDeleted: 'E-mail deleted',
+    workDaysAdded: '{count} work days added to calendar!',
+    allDataCleared: 'All data cleared',
+    
+    // Status Labels
+    statusNew: 'New Request',
+    statusConfirmed: 'Confirmed',
+    statusInProgress: 'In Progress',
+    statusCompleted: 'Completed',
+    
+    // Modal & Dialog
+    appointmentDetails: 'Appointment Details',
+    emailDetails: 'E-mail Details',
+    name: 'Name',
+    date: 'Date',
+    time: 'Time',
+    licensePlate: 'License Plate',
+    service: 'Service',
+    notes: 'Notes',
+    message: 'Message',
+    edit: 'Edit',
+    save: 'Save',
+    cancel: 'Cancel',
+    close: 'Close',
+    confirm: 'Confirm',
+    reject: 'Reject',
+    schedule: 'Schedule',
+    acceptScheduleToday: 'Accept & Schedule Today',
+    chooseDate: 'Choose Date',
+    deleteConfirm: 'Are you sure you want to delete this?',
+    yes: 'Yes',
+    no: 'No',
+    
+    // Calendar Import
+    importCalendar: 'Import Calendar',
+    selectICSFile: 'Select ICS File',
+    importWorkDays: 'Import Work Days',
+    
+    // Quick Actions
+    addNewAppointment: 'Add New Appointment',
+    viewAllEmails: 'View All E-mails',
+    exportReport: 'Export Report',
+    
+    // Days of Week (Short)
+    sun: 'Sun',
+    mon: 'Mon',
+    tue: 'Tue',
+    wed: 'Wed',
+    thu: 'Thu',
+    fri: 'Fri',
+    sat: 'Sat',
+    
+    // Other
+    receivedOn: 'Received on',
+    subject: 'Subject',
+    status: 'Status',
+    actions: 'Actions',
+    search: 'Search',
+    filter: 'Filter',
+    sortBy: 'Sort by',
+    noResults: 'No results found',
+    loading: 'Loading...'
   },
   
   tr: {
@@ -197,7 +271,81 @@ const translations = {
     september: 'Eylül',
     october: 'Ekim',
     november: 'Kasım',
-    december: 'Aralık'
+    december: 'Aralık',
+    
+    // Notifications & Messages
+    newTestEmailAdded: 'Yeni test e-postası eklendi!',
+    appointmentAlreadyExists: 'Bu mesaj için zaten bir randevu var',
+    appointmentCreated: 'Randevu oluşturuldu! E-posta randevulara taşındı.',
+    appointmentScheduledToday: 'Randevu bugün saat {time} için planlandı. E-posta randevulara taşındı.',
+    appointmentScheduledTomorrow: 'Randevu yarın saat {time} için planlandı. E-posta randevulara taşındı.',
+    requestRejectedDeleted: 'Talep reddedildi ve silindi',
+    statusUpdated: 'Durum güncellendi: {status}',
+    fillAllFields: 'Lütfen tüm gerekli alanları doldurun',
+    appointmentUpdated: 'Randevu başarıyla güncellendi',
+    appointmentDeleted: 'Randevu silindi',
+    emailDeleted: 'E-posta silindi',
+    workDaysAdded: '{count} çalışma günü takvime eklendi!',
+    allDataCleared: 'Tüm veriler temizlendi',
+    
+    // Status Labels
+    statusNew: 'Yeni Talep',
+    statusConfirmed: 'Onaylandı',
+    statusInProgress: 'İşlemde',
+    statusCompleted: 'Tamamlandı',
+    
+    // Modal & Dialog
+    appointmentDetails: 'Randevu Detayları',
+    emailDetails: 'E-posta Detayları',
+    name: 'Ad',
+    date: 'Tarih',
+    time: 'Saat',
+    licensePlate: 'Plaka',
+    service: 'Hizmet',
+    notes: 'Notlar',
+    message: 'Mesaj',
+    edit: 'Düzenle',
+    save: 'Kaydet',
+    cancel: 'İptal',
+    close: 'Kapat',
+    confirm: 'Onayla',
+    reject: 'Reddet',
+    schedule: 'Planla',
+    acceptScheduleToday: 'Kabul Et & Bugün Planla',
+    chooseDate: 'Tarih Seç',
+    deleteConfirm: 'Bunu silmek istediğinizden emin misiniz?',
+    yes: 'Evet',
+    no: 'Hayır',
+    
+    // Calendar Import
+    importCalendar: 'Takvim İçe Aktar',
+    selectICSFile: 'ICS Dosyası Seç',
+    importWorkDays: 'Çalışma Günlerini İçe Aktar',
+    
+    // Quick Actions
+    addNewAppointment: 'Yeni Randevu Ekle',
+    viewAllEmails: 'Tüm E-postaları Görüntüle',
+    exportReport: 'Rapor Dışa Aktar',
+    
+    // Days of Week (Short)
+    sun: 'Paz',
+    mon: 'Pzt',
+    tue: 'Sal',
+    wed: 'Çar',
+    thu: 'Per',
+    fri: 'Cum',
+    sat: 'Cmt',
+    
+    // Other
+    receivedOn: 'Alındı',
+    subject: 'Konu',
+    status: 'Durum',
+    actions: 'İşlemler',
+    search: 'Ara',
+    filter: 'Filtrele',
+    sortBy: 'Sırala',
+    noResults: 'Sonuç bulunamadı',
+    loading: 'Yükleniyor...'
   },
   
   nl: {
@@ -297,7 +445,81 @@ const translations = {
     september: 'September',
     october: 'Oktober',
     november: 'November',
-    december: 'December'
+    december: 'December',
+    
+    // Notifications & Messages
+    newTestEmailAdded: 'Nieuwe test e-mail toegevoegd!',
+    appointmentAlreadyExists: 'Er bestaat al een afspraak voor dit bericht',
+    appointmentCreated: 'Afspraak aangemaakt! Email verplaatst naar afspraken.',
+    appointmentScheduledToday: 'Afspraak gepland voor vandaag om {time}. Email verplaatst naar afspraken.',
+    appointmentScheduledTomorrow: 'Afspraak gepland voor morgen om {time}. Email verplaatst naar afspraken.',
+    requestRejectedDeleted: 'Aanvraag afgewezen en verwijderd',
+    statusUpdated: 'Status bijgewerkt naar: {status}',
+    fillAllFields: 'Vul alle verplichte velden in',
+    appointmentUpdated: 'Afspraak succesvol bijgewerkt',
+    appointmentDeleted: 'Afspraak verwijderd',
+    emailDeleted: 'E-mail verwijderd',
+    workDaysAdded: '{count} werkdagen toegevoegd aan kalender!',
+    allDataCleared: 'Alle data verwijderd',
+    
+    // Status Labels
+    statusNew: 'Nieuwe Aanvraag',
+    statusConfirmed: 'Bevestigd',
+    statusInProgress: 'In Behandeling',
+    statusCompleted: 'Afgerond',
+    
+    // Modal & Dialog
+    appointmentDetails: 'Afspraak Details',
+    emailDetails: 'E-mail Details',
+    name: 'Naam',
+    date: 'Datum',
+    time: 'Tijd',
+    licensePlate: 'Kenteken',
+    service: 'Dienst',
+    notes: 'Opmerkingen',
+    message: 'Bericht',
+    edit: 'Bewerken',
+    save: 'Opslaan',
+    cancel: 'Annuleren',
+    close: 'Sluiten',
+    confirm: 'Bevestigen',
+    reject: 'Afwijzen',
+    schedule: 'Inplannen',
+    acceptScheduleToday: 'Accepteren & Plan Vandaag',
+    chooseDate: 'Datum Kiezen',
+    deleteConfirm: 'Weet je zeker dat je dit wilt verwijderen?',
+    yes: 'Ja',
+    no: 'Nee',
+    
+    // Calendar Import
+    importCalendar: 'Kalender Importeren',
+    selectICSFile: 'Selecteer ICS Bestand',
+    importWorkDays: 'Werkdagen Importeren',
+    
+    // Quick Actions
+    addNewAppointment: 'Nieuwe Afspraak Toevoegen',
+    viewAllEmails: 'Alle E-mails Bekijken',
+    exportReport: 'Rapport Exporteren',
+    
+    // Days of Week (Short)
+    sun: 'Zo',
+    mon: 'Ma',
+    tue: 'Di',
+    wed: 'Wo',
+    thu: 'Do',
+    fri: 'Vr',
+    sat: 'Za',
+    
+    // Other
+    receivedOn: 'Ontvangen op',
+    subject: 'Onderwerp',
+    status: 'Status',
+    actions: 'Acties',
+    search: 'Zoeken',
+    filter: 'Filter',
+    sortBy: 'Sorteer op',
+    noResults: 'Geen resultaten gevonden',
+    loading: 'Laden...'
   }
 };
 
