@@ -10,15 +10,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
+// Middleware - More permissive CORS for Railway
 app.use(cors({
-  origin: [
-    'https://m3hmet072.github.io',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175'
-  ],
-  credentials: true
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false
 }));
 app.use(express.json());
 
@@ -126,7 +123,25 @@ app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     message: 'Email server is running',
-    emailConfigured: !!transporter
+    emailConfigured: !!transporter,
+    port: PORT,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    name: 'AutoService Houte API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: [
+      '/api/health',
+      '/api/appointments',
+      '/api/workdays',
+      '/api/emails',
+      '/api/stats'
+    ]
   });
 });
 
@@ -346,14 +361,16 @@ app.get('/api/stats', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🚀 Email server running on http://0.0.0.0:${PORT}`);
-  console.log(`📧 Health check: http://localhost:${PORT}/api/health\n`);
+  console.log(`\n🚀 Server started successfully!`);
+  console.log(`📍 Port: ${PORT}`);
+  console.log(`🌐 Listening on: 0.0.0.0:${PORT}`);
+  console.log(`📧 Health check: /api/health`);
+  console.log(`💾 Database: ${db.default ? 'Connected' : 'Not Connected'}\n`);
   
   if (!transporter) {
-    console.log('💡 To enable email sending:');
-    console.log('   1. Create a .env file (copy from .env.example)');
-    console.log('   2. Add your Gmail credentials');
-    console.log('   3. Restart the server\n');
+    console.log('⚠️  Email credentials not configured');
+  } else {
+    console.log('✅ Email transporter configured');
   }
 });
 
