@@ -1303,14 +1303,25 @@ class DashboardManager {
     this.performSaveAppointment(appointment, name, date, time);
   }
 
-  performSaveAppointment(appointment, name, date, time) {
+  async performSaveAppointment(appointment, name, date, time) {
     // Update appointment
     appointment.name = name;
     appointment.date = date;
     appointment.time = time;
     
-    // Save and refresh
-    this.saveData('appointments', this.appointments);
+    // Save to database
+    try {
+      await api.updateAppointment(appointment.id, { 
+        name: name, 
+        date: date, 
+        time: time 
+      });
+      await this.loadAllData();
+    } catch (error) {
+      console.error('Error updating appointment:', error);
+      this.saveData('appointments', this.appointments);
+    }
+    
     this.updateStats();
     this.renderCalendar();
     this.renderAppointments();
