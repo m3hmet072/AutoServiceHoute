@@ -92,7 +92,7 @@ export function getAllAppointments() {
 
 export function getAppointmentById(id) {
   const stmt = db.prepare('SELECT * FROM appointments WHERE id = ?');
-  return stmt.get(id);
+  return stmt.get(String(id));
 }
 
 export function createAppointment(appointment) {
@@ -102,7 +102,7 @@ export function createAppointment(appointment) {
   `);
   
   const result = stmt.run(
-    appointment.id,
+    String(appointment.id),
     appointment.name,
     appointment.email,
     appointment.phone,
@@ -129,7 +129,7 @@ export function updateAppointment(id, updates) {
   });
   
   fields.push('updated_at = CURRENT_TIMESTAMP');
-  values.push(id);
+  values.push(String(id));
   
   const stmt = db.prepare(`
     UPDATE appointments 
@@ -143,7 +143,7 @@ export function updateAppointment(id, updates) {
 
 export function deleteAppointment(id) {
   const stmt = db.prepare('DELETE FROM appointments WHERE id = ?');
-  const result = stmt.run(id);
+  const result = stmt.run(String(id));
   return result.changes > 0;
 }
 
@@ -212,7 +212,7 @@ export function getAllEmails() {
 
 export function getEmailById(id) {
   const stmt = db.prepare('SELECT * FROM emails WHERE id = ?');
-  return stmt.get(id);
+  return stmt.get(String(id));
 }
 
 export function createEmail(email) {
@@ -222,7 +222,7 @@ export function createEmail(email) {
   `);
   
   const result = stmt.run(
-    email.id,
+    String(email.id),
     email.name,
     email.email,
     email.phone,
@@ -238,13 +238,13 @@ export function createEmail(email) {
 
 export function markEmailAsRead(id) {
   const stmt = db.prepare('UPDATE emails SET read = 1 WHERE id = ?');
-  const result = stmt.run(id);
+  const result = stmt.run(String(id));
   return result.changes > 0;
 }
 
 export function deleteEmail(id) {
   const stmt = db.prepare('DELETE FROM emails WHERE id = ?');
-  const result = stmt.run(id);
+  const result = stmt.run(String(id));
   return result.changes > 0;
 }
 
