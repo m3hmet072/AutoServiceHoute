@@ -5,17 +5,25 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Initialize database
-const db = new Database(join(__dirname, 'autoservice.db'));
-
-// Enable foreign keys
-db.pragma('foreign_keys = ON');
+// Initialize database with error handling
+let db;
+try {
+  db = new Database(join(__dirname, 'autoservice.db'));
+  console.log('✓ SQLite database connected');
+  
+  // Enable foreign keys
+  db.pragma('foreign_keys = ON');
+} catch (error) {
+  console.error('Failed to initialize database:', error);
+  throw error;
+}
 
 // Create tables
 function initializeDatabase() {
-  // Appointments table
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS appointments (
+  try {
+    // Appointments table
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS appointments (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       email TEXT NOT NULL,
@@ -60,11 +68,20 @@ function initializeDatabase() {
     )
   `);
 
-  console.log('✓ Database initialized');
+    console.log('✓ Database tables initialized');
+  } catch (error) {
+    console.error('Failed to initialize database tables:', error);
+    throw error;
+  }
 }
 
 // Initialize on startup
-initializeDatabase();
+try {
+  initializeDatabase();
+} catch (error) {
+  console.error('Database initialization failed:', error.message);
+  process.exit(1);
+}
 
 // ============= APPOINTMENTS CRUD =============
 

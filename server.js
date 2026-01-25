@@ -2,10 +2,21 @@ import express from 'express';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import * as db from './database.js';
 
 // Load environment variables
 dotenv.config();
+
+// Import database with error handling
+let db;
+try {
+  const dbModule = await import('./database.js');
+  db = dbModule;
+  console.log('✓ Database module loaded');
+} catch (error) {
+  console.error('❌ Failed to load database:', error.message);
+  console.error(error.stack);
+  process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
