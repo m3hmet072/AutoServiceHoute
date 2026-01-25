@@ -36,7 +36,7 @@
           <path d="M9 1C9 0.447716 9.44772 0 10 0H24C27.3137 0 30 2.68629 30 6V24C30 27.3137 27.3137 30 24 30H10C9.44772 30 9 29.5523 9 29V1Z" fill="currentColor"/>
         </svg>
 
-        <span>Dashboard</span>
+        <span data-translate="dashboard">Dashboard</span>
       </a>
 
       <a href="#" class="nav-item" data-section="calendar">
@@ -47,7 +47,7 @@
           <path d="M11.9955 14H12.0045M11.9955 18H12.0045M15.991 14H16M8 14H8.00897M8 18H8.00897" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
 
-        <span>Kalender</span>
+        <span data-translate="calendar">Kalender</span>
       </a>
 
       <a href="#" class="nav-item" data-section="appointments">
@@ -58,7 +58,7 @@
           <path d="M13 19.5C13 19.5 14.3485 20.0067 15 22C15 22 18.1765 17 21 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
 
-        <span>Afspraken</span>
+        <span data-translate="appointments">Afspraken</span>
         <span class="badge" id="appointments-badge">0</span>
       </a>
 
@@ -68,7 +68,7 @@
           <path d="M2.01577 13.4756C2.08114 16.5412 2.11383 18.0739 3.24496 19.2094C4.37608 20.3448 5.95033 20.3843 9.09883 20.4634C11.0393 20.5122 12.9607 20.5122 14.9012 20.4634C18.0497 20.3843 19.6239 20.3448 20.7551 19.2094C21.8862 18.0739 21.9189 16.5412 21.9842 13.4756C22.0053 12.4899 22.0053 11.5101 21.9842 10.5244C21.9189 7.45886 21.8862 5.92609 20.7551 4.79066C19.6239 3.65523 18.0497 3.61568 14.9012 3.53657C12.9607 3.48781 11.0393 3.48781 9.09882 3.53656C5.95033 3.61566 4.37608 3.65521 3.24495 4.79065C2.11382 5.92608 2.08114 7.45885 2.01576 10.5244C1.99474 11.5101 1.99475 12.4899 2.01577 13.4756Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
         </svg>
 
-        <span>E-mails</span>
+        <span data-translate="emails">E-mails</span>
         <span class="badge badge-new" id="emails-badge">0</span>
       </a>
 
@@ -78,16 +78,25 @@
           <path d="M15.5195 12C15.5195 13.933 13.9525 15.5 12.0195 15.5C10.0865 15.5 8.51953 13.933 8.51953 12C8.51953 10.067 10.0865 8.5 12.0195 8.5C13.9525 8.5 15.5195 10.067 15.5195 12Z" stroke="currentColor" stroke-width="1.5"/>
         </svg>
 
-        <span>Instellingen</span>
+        <span data-translate="settings">Instellingen</span>
       </a>
     </nav>
 
     <div class="sidebar-footer">
+      <div class="language-selector">
+        <label for="language-select" data-translate="language">Taal</label>
+        <select id="language-select" class="language-select">
+          <option value="en">English</option>
+          <option value="tr">Türkçe</option>
+          <option value="nl">Nederlands</option>
+        </select>
+      </div>
+      
       <div class="user-info">
         <div class="user-avatar">AH</div>
         <div class="user-details">
           <span class="user-name">Admin</span>
-          <span class="user-role">Eigenaar</span>
+          <span class="user-role" data-translate="owner">Eigenaar</span>
         </div>
       </div>
     </div>
@@ -111,7 +120,7 @@
       <div class="stats-cards">
         <div class="stat-card">
           <div class="stat-card-header">
-            <p class="stat-card-title">Totaal Afspraken</p>
+            <p class="stat-card-title" data-translate="totalAppointments">Totaal Afspraken</p>
             <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
               <line x1="16" y1="2" x2="16" y2="6"/>
@@ -121,26 +130,26 @@
           </div>
           <h3 class="stat-card-value" id="stat-total-appointments">0</h3>
           <div class="stat-card-footer">
-            <span class="stat-period">Alle afspraken</span>
+            <span class="stat-period" data-translate="allAppointments">Alle afspraken</span>
           </div>
         </div>
 
         <div class="stat-card">
           <div class="stat-card-header">
-            <p class="stat-card-title">Afgerond</p>
+            <p class="stat-card-title" data-translate="completed">Afgerond</p>
             <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           </div>
           <h3 class="stat-card-value" id="stat-completed">0</h3>
           <div class="stat-card-footer">
-            <span class="stat-period">Voltooide afspraken</span>
+            <span class="stat-period" data-translate="completedAppointments">Voltooide afspraken</span>
           </div>
         </div>
 
         <div class="stat-card">
           <div class="stat-card-header">
-            <p class="stat-card-title">E-mails Ontvangen</p>
+            <p class="stat-card-title" data-translate="emailsReceived">E-mails Ontvangen</p>
             <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
               <polyline points="22,6 12,13 2,6"/>
@@ -148,13 +157,13 @@
           </div>
           <h3 class="stat-card-value" id="stat-total-emails">0</h3>
           <div class="stat-card-footer">
-            <span class="stat-period">Alle e-mails</span>
+            <span class="stat-period" data-translate="allEmails">Alle e-mails</span>
           </div>
         </div>
 
         <div class="stat-card">
           <div class="stat-card-header">
-            <p class="stat-card-title">Ongelezen E-mails</p>
+            <p class="stat-card-title" data-translate="unreadEmails">Ongelezen E-mails</p>
             <svg class="stat-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
               <polyline points="22,6 12,13 2,6"/>
@@ -163,23 +172,23 @@
           </div>
           <h3 class="stat-card-value" id="stat-unread-emails">0</h3>
           <div class="stat-card-footer">
-            <span class="stat-period">Nog te lezen</span>
+            <span class="stat-period" data-translate="yetToRead">Nog te lezen</span>
           </div>
         </div>
       </div>
 
       <div class="dashboard-grid">
         <div class="dashboard-card">
-          <h2>Afspraken Vandaag</h2>
+          <h2 data-translate="appointmentsToday">Afspraken Vandaag</h2>
           <div class="appointments-today" id="appointments-today">
-            <p class="empty-state">Geen afspraken voor vandaag</p>
+            <p class="empty-state" data-translate="noAppointmentsToday">Geen afspraken voor vandaag</p>
           </div>
         </div>
 
         <div class="dashboard-card">
-          <h2>Recente E-mails</h2>
+          <h2 data-translate="recentEmails">Recente E-mails</h2>
           <div class="recent-emails" id="recent-emails">
-            <p class="empty-state">Geen nieuwe e-mails</p>
+            <p class="empty-state" data-translate="noNewEmails">Geen nieuwe e-mails</p>
           </div>
         </div>
       </div>
@@ -188,11 +197,11 @@
     <!-- Calendar Section -->
     <section class="content-section" id="section-calendar">
       <div class="section-header">
-        <h1>Kalender</h1>
+        <h1 data-translate="calendar">Kalender</h1>
         <div class="calendar-controls">
           <div class="view-toggle">
-            <button class="view-btn active" data-view="month">Maand</button>
-            <button class="view-btn" data-view="week">Week</button>
+            <button class="view-btn active" data-view="month" data-translate="month">Maand</button>
+            <button class="view-btn" data-view="week" data-translate="week">Week</button>
           </div>
           <div class="calendar-nav">
             <button class="nav-btn" id="prev-period">
@@ -207,7 +216,7 @@
               </svg>
             </button>
           </div>
-          <button class="btn btn-primary" id="today-btn">Vandaag</button>
+          <button class="btn btn-primary" id="today-btn" data-translate="today">Vandaag</button>
         </div>
       </div>
 

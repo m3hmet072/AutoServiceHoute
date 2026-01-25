@@ -1,10 +1,14 @@
 // Dashboard Manager for AutoServiceHoute
+import translations from './translations.js';
+
 class DashboardManager {
   constructor() {
     this.currentView = 'month';
     this.currentDate = new Date();
     this.appointments = this.loadData('appointments') || [];
     this.emails = this.loadData('emails') || [];
+    this.currentLanguage = this.loadData('language') || 'en';
+    this.translations = translations;
     this.init();
   }
   
@@ -17,6 +21,7 @@ class DashboardManager {
   }
 
   init() {
+    this.setupLanguage();
     this.setupNavigation();
     this.setupCalendar();
     this.setupAppointments();
@@ -26,6 +31,52 @@ class DashboardManager {
     this.updateStats();
     this.renderDashboard();
     this.renderCalendar();
+    this.applyTranslations();
+  }
+
+  // Language Management
+  setupLanguage() {
+    const languageSelect = document.getElementById('language-select');
+    if (languageSelect) {
+      // Set current language
+      languageSelect.value = this.currentLanguage;
+      
+      // Listen for language changes
+      languageSelect.addEventListener('change', (e) => {
+        this.currentLanguage = e.target.value;
+        this.saveData('language', this.currentLanguage);
+        this.applyTranslations();
+        
+        // Re-render dynamic content
+        this.renderDashboard();
+        this.renderCalendar();
+        this.renderAppointments();
+        this.renderEmails();
+      });
+    }
+  }
+
+  applyTranslations() {
+    const lang = this.currentLanguage;
+    const trans = this.translations[lang];
+    
+    if (!trans) return;
+    
+    // Translate all elements with data-translate attribute
+    document.querySelectorAll('[data-translate]').forEach(element => {
+      const key = element.getAttribute('data-translate');
+      if (trans[key]) {
+        element.textContent = trans[key];
+      }
+    });
+    
+    // Update document language
+    document.documentElement.lang = lang;
+  }
+
+  translate(key) {
+    const trans = this.translations[this.currentLanguage];
+    return trans && trans[key] ? trans[key] : key;
   }
 
   // Local Storage
