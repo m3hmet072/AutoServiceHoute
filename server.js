@@ -345,9 +345,9 @@ app.get('/api/stats', (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 Email server running on http://localhost:${PORT}`);
-  console.log('📧 Health check: http://localhost:${PORT}/api/health\n');
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n🚀 Email server running on http://0.0.0.0:${PORT}`);
+  console.log(`📧 Health check: http://localhost:${PORT}/api/health\n`);
   
   if (!transporter) {
     console.log('💡 To enable email sending:');
