@@ -5,11 +5,14 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Use persistent storage path if available (Railway volume), otherwise use local
+const DB_PATH = process.env.DATABASE_PATH || join(__dirname, 'autoservice.db');
+
 // Initialize database with error handling
 let db;
 try {
-  db = new Database(join(__dirname, 'autoservice.db'));
-  console.log('✓ SQLite database connected');
+  db = new Database(DB_PATH);
+  console.log('✓ SQLite database connected at:', DB_PATH);
   
   // Enable foreign keys
   db.pragma('foreign_keys = ON');
