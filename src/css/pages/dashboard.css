@@ -1011,6 +1011,7 @@
   border: 1px solid #E5E7EB;
   border-radius: 12px;
   padding: 1.25rem;
+  overflow: hidden;
   transition: all 0.2s ease;
   cursor: pointer;
   position: relative;
