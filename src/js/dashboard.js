@@ -689,22 +689,22 @@ class DashboardManager {
           <div class="email-right">
             <span class="email-date">${formattedDate}</span>
             <div class="email-actions">
-              <button class="action-btn btn-email-schedule" onclick="event.stopPropagation(); dashboard.createAppointmentFromEmail('${email.id}')" title="Plan afspraak">
+              <button class="action-btn btn-email-schedule" onclick="event.stopPropagation(); dashboard.createAppointmentFromEmail('${email.id}')" title="${this.translate('schedule')}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                   <line x1="16" y1="2" x2="16" y2="6"/>
                   <line x1="8" y1="2" x2="8" y2="6"/>
                   <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-                <span>Inplannen</span>
+                <span>${this.translate('schedule')}</span>
               </button>
-              <button class="action-btn btn-email-edit" onclick="event.stopPropagation(); dashboard.showEmailDetails('${email.id}')" title="Bekijk details">
+              <button class="action-btn btn-email-edit" onclick="event.stopPropagation(); dashboard.showEmailDetails('${email.id}')" title="${this.translate('viewDetails')}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                 </svg>
               </button>
-              <button class="action-btn btn-email-reject" onclick="event.stopPropagation(); dashboard.archiveEmail('${email.id}')" title="Afwijzen">
+              <button class="action-btn btn-email-reject" onclick="event.stopPropagation(); dashboard.archiveEmail('${email.id}')" title="${this.translate('reject')}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="18" y1="6" x2="6" y2="18"/>
                   <line x1="6" y1="6" x2="18" y2="18"/>
@@ -943,49 +943,49 @@ class DashboardManager {
       minute: '2-digit'
     });
     
-    modalTitle.textContent = `Aanvraag van ${email.name}`;
+    modalTitle.textContent = `${this.translate('requestFrom')} ${email.name}`;
     
     modalBody.innerHTML = `
       <div class="detail-grid">
         <div class="detail-row">
-          <span class="detail-label">Naam</span>
+          <span class="detail-label">${this.translate('name')}</span>
           <span class="detail-value">${email.name}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">E-mail</span>
+          <span class="detail-label">${this.translate('email')}</span>
           <span class="detail-value">${email.email}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">Telefoon</span>
+          <span class="detail-label">${this.translate('phone')}</span>
           <span class="detail-value">${email.phone || '-'}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">Kenteken</span>
+          <span class="detail-label">${this.translate('licensePlate')}</span>
           <span class="detail-value">${email.kenteken || '-'}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">Onderwerp</span>
+          <span class="detail-label">${this.translate('subject')}</span>
           <span class="detail-value">${email.subject}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">Ontvangen op</span>
+          <span class="detail-label">${this.translate('receivedOn')}</span>
           <span class="detail-value">${formattedDate}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">Bericht</span>
+          <span class="detail-label">${this.translate('message')}</span>
           <div class="detail-value message-box">${email.message}</div>
         </div>
       </div>
       
       <div class="modal-actions">
         <button class="action-btn primary" onclick="dashboard.quickPlanToday('${email.id}'); document.getElementById('appointment-modal').classList.remove('active');">
-          Accepteren & Plan Vandaag
+          ${this.translate('acceptScheduleToday')}
         </button>
         <button class="action-btn secondary" onclick="dashboard.createAppointmentFromEmail('${email.id}')">
-          Datum Kiezen
+          ${this.translate('chooseDate')}
         </button>
         <button class="action-btn danger" onclick="dashboard.archiveEmail('${email.id}'); document.getElementById('appointment-modal').classList.remove('active');">
-          Afwijzen
+          ${this.translate('reject')}
         </button>
       </div>
     `;
@@ -1112,61 +1112,61 @@ class DashboardManager {
     });
     
     const statusText = {
-      'nieuwe-aanvraag': 'Nieuwe Aanvraag',
-      'bevestigd': 'Bevestigd',
-      'in-behandeling': 'In Behandeling',
-      'afgerond': 'Afgerond'
+      'nieuwe-aanvraag': this.translate('statusNew'),
+      'bevestigd': this.translate('statusConfirmed'),
+      'in-behandeling': this.translate('statusInProgress'),
+      'afgerond': this.translate('statusCompleted')
     }[appointment.status];
     
-    modalTitle.textContent = editMode ? `Afspraak Bewerken` : `Afspraak - ${appointment.name}`;
+    modalTitle.textContent = editMode ? this.translate('edit') + ' - ' + appointment.name : `${this.translate('appointmentDetails')} - ${appointment.name}`;
     
     if (editMode) {
       modalBody.innerHTML = `
         <div class="detail-grid">
           <div class="detail-row">
-            <span class="detail-label">Status</span>
+            <span class="detail-label">${this.translate('status')}</span>
             <span class="status-badge ${appointment.status}">${statusText}</span>
           </div>
           <div class="detail-row">
-            <label class="detail-label" for="edit-name">Naam</label>
+            <label class="detail-label" for="edit-name">${this.translate('name')}</label>
             <input type="text" id="edit-name" class="form-control" value="${appointment.name}" required>
           </div>
           <div class="detail-row">
-            <span class="detail-label">E-mail</span>
+            <span class="detail-label">${this.translate('email')}</span>
             <span class="detail-value">${appointment.email || '-'}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Telefoon</span>
+            <span class="detail-label">${this.translate('phone')}</span>
             <span class="detail-value">${appointment.phone || '-'}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Kenteken</span>
+            <span class="detail-label">${this.translate('licensePlate')}</span>
             <span class="detail-value">${appointment.kenteken || '-'}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Onderwerp</span>
+            <span class="detail-label">${this.translate('service')}</span>
             <span class="detail-value">${appointment.service || '-'}</span>
           </div>
           <div class="detail-row">
-            <label class="detail-label" for="edit-date">Datum</label>
+            <label class="detail-label" for="edit-date">${this.translate('date')}</label>
             <input type="date" id="edit-date" class="form-control" value="${appointment.date}" required>
           </div>
           <div class="detail-row">
-            <label class="detail-label" for="edit-time">Tijd</label>
+            <label class="detail-label" for="edit-time">${this.translate('time')}</label>
             <input type="time" id="edit-time" class="form-control" value="${appointment.time}" required>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Bericht</span>
+            <span class="detail-label">${this.translate('notes')}</span>
             <div class="detail-value message-box">${appointment.notes || ''}</div>
           </div>
         </div>
         
         <div class="modal-actions">
           <button class="action-btn primary" onclick="dashboard.saveAppointmentChanges('${appointment.id}')">
-            Opslaan
+            ${this.translate('save')}
           </button>
           <button class="action-btn secondary" onclick="dashboard.showAppointmentModal('${appointment.id}', false)">
-            Annuleren
+            ${this.translate('cancel')}
           </button>
         </div>
       `;
@@ -1174,39 +1174,39 @@ class DashboardManager {
       modalBody.innerHTML = `
         <div class="detail-grid">
           <div class="detail-row">
-            <span class="detail-label">Status</span>
+            <span class="detail-label">${this.translate('status')}</span>
             <span class="status-badge ${appointment.status}">${statusText}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Naam</span>
+            <span class="detail-label">${this.translate('name')}</span>
             <span class="detail-value">${appointment.name}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">E-mail</span>
+            <span class="detail-label">${this.translate('email')}</span>
             <span class="detail-value">${appointment.email || '-'}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Telefoon</span>
+            <span class="detail-label">${this.translate('phone')}</span>
             <span class="detail-value">${appointment.phone || '-'}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Kenteken</span>
+            <span class="detail-label">${this.translate('licensePlate')}</span>
             <span class="detail-value">${appointment.kenteken || '-'}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Onderwerp</span>
+            <span class="detail-label">${this.translate('service')}</span>
             <span class="detail-value">${appointment.service || '-'}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Datum</span>
+            <span class="detail-label">${this.translate('date')}</span>
             <span class="detail-value">${formattedDate}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Tijd</span>
+            <span class="detail-label">${this.translate('time')}</span>
             <span class="detail-value">${appointment.time}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Bericht</span>
+            <span class="detail-label">${this.translate('message')}</span>
             <div class="detail-value message-box">${appointment.notes || ''}</div>
           </div>
         </div>
@@ -1217,25 +1217,25 @@ class DashboardManager {
               <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
             </svg>
-            Bewerken
+            ${this.translate('edit')}
           </button>
           ${appointment.status === 'nieuwe-aanvraag' ? `
             <button class="action-btn primary" onclick="dashboard.updateAppointmentStatus('${appointment.id}', 'bevestigd')">
-              Bevestigen
+              ${this.translate('confirm')}
             </button>
           ` : ''}
           ${appointment.status === 'bevestigd' ? `
             <button class="action-btn primary" onclick="dashboard.updateAppointmentStatus('${appointment.id}', 'in-behandeling')">
-              Start Behandeling
+              ${this.translate('statusInProgress')}
             </button>
           ` : ''}
           ${appointment.status === 'in-behandeling' ? `
             <button class="action-btn primary" onclick="dashboard.updateAppointmentStatus('${appointment.id}', 'afgerond')">
-              Afronden
+              ${this.translate('completed')}
             </button>
           ` : ''}
           <button class="action-btn danger" onclick="dashboard.confirmDelete('${appointment.id}')">
-            Verwijderen
+            ${this.translate('delete')}
           </button>
         </div>
       `;
@@ -1339,7 +1339,7 @@ class DashboardManager {
 
   confirmDelete(appointmentId) {
     this.showConfirmDialog(
-      'Weet je zeker dat je deze afspraak wilt verwijderen?',
+      this.translate('deleteAppointmentConfirm'),
       () => {
         this.deleteAppointment(appointmentId);
       }
@@ -1368,7 +1368,7 @@ class DashboardManager {
 
   async archiveEmail(emailId) {
     this.showConfirmDialog(
-      'Weet je zeker dat je deze e-mail wilt verwijderen?',
+      this.translate('deleteEmailConfirm'),
       async () => {
         try {
           await api.deleteEmail(emailId);
@@ -1458,7 +1458,7 @@ class DashboardManager {
     if (clearDataBtn) {
       clearDataBtn.addEventListener('click', () => {
         this.showConfirmDialog(
-          'Weet je zeker dat je alle data wilt verwijderen? Dit kan niet ongedaan worden gemaakt!',
+          this.translate('clearAllDataConfirm'),
           () => {
             localStorage.removeItem('ash_appointments');
             localStorage.removeItem('ash_emails');
@@ -1544,11 +1544,11 @@ class DashboardManager {
             <line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
         </div>
-        <h3>Bevestiging</h3>
+        <h3>${this.translate('confirmation')}</h3>
         <p>${message}</p>
         <div class="confirm-dialog-actions">
-          <button class="action-btn secondary" id="confirm-cancel">Annuleren</button>
-          <button class="action-btn danger" id="confirm-yes">Ja, doorgaan</button>
+          <button class="action-btn secondary" id="confirm-cancel">${this.translate('cancel')}</button>
+          <button class="action-btn danger" id="confirm-yes">${this.translate('yesContinue')}</button>
         </div>
       </div>
     `;

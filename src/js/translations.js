@@ -113,6 +113,7 @@ const translations = {
     emailDeleted: 'E-mail deleted',
     workDaysAdded: '{count} work days added to calendar!',
     allDataCleared: 'All data cleared',
+    clearAllDataConfirm: 'Are you sure you want to delete all data? This cannot be undone!',
     
     // Status Labels
     statusNew: 'New Request',
@@ -140,8 +141,15 @@ const translations = {
     acceptScheduleToday: 'Accept & Schedule Today',
     chooseDate: 'Choose Date',
     deleteConfirm: 'Are you sure you want to delete this?',
+    deleteAppointmentConfirm: 'Are you sure you want to delete this appointment?',
+    deleteEmailConfirm: 'Are you sure you want to delete this e-mail?',
     yes: 'Yes',
     no: 'No',
+    confirmation: 'Confirmation',
+    yesContinue: 'Yes, continue',
+    requestFrom: 'Request from',
+    receivedOn: 'Received on',
+    viewDetails: 'View details',
     
     // Calendar Import
     importCalendar: 'Import Calendar',
@@ -287,6 +295,7 @@ const translations = {
     emailDeleted: 'E-posta silindi',
     workDaysAdded: '{count} çalışma günü takvime eklendi!',
     allDataCleared: 'Tüm veriler temizlendi',
+    clearAllDataConfirm: 'Tüm verileri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!',
     
     // Status Labels
     statusNew: 'Yeni Talep',
@@ -314,8 +323,15 @@ const translations = {
     acceptScheduleToday: 'Kabul Et & Bugün Planla',
     chooseDate: 'Tarih Seç',
     deleteConfirm: 'Bunu silmek istediğinizden emin misiniz?',
+    deleteAppointmentConfirm: 'Bu randevuyu silmek istediğinizden emin misiniz?',
+    deleteEmailConfirm: 'Bu e-postayı silmek istediğinizden emin misiniz?',
     yes: 'Evet',
     no: 'Hayır',
+    confirmation: 'Onay',
+    yesContinue: 'Evet, devam et',
+    requestFrom: 'Talep',
+    receivedOn: 'Alındı',
+    viewDetails: 'Detayları görüntüle',
     
     // Calendar Import
     importCalendar: 'Takvim İçe Aktar',
@@ -461,6 +477,7 @@ const translations = {
     emailDeleted: 'E-mail verwijderd',
     workDaysAdded: '{count} werkdagen toegevoegd aan kalender!',
     allDataCleared: 'Alle data verwijderd',
+    clearAllDataConfirm: 'Weet je zeker dat je alle data wilt verwijderen? Dit kan niet ongedaan worden gemaakt!',
     
     // Status Labels
     statusNew: 'Nieuwe Aanvraag',
@@ -488,8 +505,15 @@ const translations = {
     acceptScheduleToday: 'Accepteren & Plan Vandaag',
     chooseDate: 'Datum Kiezen',
     deleteConfirm: 'Weet je zeker dat je dit wilt verwijderen?',
+    deleteAppointmentConfirm: 'Weet je zeker dat je deze afspraak wilt verwijderen?',
+    deleteEmailConfirm: 'Weet je zeker dat je deze e-mail wilt verwijderen?',
     yes: 'Ja',
     no: 'Nee',
+    confirmation: 'Bevestiging',
+    yesContinue: 'Ja, doorgaan',
+    requestFrom: 'Aanvraag van',
+    receivedOn: 'Ontvangen op',
+    viewDetails: 'Bekijk details',
     
     // Calendar Import
     importCalendar: 'Kalender Importeren',
