@@ -623,7 +623,7 @@ class DashboardManager {
     ];
     
     const email = {
-      id: Date.now(),
+      id: String(Date.now()),
       name: testNames[Math.floor(Math.random() * testNames.length)],
       email: 'test@example.com',
       phone: '+31 6 12345678',
@@ -724,7 +724,7 @@ class DashboardManager {
     }
     
     const appointment = {
-      id: Date.now(),
+      id: String(Date.now()),
       name: email.name,
       email: email.email,
       phone: email.phone,
@@ -785,7 +785,7 @@ class DashboardManager {
     const nextAvailableTime = this.findNextAvailableTime(today);
     
     const appointment = {
-      id: Date.now(),
+      id: String(Date.now()),
       name: email.name,
       email: email.email,
       phone: email.phone,
@@ -838,7 +838,7 @@ class DashboardManager {
     const nextAvailableTime = this.findNextAvailableTime(tomorrowStr);
     
     const appointment = {
-      id: Date.now(),
+      id: String(Date.now()),
       name: email.name,
       email: email.email,
       phone: email.phone,
