@@ -189,33 +189,51 @@ async function sendEmail(formData) {
   }
 }
 
-// Save form data to admin dashboard
-function saveToAdminDashboard(formData) {
+// Save form data to admin dashboard via API
+async function saveToAdminDashboard(formData) {
   try {
-    // Get existing emails from localStorage
-    const existingEmails = localStorage.getItem('ash_emails');
-    const emails = existingEmails ? JSON.parse(existingEmails) : [];
-    
-    // Create new email object matching dashboard format
+    // Create new email object matching database format
     const newEmail = {
-      id: Date.now(),
+      id: Date.now().toString(),
       name: formData.naam,
       email: formData.email,
       phone: formData.telefoon,
+      kenteken: formData.kenteken,
       subject: formData.onderwerp,
-      description: formData.bericht,
-      license: formData.kenteken,
-      date: new Date().toISOString(),
+      message: formData.bericht,
+      vehicleInfo: vehicleData ? JSON.stringify(vehicleData) : null,
       read: false
     };
     
-    // Add to beginning of array (newest first)
-    emails.unshift(newEmail);
-    
-    // Save back to localStorage
-    localStorage.setItem('ash_emails', JSON.stringify(emails));
-    
-    console.log('Form data saved to admin dashboard');
+    // Try to save to database via API
+    try {
+      const API_URL = window.location.hostname === 'm3hmet072.github.io' 
+        ? 'https://autoservicehoute-production.up.railway.app/api'
+        : 'http://localhost:3001/api';
+      
+      const response = await fetch(`${API_URL}/emails`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newEmail)
+      });
+      
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+      
+      console.log('Form data saved to database via API');
+    } catch (apiError) {
+      console.warn('API save failed, falling back to localStorage:', apiError);
+      
+      // Fallback to localStorage if API fails
+      const existingEmails = localStorage.getItem('ash_emails');
+      const emails = existingEmails ? JSON.parse(existingEmails) : [];
+      emails.unshift(newEmail);
+      localStorage.setItem('ash_emails', JSON.stringify(emails));
+      console.log('Form data saved to localStorage (fallback)');
+    }
   } catch (error) {
     console.error('Error saving to dashboard:', error);
   }
@@ -264,8 +282,8 @@ export function initContactForm() {
       const result = await sendEmail(data);
       
       if (result.success) {
-        // Save to dashboard
-        saveToAdminDashboard(data);
+        // Save to dashboard (async, but don't wait)
+        await saveToAdminDashboard(data);
         
         showToast('Uw bericht is succesvol verzonden! We nemen zo spoedig mogelijk contact met u op.', 'success');
         form.reset();
