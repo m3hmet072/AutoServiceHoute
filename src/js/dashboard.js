@@ -175,6 +175,25 @@ class DashboardManager {
     return text;
   }
 
+  getLocale() {
+    const localeMap = {
+      'en': 'en-US',
+      'tr': 'tr-TR',
+      'nl': 'nl-NL'
+    };
+    return localeMap[this.currentLanguage] || 'en-US';
+  }
+
+  getStatusText(status) {
+    const statusMap = {
+      'nieuwe-aanvraag': 'statusNew',
+      'bevestigd': 'statusConfirmed',
+      'in-behandeling': 'statusInProgress',
+      'afgerond': 'statusCompleted'
+    };
+    return this.translate(statusMap[status] || status);
+  }
+
   // Local Storage
   loadData(key) {
     const data = localStorage.getItem(`ash_${key}`);
@@ -306,7 +325,7 @@ class DashboardManager {
     let html = '<div class="calendar-grid">';
     
     // Headers
-    const days = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
+    const days = [this.translate('mon'), this.translate('tue'), this.translate('wed'), this.translate('thu'), this.translate('fri'), this.translate('sat'), this.translate('sun')];
     days.forEach(day => {
       html += `<div class="calendar-header">${day}</div>`;
     });
@@ -354,7 +373,7 @@ class DashboardManager {
       
       if (dayAppointments.length > 3) {
         html += `<div class="appointment-pill" style="background: #E5E7EB; color: #6B7280;">
-          +${dayAppointments.length - 3} meer
+          +${dayAppointments.length - 3} ${this.translate('more')}
         </div>`;
       }
       
@@ -652,14 +671,14 @@ class DashboardManager {
     const container = document.getElementById('emails-container');
     
     if (this.emails.length === 0) {
-      container.innerHTML = '<p class="empty-state">Geen e-mails ontvangen</p>';
+      container.innerHTML = `<p class="empty-state">${this.translate('noEmailsReceived')}</p>`;
       return;
     }
     
     let html = '';
     this.emails.forEach(email => {
       const emailDate = new Date(email.created_at);
-      const formattedDate = emailDate.toLocaleDateString('nl-NL', { 
+      const formattedDate = emailDate.toLocaleDateString(this.getLocale(), { 
         day: 'numeric',
         month: 'short',
         hour: '2-digit',
@@ -1035,14 +1054,14 @@ class DashboardManager {
     // Parse date
     const [year, month, day] = dateStr.split('-').map(Number);
     const date = new Date(year, month - 1, day);
-    const formattedDate = date.toLocaleDateString('nl-NL', { 
+    const formattedDate = date.toLocaleDateString(this.getLocale(), { 
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
 
-    modalTitle.textContent = `Afspraken op ${formattedDate}`;
+    modalTitle.textContent = `${this.translate('appointmentsOn')} ${formattedDate}`;
 
     // Sort appointments by time
     const sortedAppointments = [...dayAppointments].sort((a, b) => {
@@ -1055,12 +1074,7 @@ class DashboardManager {
     let html = '<div class="day-appointments-list">';
     
     sortedAppointments.forEach(apt => {
-      const statusText = {
-        'nieuwe-aanvraag': 'Nieuwe Aanvraag',
-        'bevestigd': 'Bevestigd',
-        'in-behandeling': 'In Behandeling',
-        'afgerond': 'Afgerond'
-      }[apt.status] || apt.status;
+      const statusText = this.getStatusText(apt.status);
 
       html += `
         <div class="day-appointment-item" data-id="${apt.id}">
@@ -1692,16 +1706,11 @@ class DashboardManager {
     const todayContainer = document.getElementById('appointments-today');
     
     if (todayAppointments.length === 0) {
-      todayContainer.innerHTML = '<p class="empty-state">Geen afspraken voor vandaag</p>';
+      todayContainer.innerHTML = `<p class="empty-state">${this.translate('noAppointmentsToday')}</p>`;
     } else {
       let html = '';
       todayAppointments.forEach(apt => {
-        const statusText = {
-          'nieuwe-aanvraag': 'Nieuwe Aanvraag',
-          'bevestigd': 'Bevestigd',
-          'in-behandeling': 'In Behandeling',
-          'afgerond': 'Afgerond'
-        }[apt.status];
+        const statusText = this.getStatusText(apt.status);
         
         html += `<div class="appointment-item" onclick="dashboard.showAppointmentModal('${apt.id}')">
           <div class="item-header">
@@ -1721,7 +1730,7 @@ class DashboardManager {
     const emailsContainer = document.getElementById('recent-emails');
     
     if (recentEmails.length === 0) {
-      emailsContainer.innerHTML = '<p class="empty-state">Geen nieuwe e-mails</p>';
+      emailsContainer.innerHTML = `<p class="empty-state">${this.translate('noNewEmailsReceived')}</p>`;
     } else {
       let html = '';
       recentEmails.forEach(email => {

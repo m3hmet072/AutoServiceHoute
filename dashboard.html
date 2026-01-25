@@ -250,26 +250,26 @@
     <!-- Appointments Section -->
     <section class="content-section" id="section-appointments">
       <div class="section-header">
-        <h1>Afspraken</h1>
+        <h1 data-translate="appointments">Afspraken</h1>
         <div class="filter-controls">
           <select class="filter-select" id="date-filter">
-            <option value="all">Alle Data</option>
-            <option value="today">Vandaag</option>
-            <option value="tomorrow">Morgen</option>
-            <option value="this-week">Deze Week</option>
-            <option value="next-week">Volgende Week</option>
+            <option value="all" data-translate="allDates">Alle Data</option>
+            <option value="today" data-translate="today">Vandaag</option>
+            <option value="tomorrow" data-translate="tomorrow">Morgen</option>
+            <option value="this-week" data-translate="thisWeek">Deze Week</option>
+            <option value="next-week" data-translate="nextWeek">Volgende Week</option>
           </select>
           <select class="filter-select" id="time-filter">
-            <option value="all">Alle Tijden</option>
-            <option value="morning">Ochtend (9:00-12:00)</option>
-            <option value="afternoon">Middag (12:00-17:00)</option>
+            <option value="all" data-translate="allTimes">Alle Tijden</option>
+            <option value="morning" data-translate="morning">Ochtend (9:00-12:00)</option>
+            <option value="afternoon" data-translate="afternoon">Middag (12:00-17:00)</option>
           </select>
           <select class="filter-select" id="status-filter">
-            <option value="all">Actieve Afspraken</option>
-            <option value="nieuwe-aanvraag">Nieuwe Aanvragen</option>
-            <option value="bevestigd">Bevestigd</option>
-            <option value="in-behandeling">In Behandeling</option>
-            <option value="afgerond">Afgeronde Afspraken</option>
+            <option value="all" data-translate="activeAppointments">Actieve Afspraken</option>
+            <option value="nieuwe-aanvraag" data-translate="newRequests">Nieuwe Aanvragen</option>
+            <option value="bevestigd" data-translate="confirmed">Bevestigd</option>
+            <option value="in-behandeling" data-translate="inProgress">In Behandeling</option>
+            <option value="afgerond" data-translate="completedAppointments2">Afgeronde Afspraken</option>
           </select>
         </div>
       </div>
@@ -282,8 +282,8 @@
     <!-- Emails Section -->
     <section class="content-section" id="section-emails">
       <div class="section-header">
-        <h1>E-mails</h1>
-        <button class="btn btn-primary" id="test-email-btn">Test E-mail Toevoegen</button>
+        <h1 data-translate="emails">E-mails</h1>
+        <button class="btn btn-primary" id="test-email-btn" data-translate="addTestEmail">Test E-mail Toevoegen</button>
       </div>
 
       <div class="emails-container" id="emails-container">
@@ -294,56 +294,56 @@
     <!-- Settings Section -->
     <section class="content-section" id="section-settings">
       <div class="section-header">
-        <h1>Instellingen</h1>
+        <h1 data-translate="settings">Instellingen</h1>
       </div>
 
       <div class="settings-grid">
         <div class="settings-card">
-          <h2>Garage Informatie</h2>
+          <h2 data-translate="garageInfo">Garage Informatie</h2>
           <div class="form-group">
-            <label>Bedrijfsnaam</label>
+            <label data-translate="companyName">Bedrijfsnaam</label>
             <input type="text" value="AutoServiceHoute" class="form-control">
           </div>
           <div class="form-group">
-            <label>E-mailadres</label>
+            <label data-translate="emailAddress">E-mailadres</label>
             <input type="email" value="info@autoservicehoute.nl" class="form-control">
           </div>
           <div class="form-group">
-            <label>Telefoonnummer</label>
+            <label data-translate="phoneNumber">Telefoonnummer</label>
             <input type="tel" value="+31 20 123 4567" class="form-control">
           </div>
         </div>
 
         <div class="settings-card">
-          <h2>Openingstijden</h2>
+          <h2 data-translate="openingHours">Openingstijden</h2>
           <div class="form-group">
-            <label>Maandag - Vrijdag</label>
+            <label><span data-translate="monday">Maandag</span> - <span data-translate="friday">Vrijdag</span></label>
             <input type="text" value="08:00 - 17:00" class="form-control">
           </div>
           <div class="form-group">
-            <label>Zaterdag</label>
+            <label data-translate="saturday">Zaterdag</label>
             <input type="text" value="09:00 - 13:00" class="form-control">
           </div>
           <div class="form-group">
-            <label>Zondag</label>
-            <input type="text" value="Gesloten" class="form-control">
+            <label data-translate="sunday">Zondag</label>
+            <input type="text" value="Gesloten" class="form-control" data-translate="closed">
           </div>
         </div>
 
         <div class="settings-card">
-          <h2>Data Beheer</h2>
+          <h2 data-translate="dataManagement">Data Beheer</h2>
           
           <div class="form-group">
-            <label>Werkrooster Importeren</label>
-            <p class="help-text">Upload een iCalendar (.ics) bestand om werkdagen toe te voegen aan de kalender</p>
+            <label data-translate="importWorkSchedule">Werkrooster Importeren</label>
+            <p class="help-text" data-translate="uploadICSDescription">Upload een iCalendar (.ics) bestand om werkdagen toe te voegen aan de kalender</p>
             <input type="file" id="ics-file-input" accept=".ics" style="display: none;">
-            <button class="btn btn-primary" id="import-ics-btn">📅 Kalender Importeren</button>
+            <button class="btn btn-primary" id="import-ics-btn">📅 <span data-translate="importCalendarFile">Kalender Importeren</span></button>
             <span id="import-status" style="margin-left: 1rem; font-size: 0.875rem; font-weight: 500;"></span>
           </div>
           
           <div class="form-group" style="margin-top: 1.5rem;">
-            <button class="btn btn-danger" id="clear-data-btn">Alle Data Verwijderen</button>
-            <p class="help-text">Let op: Deze actie kan niet ongedaan worden gemaakt.</p>
+            <button class="btn btn-danger" id="clear-data-btn" data-translate="deleteAllData">Alle Data Verwijderen</button>
+            <p class="help-text" data-translate="warningCannotUndo">Let op: Deze actie kan niet ongedaan worden gemaakt.</p>
           </div>
         </div>
       </div>
