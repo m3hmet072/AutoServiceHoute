@@ -211,6 +211,8 @@ async function saveToAdminDashboard(formData) {
         ? 'https://autoservicehoute-production.up.railway.app/api'
         : 'http://localhost:3001/api';
       
+      console.log('Attempting to save email to:', `${API_URL}/emails`);
+      
       const response = await fetch(`${API_URL}/emails`, {
         method: 'POST',
         headers: {
@@ -219,13 +221,18 @@ async function saveToAdminDashboard(formData) {
         body: JSON.stringify(newEmail)
       });
       
+      console.log('API Response status:', response.status);
+      
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error response:', errorText);
         throw new Error('API request failed');
       }
       
-      console.log('Form data saved to database via API');
+      const result = await response.json();
+      console.log('Form data saved to database via API:', result);
     } catch (apiError) {
-      console.warn('API save failed, falling back to localStorage:', apiError);
+      console.error('API save failed, falling back to localStorage:', apiError);
       
       // Fallback to localStorage if API fails
       const existingEmails = localStorage.getItem('ash_emails');
