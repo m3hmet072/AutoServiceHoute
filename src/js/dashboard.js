@@ -580,14 +580,14 @@ class DashboardManager {
             <div class="appointment-meta">
               <span>📅 ${formattedDate}</span>
               <span>🕐 ${apt.time}</span>
-              ${apt.subject ? `<span>📋 ${apt.subject}</span>` : ''}
-              ${apt.license ? `<span>🚗 ${apt.license}</span>` : ''}
+              ${apt.service ? `<span>📋 ${apt.service}</span>` : ''}
+              ${apt.kenteken ? `<span>🚗 ${apt.kenteken}</span>` : ''}
             </div>
           </div>
           <span class="status-badge ${apt.status}">${statusText}</span>
         </div>
-        ${apt.description ? `<div class="appointment-body">
-          <p>${apt.description}</p>
+        ${apt.notes ? `<div class="appointment-body">
+          <p>${apt.notes}</p>
         </div>` : ''}
       </div>`;
     });
@@ -728,11 +728,11 @@ class DashboardManager {
       name: email.name,
       email: email.email,
       phone: email.phone,
-      license: email.kenteken || '',
+      kenteken: email.kenteken || '',
       date: this.formatDateString(new Date()),
       time: '09:00',
-      subject: email.subject,
-      description: email.message,
+      service: email.subject,
+      notes: email.message,
       status: 'nieuwe-aanvraag',
       createdFrom: 'email',
       emailId: email.id
@@ -789,11 +789,11 @@ class DashboardManager {
       name: email.name,
       email: email.email,
       phone: email.phone,
-      license: email.kenteken || '',
+      kenteken: email.kenteken || '',
       date: today,
       time: nextAvailableTime,
-      subject: email.subject,
-      description: email.message,
+      service: email.subject,
+      notes: email.message,
       status: 'bevestigd',
       createdFrom: 'email',
       emailId: email.id
@@ -842,11 +842,11 @@ class DashboardManager {
       name: email.name,
       email: email.email,
       phone: email.phone,
-      license: email.kenteken || '',
+      kenteken: email.kenteken || '',
       date: tomorrowStr,
       time: nextAvailableTime,
-      subject: email.subject,
-      description: email.message,
+      service: email.subject,
+      notes: email.message,
       status: 'bevestigd',
       createdFrom: 'email',
       emailId: email.id
@@ -1062,7 +1062,7 @@ class DashboardManager {
             <div class="day-appointment-name">${apt.name}</div>
             <div class="day-appointment-info">
               <span class="status-badge ${apt.status}">${statusText}</span>
-              ${apt.subject ? `<span class="day-appointment-subject">${apt.subject}</span>` : ''}
+              ${apt.service ? `<span class="day-appointment-subject">${apt.service}</span>` : ''}
             </div>
           </div>
           <button class="day-appointment-view" onclick="dashboard.showAppointmentModal('${apt.id}')">
@@ -1134,11 +1134,11 @@ class DashboardManager {
           </div>
           <div class="detail-row">
             <span class="detail-label">Kenteken</span>
-            <span class="detail-value">${appointment.license || '-'}</span>
+            <span class="detail-value">${appointment.kenteken || '-'}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Onderwerp</span>
-            <span class="detail-value">${appointment.subject || '-'}</span>
+            <span class="detail-value">${appointment.service || '-'}</span>
           </div>
           <div class="detail-row">
             <label class="detail-label" for="edit-date">Datum</label>
@@ -1150,7 +1150,7 @@ class DashboardManager {
           </div>
           <div class="detail-row">
             <span class="detail-label">Bericht</span>
-            <div class="detail-value message-box">${appointment.description}</div>
+            <div class="detail-value message-box">${appointment.notes || ''}</div>
           </div>
         </div>
         
@@ -1184,11 +1184,11 @@ class DashboardManager {
           </div>
           <div class="detail-row">
             <span class="detail-label">Kenteken</span>
-            <span class="detail-value">${appointment.license || '-'}</span>
+            <span class="detail-value">${appointment.kenteken || '-'}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Onderwerp</span>
-            <span class="detail-value">${appointment.subject || '-'}</span>
+            <span class="detail-value">${appointment.service || '-'}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Datum</span>
@@ -1200,7 +1200,7 @@ class DashboardManager {
           </div>
           <div class="detail-row">
             <span class="detail-label">Bericht</span>
-            <div class="detail-value message-box">${appointment.description}</div>
+            <div class="detail-value message-box">${appointment.notes || ''}</div>
           </div>
         </div>
         
@@ -1691,7 +1691,7 @@ class DashboardManager {
             <span class="item-time">${apt.time}</span>
           </div>
           <div class="item-description">
-            <span class="status-badge ${apt.status}">${statusText}</span> - ${apt.description}
+            <span class="status-badge ${apt.status}">${statusText}</span> - ${apt.notes}
           </div>
         </div>`;
       });
