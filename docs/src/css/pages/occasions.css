@@ -1,0 +1,48 @@
+/* Occasions Page Styling */
+.occasions-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+/* Service Card Hover Effects */
+.occasions-service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+  border-color: #10B981;
+}
+
+/* Hide desktop-only br on mobile */
+.desktop-only {
+  display: inline;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  /* Make service cards stack better on mobile */
+  .service-card {
+    min-width: 100%;
+  }
+
+  /* Adjust contact buttons on mobile */
+  .contact-buttons {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Further optimize for very small screens */
+  .offer-card {
+    padding: 20px !important;
+  }
+  
+  .service-card {
+    padding: 20px !important;
+  }
+
+  .benefit-card {
+    padding: 20px !important;
+  }
+}
