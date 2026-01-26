@@ -5,13 +5,18 @@ const getApiBaseUrl = () => {
     return 'https://autoservicehoute-production.up.railway.app/api';
   }
   
+  // Check if we're on custom domain
+  if (window.location.hostname === 'autoservicehoute.nl') {
+    return 'https://autoservicehoute-production.up.railway.app/api';
+  }
+  
   // Check if we're on localhost
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3001/api';
   }
   
-  // Default to same domain (for custom domains)
-  return `${window.location.protocol}//${window.location.hostname}:3001/api`;
+  // Default to Railway
+  return 'https://autoservicehoute-production.up.railway.app/api';
 };
 
 const API_BASE_URL = getApiBaseUrl();
