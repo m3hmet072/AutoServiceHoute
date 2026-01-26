@@ -187,15 +187,21 @@ export async function trackVisitor(deviceInfo = {}) {
 
 export async function sendHeartbeat() {
   const sessionId = sessionStorage.getItem('visitorSessionId');
-  if (!sessionId) return;
+  if (!sessionId) return false;
   
-  const response = await fetch(`${API_BASE_URL}/visitors/heartbeat`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sessionId })
-  });
-  if (!response.ok) throw new Error('Failed to send heartbeat');
-  return await response.json();
+  try {
+    const response = await fetch(`${API_BASE_URL}/visitors/heartbeat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId })
+    });
+    if (!response.ok) return false;
+    const result = await response.json();
+    return result.success === true;
+  } catch (error) {
+    console.error('Heartbeat failed:', error);
+    return false;
+  }
 }
 
 export async function fetchVisitorStats(startDate = null, endDate = null) {

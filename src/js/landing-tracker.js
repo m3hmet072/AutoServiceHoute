@@ -109,10 +109,21 @@ async function initVisitorTracking() {
     const deviceInfo = getDeviceInfo();
     
     // Check if already tracked in this session
-    if (sessionStorage.getItem('visitorSessionId')) {
-      // Just send heartbeat for existing session
-      await sendHeartbeat();
-    } else {
+    let existingSessionId = sessionStorage.getItem('visitorSessionId');
+    
+    if (existingSessionId) {
+      // Verify session still exists on server with heartbeat
+      const heartbeatSuccess = await sendHeartbeat();
+      
+      // If heartbeat fails, session expired on server - create new one
+      if (!heartbeatSuccess) {
+        console.log('Session expired, creating new session');
+        existingSessionId = null;
+      }
+    }
+    
+    // Create new session if no valid existing session
+    if (!existingSessionId) {
       // Track new visitor with device info
       const response = await trackVisitor(deviceInfo);
       if (response.sessionId) {

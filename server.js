@@ -473,9 +473,12 @@ app.post('/api/visitors/heartbeat', (req, res) => {
 
       // Update database
       db.updateVisitorSession(sessionId, now.toISOString(), duration);
+      
+      res.json({ success: true, valid: true });
+    } else {
+      // Session not found in active sessions (server restart or timeout)
+      res.json({ success: false, valid: false, message: 'Session expired' });
     }
-
-    res.json({ success: true });
   } catch (error) {
     console.error('Error updating heartbeat:', error);
     res.status(500).json({ error: 'Failed to update heartbeat' });
