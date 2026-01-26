@@ -207,7 +207,7 @@ async function saveToAdminDashboard(formData) {
     
     // Try to save to database via API
     try {
-      const API_URL = window.location.hostname === 'm3hmet072.github.io' 
+      const API_URL = window.location.hostname === 'm3hmet072.github.io' || window.location.hostname === 'autoservicehoute.nl'
         ? 'https://autoservicehoute-production.up.railway.app/api'
         : 'http://localhost:3001/api';
       
