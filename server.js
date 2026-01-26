@@ -519,48 +519,6 @@ app.get('/api/visitors/daily', (req, res) => {
   }
 });
 
-// Get device statistics
-app.get('/api/visitors/devices', (req, res) => {
-  try {
-    const days = parseInt(req.query.days) || 30;
-    const deviceStats = db.getDeviceStats(days);
-    res.json(deviceStats);
-  } catch (error) {
-    console.error('Error fetching device stats:', error);
-    res.status(500).json({ error: 'Failed to fetch device stats' });
-  }
-});
-
-// Get active visitors with device info
-app.get('/api/visitors/active', (req, res) => {
-  try {
-    const now = new Date();
-    const activeList = [];
-
-    // Clean up and build active list
-    for (const [sessionId, session] of activeSessions.entries()) {
-      if (now - session.lastSeen > 120000) {
-        activeSessions.delete(sessionId);
-      } else {
-        activeList.push({
-          sessionId,
-          deviceName: session.deviceName,
-          deviceType: session.deviceType,
-          browser: session.browser,
-          os: session.os,
-          page: session.page,
-          duration: Math.floor((now - session.firstSeen) / 1000)
-        });
-      }
-    }
-
-    res.json(activeList);
-  } catch (error) {
-    console.error('Error fetching active visitors:', error);
-    res.status(500).json({ error: 'Failed to fetch active visitors' });
-  }
-});
-
 // Cleanup old sessions (run periodically)
 setInterval(() => {
   try {

@@ -407,21 +407,4 @@ export function cleanOldSessions(daysAgo) {
   return result.changes;
 }
 
-export function getDeviceStats(days = 30) {
-  const stmt = db.prepare(`
-    SELECT 
-      device_type,
-      device_name,
-      COUNT(*) as count,
-      MAX(last_seen) as last_seen
-    FROM visitor_sessions
-    WHERE date(first_seen) >= date('now', '-' || ? || ' days')
-    GROUP BY device_type, device_name
-    ORDER BY count DESC
-    LIMIT 20
-  `);
-  
-  return stmt.all(days);
-}
-
 export default db;

@@ -213,15 +213,3 @@ export async function fetchDailyVisitorStats(days = 30) {
   if (!response.ok) throw new Error('Failed to fetch daily visitor stats');
   return await response.json();
 }
-
-export async function fetchDeviceStats() {
-  const response = await fetch(`${API_BASE_URL}/visitors/devices`);
-  if (!response.ok) throw new Error('Failed to fetch device stats');
-  return await response.json();
-}
-
-export async function fetchActiveVisitors() {
-  const response = await fetch(`${API_BASE_URL}/visitors/active`);
-  if (!response.ok) throw new Error('Failed to fetch active visitors');
-  return await response.json();
-}
