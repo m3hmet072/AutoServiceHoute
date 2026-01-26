@@ -2,6 +2,7 @@
 import translations from './translations.js';
 import * as api from './api.js';
 import './dashboard-visitors.js';
+import '../css/live-visitor-counter.css';
 
 class DashboardManager {
   constructor() {
