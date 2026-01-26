@@ -1,6 +1,7 @@
 // Dashboard Manager for AutoServiceHoute
 import translations from './translations.js';
 import * as api from './api.js';
+import './dashboard-visitors.js';
 
 class DashboardManager {
   constructor() {

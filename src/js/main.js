@@ -7,6 +7,7 @@ import '../css/footer.css'
 
 import { loadNavbar } from './navbar'
 import { initContactForm } from './contact-form'
+import './landing-tracker'
 
 loadNavbar()
 initContactForm()
