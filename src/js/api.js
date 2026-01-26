@@ -164,7 +164,7 @@ export async function fetchStats() {
 
 // ============= VISITOR TRACKING API =============
 
-export async function trackVisitor(deviceInfo = {}) {
+export async function trackVisitor() {
   const response = await fetch(`${API_BASE_URL}/visitors/track`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -172,13 +172,7 @@ export async function trackVisitor(deviceInfo = {}) {
       page: window.location.pathname,
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
-      referrer: document.referrer || 'direct',
-      deviceType: deviceInfo.deviceType,
-      deviceName: deviceInfo.deviceName,
-      browser: deviceInfo.browser,
-      os: deviceInfo.os,
-      screenResolution: deviceInfo.screenResolution,
-      viewport: deviceInfo.viewport
+      referrer: document.referrer || 'direct'
     })
   });
   if (!response.ok) throw new Error('Failed to track visitor');

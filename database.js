@@ -331,9 +331,8 @@ export function getStats() {
 export function createVisitorSession(session) {
   const stmt = db.prepare(`
     INSERT INTO visitor_sessions 
-    (session_id, page, user_agent, referrer, ip_address, device_type, device_name, 
-     browser, os, screen_resolution, viewport, first_seen, last_seen)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (session_id, page, user_agent, referrer, ip_address, first_seen, last_seen)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `);
   
   const result = stmt.run(
@@ -342,12 +341,6 @@ export function createVisitorSession(session) {
     session.userAgent,
     session.referrer,
     session.ipAddress,
-    session.deviceType,
-    session.deviceName,
-    session.browser,
-    session.os,
-    session.screenResolution,
-    session.viewport,
     session.firstSeen,
     session.lastSeen
   );

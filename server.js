@@ -411,30 +411,18 @@ app.post('/api/visitors/track', (req, res) => {
       page, 
       timestamp, 
       userAgent, 
-      referrer,
-      deviceType,
-      deviceName,
-      browser,
-      os,
-      screenResolution,
-      viewport
+      referrer
     } = req.body;
     const ipAddress = req.ip || req.connection.remoteAddress;
     const now = new Date().toISOString();
 
-    // Save to database
+    // Save to database (minimal info)
     const success = db.createVisitorSession({
       sessionId,
       page,
       userAgent,
       referrer,
       ipAddress,
-      deviceType,
-      deviceName,
-      browser,
-      os,
-      screenResolution,
-      viewport,
       firstSeen: now,
       lastSeen: now
     });
@@ -444,10 +432,8 @@ app.post('/api/visitors/track', (req, res) => {
       activeSessions.set(sessionId, {
         lastSeen: new Date(),
         page,
-        firstSeen: new Date(),
-        deviceName,
-        deviceType,
-        browser,
+        firstSeen: new Date()
+      });
         os
       });
 
@@ -555,10 +541,6 @@ app.get('/api/visitors/active', (req, res) => {
       } else {
         activeList.push({
           sessionId,
-          deviceName: session.deviceName || 'Unknown',
-          deviceType: session.deviceType || 'Unknown',
-          browser: session.browser || 'Unknown',
-          os: session.os || 'Unknown',
           page: session.page,
           duration: Math.floor((now - session.firstSeen) / 1000)
         });
