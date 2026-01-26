@@ -1,8 +1,7 @@
-import { fetchVisitorStats, fetchDailyVisitorStats, fetchActiveVisitors, fetchDeviceStats } from './api.js';
+import { fetchVisitorStats, fetchDailyVisitorStats, fetchActiveVisitors } from './api.js';
 import { initLiveVisitorCounter } from './live-visitor-counter.js';
 
 let visitorChart = null;
-let deviceChart = null;
 
 export async function updateVisitorStats() {
   try {
@@ -52,76 +51,6 @@ async function updateActiveVisitorsList() {
     `).join('');
   } catch (error) {
     console.error('Failed to fetch active visitors:', error);
-  }
-}
-
-export async function loadDeviceChart() {
-  try {
-    const deviceStats = await fetchDeviceStats();
-    
-    const chartContainer = document.getElementById('device-chart');
-    if (!chartContainer) return;
-
-    // Group by device type
-    const deviceTypes = {};
-    deviceStats.forEach(stat => {
-      if (!deviceTypes[stat.device_type]) {
-        deviceTypes[stat.device_type] = 0;
-      }
-      deviceTypes[stat.device_type] += stat.count;
-    });
-
-    if (window.Chart && Object.keys(deviceTypes).length > 0) {
-      if (deviceChart) {
-        deviceChart.destroy();
-      }
-
-      const ctx = chartContainer.getContext('2d');
-      deviceChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(deviceTypes),
-          datasets: [{
-            data: Object.values(deviceTypes),
-            backgroundColor: [
-              'rgba(75, 192, 192, 0.8)',
-              'rgba(255, 99, 132, 0.8)',
-              'rgba(255, 205, 86, 0.8)',
-              'rgba(54, 162, 235, 0.8)'
-            ]
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom'
-            },
-            title: {
-              display: true,
-              text: 'Bezoekers per Apparaat Type'
-            }
-          }
-        }
-      });
-    }
-
-    // Display device list
-    const deviceListContainer = document.getElementById('device-list');
-    if (deviceListContainer) {
-      deviceListContainer.innerHTML = deviceStats.slice(0, 10).map(device => `
-        <div class=\"device-stat-item\">
-          <div class=\"device-icon\">${getDeviceIcon(device.device_type)}</div>
-          <div class=\"device-info\">
-            <div class=\"device-name\">${device.device_name}</div>
-            <div class=\"device-count\">${device.count} bezoeken</div>
-          </div>
-        </div>
-      `).join('');
-    }
-  } catch (error) {
-    console.error('Failed to load device chart:', error);
   }
 }
 
@@ -224,7 +153,6 @@ setInterval(updateVisitorStats, 10000);
 // Initial load
 updateVisitorStats();
 loadVisitorChart(30);
-loadDeviceChart();
 
 // Initialize live visitor counter
 initLiveVisitorCounter('live-visitor-counter');
