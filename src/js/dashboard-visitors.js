@@ -1,4 +1,4 @@
-import { fetchVisitorStats, fetchDailyVisitorStats, fetchActiveVisitors } from './api.js';
+import { fetchVisitorStats, fetchDailyVisitorStats } from './api.js';
 import { initLiveVisitorCounter } from './live-visitor-counter.js';
 
 let visitorChart = null;
@@ -14,36 +14,8 @@ export async function updateVisitorStats() {
     updateElement('total-visitors-count', stats.totalVisitors || 0);
     updateElement('total-sessions-count', stats.totalSessions || 0);
     updateElement('avg-session-duration', formatDuration(stats.avgSessionDuration || 0));
-
-    // Update active visitors list
-    await updateActiveVisitorsList();
   } catch (error) {
     console.error('Failed to fetch visitor stats:', error);
-  }
-}
-
-async function updateActiveVisitorsList() {
-  try {
-    const activeVisitors = await fetchActiveVisitors();
-    const container = document.getElementById('active-visitors-list');
-    
-    if (!container) return;
-
-    if (activeVisitors.length === 0) {
-      container.innerHTML = '<p class=\"empty-state\">Geen actieve bezoekers op dit moment</p>';
-      return;
-    }
-
-    container.innerHTML = activeVisitors.map(visitor => `
-      <div class=\"active-visitor-card\">
-        <div class=\"visitor-info\">
-          <div class=\"visitor-page\">${visitor.page}</div>
-          <div class=\"visitor-duration\">${formatDuration(visitor.duration)}</div>
-        </div>
-      </div>
-    `).join('');
-  } catch (error) {
-    console.error('Failed to fetch active visitors:', error);
   }
 }
 
