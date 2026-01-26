@@ -6,6 +6,9 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
+// Store SSE clients for real-time updates
+const sseClients = new Set();
+
 // Import database with error handling
 let db;
 try {
@@ -448,6 +451,9 @@ app.post('/api/visitors/track', (req, res) => {
         os
       });
 
+      // Broadcast update to all SSE clients
+      broadcastVisitorCount();
+
       res.json({ sessionId, success: true });
     } else {
       res.status(500).json({ error: 'Failed to track visitor' });
@@ -471,6 +477,9 @@ app.post('/api/visitors/heartbeat', (req, res) => {
       session.lastSeen = now;
       activeSessions.set(sessionId, session);
 
+      // Broadcast update to SSE clients
+      broadcastVisitorCount();
+      
       // Update database
       db.updateVisitorSession(sessionId, now.toISOString(), duration);
       
@@ -562,6 +571,73 @@ app.get('/api/visitors/active', (req, res) => {
     res.status(500).json({ error: 'Failed to fetch active visitors' });
   }
 });
+
+// ============= REAL-TIME SSE ENDPOINT =============
+
+// Server-Sent Events stream for real-time visitor count
+app.get('/api/visitors/stream', (req, res) => {
+  // Set headers for SSE
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  
+  // Send initial count
+  const sendUpdate = () => {
+    const now = new Date();
+    let count = 0;
+    
+    // Clean and count active sessions
+    for (const [sessionId, session] of activeSessions.entries()) {
+      if (now - session.lastSeen > 120000) {
+        activeSessions.delete(sessionId);
+      } else {
+        count++;
+      }
+    }
+    
+    res.write(`data: ${JSON.stringify({ activeVisitors: count, timestamp: now.toISOString() })}\n\n`);
+  };
+  
+  // Send immediate update
+  sendUpdate();
+  
+  // Add client to set
+  const client = { id: Date.now(), res, sendUpdate };
+  sseClients.add(client);
+  
+  // Send updates every 5 seconds
+  const interval = setInterval(sendUpdate, 5000);
+  
+  // Clean up on client disconnect
+  req.on('close', () => {
+    clearInterval(interval);
+    sseClients.delete(client);
+    res.end();
+  });
+});
+
+// Broadcast visitor count update to all SSE clients
+function broadcastVisitorCount() {
+  const now = new Date();
+  let count = 0;
+  
+  for (const [sessionId, session] of activeSessions.entries()) {
+    if (now - session.lastSeen <= 120000) {
+      count++;
+    }
+  }
+  
+  const data = JSON.stringify({ activeVisitors: count, timestamp: now.toISOString() });
+  
+  sseClients.forEach(client => {
+    try {
+      client.res.write(`data: ${data}\n\n`);
+    } catch (error) {
+      sseClients.delete(client);
+    }
+  });
+}
 
 // Cleanup old sessions (run periodically)
 setInterval(() => {
