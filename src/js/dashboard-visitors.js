@@ -1,5 +1,4 @@
 import { fetchVisitorStats, fetchDailyVisitorStats } from './api.js';
-import { initLiveVisitorCounter } from './live-visitor-counter.js';
 
 let visitorChart = null;
 
@@ -109,6 +108,3 @@ setInterval(updateVisitorStats, 10000);
 // Initial load
 updateVisitorStats();
 loadVisitorChart(30);
-
-// Initialize live visitor counter
-initLiveVisitorCounter('live-visitor-counter');
