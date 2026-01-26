@@ -80,6 +80,12 @@ function initializeDatabase() {
       user_agent TEXT,
       referrer TEXT,
       ip_address TEXT,
+      device_type TEXT,
+      device_name TEXT,
+      browser TEXT,
+      os TEXT,
+      screen_resolution TEXT,
+      viewport TEXT,
       first_seen DATETIME NOT NULL,
       last_seen DATETIME NOT NULL,
       session_duration INTEGER DEFAULT 0,
@@ -305,8 +311,10 @@ export function getStats() {
 
 export function createVisitorSession(session) {
   const stmt = db.prepare(`
-    INSERT INTO visitor_sessions (session_id, page, user_agent, referrer, ip_address, first_seen, last_seen)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO visitor_sessions 
+    (session_id, page, user_agent, referrer, ip_address, device_type, device_name, 
+     browser, os, screen_resolution, viewport, first_seen, last_seen)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   
   const result = stmt.run(
@@ -315,6 +323,12 @@ export function createVisitorSession(session) {
     session.userAgent,
     session.referrer,
     session.ipAddress,
+    session.deviceType,
+    session.deviceName,
+    session.browser,
+    session.os,
+    session.screenResolution,
+    session.viewport,
     session.firstSeen,
     session.lastSeen
   );
@@ -391,6 +405,45 @@ export function cleanOldSessions(daysAgo) {
   const stmt = db.prepare('DELETE FROM visitor_sessions WHERE first_seen < ?');
   const result = stmt.run(daysAgo);
   return result.changes;
+}
+
+export function getDeviceStats() {
+  const stmt = db.prepare(`
+    SELECT 
+      device_type,
+      device_name,
+      COUNT(*) as count,
+      MAX(last_seen) as last_seen
+    FROM visitor_sessions
+    WHERE date(first_seen) >= date('now', '-30 days')
+    GROUP BY device_type, device_name
+    ORDER BY count DESC
+    LIMIT 20
+  `);
+  
+  return stmt.all();
+}
+
+export function getActiveVisitors(sessionIds) {
+  if (!sessionIds || sessionIds.length === 0) return [];
+  
+  const placeholders = sessionIds.map(() => '?').join(',');
+  const stmt = db.prepare(`
+    SELECT 
+      session_id,
+      device_name,
+      device_type,
+      browser,
+      os,
+      page,
+      first_seen,
+      last_seen
+    FROM visitor_sessions
+    WHERE session_id IN (${placeholders})
+    ORDER BY last_seen DESC
+  `);
+  
+  return stmt.all(...sessionIds);
 }
 
 export default db;

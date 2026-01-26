@@ -404,7 +404,18 @@ const activeSessions = new Map();
 app.post('/api/visitors/track', (req, res) => {
   try {
     const sessionId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const { page, timestamp, userAgent, referrer } = req.body;
+    const { 
+      page, 
+      timestamp, 
+      userAgent, 
+      referrer,
+      deviceType,
+      deviceName,
+      browser,
+      os,
+      screenResolution,
+      viewport
+    } = req.body;
     const ipAddress = req.ip || req.connection.remoteAddress;
     const now = new Date().toISOString();
 
@@ -415,6 +426,12 @@ app.post('/api/visitors/track', (req, res) => {
       userAgent,
       referrer,
       ipAddress,
+      deviceType,
+      deviceName,
+      browser,
+      os,
+      screenResolution,
+      viewport,
       firstSeen: now,
       lastSeen: now
     });
@@ -424,7 +441,11 @@ app.post('/api/visitors/track', (req, res) => {
       activeSessions.set(sessionId, {
         lastSeen: new Date(),
         page,
-        firstSeen: new Date()
+        firstSeen: new Date(),
+        deviceName,
+        deviceType,
+        browser,
+        os
       });
 
       res.json({ sessionId, success: true });
@@ -495,6 +516,47 @@ app.get('/api/visitors/daily', (req, res) => {
   } catch (error) {
     console.error('Error fetching daily stats:', error);
     res.status(500).json({ error: 'Failed to fetch daily stats' });
+  }
+});
+
+// Get device statistics
+app.get('/api/visitors/devices', (req, res) => {
+  try {
+    const deviceStats = db.getDeviceStats();
+    res.json(deviceStats);
+  } catch (error) {
+    console.error('Error fetching device stats:', error);
+    res.status(500).json({ error: 'Failed to fetch device stats' });
+  }
+});
+
+// Get active visitors with device info
+app.get('/api/visitors/active', (req, res) => {
+  try {
+    const now = new Date();
+    const activeList = [];
+
+    // Clean up and build active list
+    for (const [sessionId, session] of activeSessions.entries()) {
+      if (now - session.lastSeen > 120000) {
+        activeSessions.delete(sessionId);
+      } else {
+        activeList.push({
+          sessionId,
+          deviceName: session.deviceName || 'Unknown',
+          deviceType: session.deviceType || 'Unknown',
+          browser: session.browser || 'Unknown',
+          os: session.os || 'Unknown',
+          page: session.page,
+          duration: Math.floor((now - session.firstSeen) / 1000)
+        });
+      }
+    }
+
+    res.json(activeList);
+  } catch (error) {
+    console.error('Error fetching active visitors:', error);
+    res.status(500).json({ error: 'Failed to fetch active visitors' });
   }
 });
 

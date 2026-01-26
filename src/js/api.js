@@ -164,7 +164,7 @@ export async function fetchStats() {
 
 // ============= VISITOR TRACKING API =============
 
-export async function trackVisitor() {
+export async function trackVisitor(deviceInfo = {}) {
   const response = await fetch(`${API_BASE_URL}/visitors/track`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -172,7 +172,13 @@ export async function trackVisitor() {
       page: window.location.pathname,
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
-      referrer: document.referrer || 'direct'
+      referrer: document.referrer || 'direct',
+      deviceType: deviceInfo.deviceType,
+      deviceName: deviceInfo.deviceName,
+      browser: deviceInfo.browser,
+      os: deviceInfo.os,
+      screenResolution: deviceInfo.screenResolution,
+      viewport: deviceInfo.viewport
     })
   });
   if (!response.ok) throw new Error('Failed to track visitor');
@@ -205,5 +211,17 @@ export async function fetchVisitorStats(startDate = null, endDate = null) {
 export async function fetchDailyVisitorStats(days = 30) {
   const response = await fetch(`${API_BASE_URL}/visitors/daily?days=${days}`);
   if (!response.ok) throw new Error('Failed to fetch daily visitor stats');
+  return await response.json();
+}
+
+export async function fetchActiveVisitors() {
+  const response = await fetch(`${API_BASE_URL}/visitors/active`);
+  if (!response.ok) throw new Error('Failed to fetch active visitors');
+  return await response.json();
+}
+
+export async function fetchDeviceStats() {
+  const response = await fetch(`${API_BASE_URL}/visitors/devices`);
+  if (!response.ok) throw new Error('Failed to fetch device stats');
   return await response.json();
 }
