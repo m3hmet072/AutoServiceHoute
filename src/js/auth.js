@@ -128,7 +128,7 @@ if (window.location.pathname.includes('login.html')) {
         
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        const loginBtn = form.querySelector('.login-btn');
+        const loginBtn = form.querySelector('.login-button');
         
         // Validate inputs
         if (!username || !password) {
@@ -137,8 +137,10 @@ if (window.location.pathname.includes('login.html')) {
         }
         
         // Show loading state
-        loginBtn.classList.add('loading');
-        loginBtn.disabled = true;
+        if (loginBtn) {
+          loginBtn.classList.add('loading');
+          loginBtn.disabled = true;
+        }
         
         // Verify credentials with small delay for better UX
         setTimeout(async () => {
@@ -151,8 +153,10 @@ if (window.location.pathname.includes('login.html')) {
           } else {
             // Show error
             showError('Invalid username or password');
-            loginBtn.classList.remove('loading');
-            loginBtn.disabled = false;
+            if (loginBtn) {
+              loginBtn.classList.remove('loading');
+              loginBtn.disabled = false;
+            }
             
             // Clear password field
             document.getElementById('password').value = '';
