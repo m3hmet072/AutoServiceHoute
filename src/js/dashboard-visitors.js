@@ -36,30 +36,14 @@ async function updateActiveVisitorsList() {
 
     container.innerHTML = activeVisitors.map(visitor => `
       <div class=\"active-visitor-card\">
-        <div class=\"device-icon\">
-          ${getDeviceIcon(visitor.deviceType)}
-        </div>
         <div class=\"visitor-info\">
-          <div class=\"device-name\">${visitor.deviceName}</div>
-          <div class=\"device-details\">
-            ${visitor.browser} • ${visitor.os}
-          </div>
           <div class=\"visitor-page\">${visitor.page}</div>
+          <div class=\"visitor-duration\">${formatDuration(visitor.duration)}</div>
         </div>
-        <div class=\"visitor-duration\">${formatDuration(visitor.duration)}</div>
       </div>
     `).join('');
   } catch (error) {
     console.error('Failed to fetch active visitors:', error);
-  }
-}
-
-function getDeviceIcon(deviceType) {
-  switch (deviceType) {
-    case 'Mobile': return '📱';
-    case 'Tablet': return '📱';
-    case 'Desktop': return '💻';
-    default: return '🖥️';
   }
 }
 
