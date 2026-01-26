@@ -161,3 +161,49 @@ export async function fetchStats() {
   if (!response.ok) throw new Error('Failed to fetch stats');
   return await response.json();
 }
+
+// ============= VISITOR TRACKING API =============
+
+export async function trackVisitor() {
+  const response = await fetch(`${API_BASE_URL}/visitors/track`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      page: window.location.pathname,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      referrer: document.referrer || 'direct'
+    })
+  });
+  if (!response.ok) throw new Error('Failed to track visitor');
+  return await response.json();
+}
+
+export async function sendHeartbeat() {
+  const sessionId = sessionStorage.getItem('visitorSessionId');
+  if (!sessionId) return;
+  
+  const response = await fetch(`${API_BASE_URL}/visitors/heartbeat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sessionId })
+  });
+  if (!response.ok) throw new Error('Failed to send heartbeat');
+  return await response.json();
+}
+
+export async function fetchVisitorStats(startDate = null, endDate = null) {
+  let url = `${API_BASE_URL}/visitors/stats`;
+  if (startDate && endDate) {
+    url += `?startDate=${startDate}&endDate=${endDate}`;
+  }
+  const response = await fetch(url);
+  if (!response.ok) throw new Error('Failed to fetch visitor stats');
+  return await response.json();
+}
+
+export async function fetchDailyVisitorStats(days = 30) {
+  const response = await fetch(`${API_BASE_URL}/visitors/daily?days=${days}`);
+  if (!response.ok) throw new Error('Failed to fetch daily visitor stats');
+  return await response.json();
+}

@@ -71,6 +71,40 @@ function initializeDatabase() {
     )
   `);
 
+  // Visitor sessions table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS visitor_sessions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id TEXT UNIQUE NOT NULL,
+      page TEXT NOT NULL,
+      user_agent TEXT,
+      referrer TEXT,
+      ip_address TEXT,
+      first_seen DATETIME NOT NULL,
+      last_seen DATETIME NOT NULL,
+      session_duration INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Daily visitor stats table (for faster queries)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS daily_visitor_stats (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      date DATE UNIQUE NOT NULL,
+      unique_visitors INTEGER DEFAULT 0,
+      total_sessions INTEGER DEFAULT 0,
+      total_pageviews INTEGER DEFAULT 0,
+      avg_session_duration REAL DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Create indexes for faster queries
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_visitor_sessions_date ON visitor_sessions(date(first_seen))`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_daily_stats_date ON daily_visitor_stats(date)`);
+
     console.log('✓ Database tables initialized');
   } catch (error) {
     console.error('Failed to initialize database tables:', error);
@@ -265,6 +299,98 @@ export function getStats() {
     totalEmails,
     unreadEmails
   };
+}
+
+// ============= VISITOR TRACKING =============
+
+export function createVisitorSession(session) {
+  const stmt = db.prepare(`
+    INSERT INTO visitor_sessions (session_id, page, user_agent, referrer, ip_address, first_seen, last_seen)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `);
+  
+  const result = stmt.run(
+    session.sessionId,
+    session.page,
+    session.userAgent,
+    session.referrer,
+    session.ipAddress,
+    session.firstSeen,
+    session.lastSeen
+  );
+  
+  return result.changes > 0;
+}
+
+export function updateVisitorSession(sessionId, lastSeen, duration) {
+  const stmt = db.prepare(`
+    UPDATE visitor_sessions 
+    SET last_seen = ?, session_duration = ? 
+    WHERE session_id = ?
+  `);
+  
+  const result = stmt.run(lastSeen, duration, sessionId);
+  return result.changes > 0;
+}
+
+export function getVisitorStats(today, yesterday) {
+  const todayVisitors = db.prepare(`
+    SELECT COUNT(DISTINCT session_id) as count 
+    FROM visitor_sessions 
+    WHERE date(first_seen) = ?
+  `).get(today).count;
+  
+  const yesterdayVisitors = db.prepare(`
+    SELECT COUNT(DISTINCT session_id) as count 
+    FROM visitor_sessions 
+    WHERE date(first_seen) = ?
+  `).get(yesterday).count;
+  
+  const totalVisitors = db.prepare(`
+    SELECT COUNT(DISTINCT session_id) as count 
+    FROM visitor_sessions
+  `).get().count;
+  
+  const totalSessions = db.prepare(`
+    SELECT COUNT(*) as count 
+    FROM visitor_sessions
+  `).get().count;
+  
+  const avgDuration = db.prepare(`
+    SELECT AVG(session_duration) as avg 
+    FROM visitor_sessions 
+    WHERE session_duration > 0
+  `).get().avg || 0;
+  
+  return {
+    todayVisitors,
+    yesterdayVisitors,
+    totalVisitors,
+    totalSessions,
+    avgSessionDuration: avgDuration
+  };
+}
+
+export function getDailyVisitorStats(days) {
+  const stmt = db.prepare(`
+    SELECT 
+      date(first_seen) as date,
+      COUNT(DISTINCT session_id) as uniqueVisitors,
+      COUNT(*) as totalSessions,
+      AVG(session_duration) as avgDuration
+    FROM visitor_sessions
+    WHERE date(first_seen) >= date('now', '-' || ? || ' days')
+    GROUP BY date(first_seen)
+    ORDER BY date(first_seen) ASC
+  `);
+  
+  return stmt.all(days);
+}
+
+export function cleanOldSessions(daysAgo) {
+  const stmt = db.prepare('DELETE FROM visitor_sessions WHERE first_seen < ?');
+  const result = stmt.run(daysAgo);
+  return result.changes;
 }
 
 export default db;

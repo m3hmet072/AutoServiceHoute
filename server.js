@@ -371,6 +371,122 @@ app.get('/api/stats', (req, res) => {
   }
 });
 
+// ============= VISITOR TRACKING API =============
+
+// Active sessions in memory (for real-time tracking)
+const activeSessions = new Map();
+
+// Track new visitor
+app.post('/api/visitors/track', (req, res) => {
+  try {
+    const sessionId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const { page, timestamp, userAgent, referrer } = req.body;
+    const ipAddress = req.ip || req.connection.remoteAddress;
+    const now = new Date().toISOString();
+
+    // Save to database
+    const success = db.createVisitorSession({
+      sessionId,
+      page,
+      userAgent,
+      referrer,
+      ipAddress,
+      firstSeen: now,
+      lastSeen: now
+    });
+
+    if (success) {
+      // Add to active sessions
+      activeSessions.set(sessionId, {
+        lastSeen: new Date(),
+        page,
+        firstSeen: new Date()
+      });
+
+      res.json({ sessionId, success: true });
+    } else {
+      res.status(500).json({ error: 'Failed to track visitor' });
+    }
+  } catch (error) {
+    console.error('Error tracking visitor:', error);
+    res.status(500).json({ error: 'Failed to track visitor' });
+  }
+});
+
+// Heartbeat to keep session alive
+app.post('/api/visitors/heartbeat', (req, res) => {
+  try {
+    const { sessionId } = req.body;
+    const now = new Date();
+
+    if (activeSessions.has(sessionId)) {
+      const session = activeSessions.get(sessionId);
+      const duration = Math.floor((now - session.firstSeen) / 1000);
+      
+      session.lastSeen = now;
+      activeSessions.set(sessionId, session);
+
+      // Update database
+      db.updateVisitorSession(sessionId, now.toISOString(), duration);
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error updating heartbeat:', error);
+    res.status(500).json({ error: 'Failed to update heartbeat' });
+  }
+});
+
+// Get visitor statistics
+app.get('/api/visitors/stats', (req, res) => {
+  try {
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const yesterday = new Date(now - 86400000).toISOString().split('T')[0];
+
+    // Clean up stale active sessions (older than 2 minutes)
+    for (const [sessionId, session] of activeSessions.entries()) {
+      if (now - session.lastSeen > 120000) {
+        activeSessions.delete(sessionId);
+      }
+    }
+
+    // Get stats from database
+    const stats = db.getVisitorStats(today, yesterday);
+    stats.activeVisitors = activeSessions.size;
+
+    res.json(stats);
+  } catch (error) {
+    console.error('Error fetching visitor stats:', error);
+    res.status(500).json({ error: 'Failed to fetch visitor stats' });
+  }
+});
+
+// Get daily visitor statistics
+app.get('/api/visitors/daily', (req, res) => {
+  try {
+    const days = parseInt(req.query.days) || 30;
+    const dailyStats = db.getDailyVisitorStats(days);
+    res.json(dailyStats);
+  } catch (error) {
+    console.error('Error fetching daily stats:', error);
+    res.status(500).json({ error: 'Failed to fetch daily stats' });
+  }
+});
+
+// Cleanup old sessions (run periodically)
+setInterval(() => {
+  try {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+    const deleted = db.cleanOldSessions(thirtyDaysAgo);
+    if (deleted > 0) {
+      console.log(`✓ Cleaned up ${deleted} old visitor sessions`);
+    }
+  } catch (error) {
+    console.error('Error cleaning up old sessions:', error);
+  }
+}, 86400000); // Run once per day
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n🚀 Server started successfully!`);
   console.log(`📍 Port: ${PORT}`);
