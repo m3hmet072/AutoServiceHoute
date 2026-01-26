@@ -76,6 +76,7 @@ function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS visitor_sessions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       session_id TEXT UNIQUE NOT NULL,
+      visitor_id TEXT NOT NULL,
       page TEXT NOT NULL,
       user_agent TEXT,
       referrer TEXT,
@@ -312,13 +313,14 @@ export function getStats() {
 export function createVisitorSession(session) {
   const stmt = db.prepare(`
     INSERT INTO visitor_sessions 
-    (session_id, page, user_agent, referrer, ip_address, device_type, device_name, 
+    (session_id, visitor_id, page, user_agent, referrer, ip_address, device_type, device_name, 
      browser, os, screen_resolution, viewport, first_seen, last_seen)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   
   const result = stmt.run(
     session.sessionId,
+    session.visitorId,
     session.page,
     session.userAgent,
     session.referrer,
@@ -348,23 +350,27 @@ export function updateVisitorSession(sessionId, lastSeen, duration) {
 }
 
 export function getVisitorStats(today, yesterday) {
+  // Count unique visitors (by visitor_id) for today
   const todayVisitors = db.prepare(`
-    SELECT COUNT(DISTINCT session_id) as count 
+    SELECT COUNT(DISTINCT visitor_id) as count 
     FROM visitor_sessions 
     WHERE date(first_seen) = ?
   `).get(today).count;
   
+  // Count unique visitors (by visitor_id) for yesterday
   const yesterdayVisitors = db.prepare(`
-    SELECT COUNT(DISTINCT session_id) as count 
+    SELECT COUNT(DISTINCT visitor_id) as count 
     FROM visitor_sessions 
     WHERE date(first_seen) = ?
   `).get(yesterday).count;
   
+  // Count total unique visitors (by visitor_id) all time
   const totalVisitors = db.prepare(`
-    SELECT COUNT(DISTINCT session_id) as count 
+    SELECT COUNT(DISTINCT visitor_id) as count 
     FROM visitor_sessions
   `).get().count;
   
+  // Count total sessions (all time)
   const totalSessions = db.prepare(`
     SELECT COUNT(*) as count 
     FROM visitor_sessions
@@ -389,7 +395,7 @@ export function getDailyVisitorStats(days) {
   const stmt = db.prepare(`
     SELECT 
       date(first_seen) as date,
-      COUNT(DISTINCT session_id) as uniqueVisitors,
+      COUNT(DISTINCT visitor_id) as uniqueVisitors,
       COUNT(*) as totalSessions,
       AVG(session_duration) as avgDuration
     FROM visitor_sessions

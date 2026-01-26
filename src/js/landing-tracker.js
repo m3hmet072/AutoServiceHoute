@@ -88,27 +88,86 @@ function getDeviceInfo() {
   };
 }
 
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes in milliseconds
+const HEARTBEAT_INTERVAL = 30000; // 30 seconds
+
+// Get or create persistent visitor ID
+function getVisitorId() {
+  let visitorId = localStorage.getItem('visitorId');
+  if (!visitorId) {
+    visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('visitorId', visitorId);
+  }
+  return visitorId;
+}
+
+// Check if we need a new session
+function needsNewSession() {
+  const lastActivity = localStorage.getItem('lastActivity');
+  if (!lastActivity) return true;
+  
+  const timeSinceLastActivity = Date.now() - parseInt(lastActivity);
+  return timeSinceLastActivity > SESSION_TIMEOUT;
+}
+
+// Update last activity timestamp
+function updateLastActivity() {
+  localStorage.setItem('lastActivity', Date.now().toString());
+}
+
+// Get current session ID or create new one
+function getSessionId() {
+  if (needsNewSession()) {
+    // Create new session
+    const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('currentSessionId', sessionId);
+    localStorage.setItem('sessionStartTime', Date.now().toString());
+    updateLastActivity();
+    return sessionId;
+  }
+  
+  // Return existing session
+  let sessionId = localStorage.getItem('currentSessionId');
+  if (!sessionId) {
+    sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('currentSessionId', sessionId);
+    localStorage.setItem('sessionStartTime', Date.now().toString());
+  }
+  updateLastActivity();
+  return sessionId;
+}
+
 // Initialize visitor tracking
 async function initVisitorTracking() {
   try {
     const deviceInfo = getDeviceInfo();
+    const visitorId = getVisitorId();
+    const sessionId = getSessionId();
+    const isNewSession = needsNewSession();
     
-    // Check if already tracked in this session
-    if (sessionStorage.getItem('visitorSessionId')) {
-      // Just send heartbeat for existing session
-      await sendHeartbeat();
-    } else {
-      // Track new visitor with device info
-      const response = await trackVisitor(deviceInfo);
-      if (response.sessionId) {
-        sessionStorage.setItem('visitorSessionId', response.sessionId);
-      }
+    // Track visitor with session info
+    const response = await trackVisitor({
+      ...deviceInfo,
+      visitorId,
+      sessionId,
+      isNewSession
+    });
+    
+    if (response.success) {
+      console.log('Visitor tracking initialized:', { visitorId, sessionId });
     }
 
     // Send heartbeat every 30 seconds to keep session alive
     const heartbeatInterval = setInterval(() => {
-      sendHeartbeat().catch(console.error);
-    }, 30000);
+      const currentSessionId = getSessionId(); // This will check for timeout
+      sendHeartbeat(visitorId, currentSessionId).catch(console.error);
+    }, HEARTBEAT_INTERVAL);
+
+    // Update activity on user interactions
+    const updateActivity = () => updateLastActivity();
+    ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(event => {
+      document.addEventListener(event, updateActivity, { passive: true });
+    });
 
     // Clean up on page unload
     window.addEventListener('beforeunload', () => {

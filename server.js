@@ -398,17 +398,20 @@ app.get('/api/stats', (req, res) => {
 // ============= VISITOR TRACKING API =============
 
 // Active sessions in memory (for real-time tracking)
+// Key: visitorId, Value: { sessionId, lastSeen, page, firstSeen, deviceInfo }
 const activeSessions = new Map();
 
 // Track new visitor
 app.post('/api/visitors/track', (req, res) => {
   try {
-    const sessionId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const { 
       page, 
       timestamp, 
       userAgent, 
       referrer,
+      visitorId,
+      sessionId,
+      isNewSession,
       deviceType,
       deviceName,
       browser,
@@ -419,39 +422,44 @@ app.post('/api/visitors/track', (req, res) => {
     const ipAddress = req.ip || req.connection.remoteAddress;
     const now = new Date().toISOString();
 
-    // Save to database with device info
-    const success = db.createVisitorSession({
-      sessionId,
-      page,
-      userAgent,
-      referrer,
-      ipAddress,
-      deviceType,
-      deviceName,
-      browser,
-      os,
-      screenResolution,
-      viewport,
-      firstSeen: now,
-      lastSeen: now
-    });
-
-    if (success) {
-      // Add to active sessions with device info
-      activeSessions.set(sessionId, {
-        lastSeen: new Date(),
+    // If this is a new session, save to database
+    if (isNewSession) {
+      const success = db.createVisitorSession({
+        sessionId,
+        visitorId,
         page,
-        firstSeen: new Date(),
-        deviceName: deviceName || 'Unknown',
-        deviceType: deviceType || 'Unknown',
-        browser: browser || 'Unknown',
-        os: os || 'Unknown'
+        userAgent,
+        referrer,
+        ipAddress,
+        deviceType,
+        deviceName,
+        browser,
+        os,
+        screenResolution,
+        viewport,
+        firstSeen: now,
+        lastSeen: now
       });
 
-      res.json({ sessionId, success: true });
-    } else {
-      res.status(500).json({ error: 'Failed to track visitor' });
+      if (!success) {
+        return res.status(500).json({ error: 'Failed to track visitor' });
+      }
     }
+
+    // Update active sessions (use visitorId as key to prevent duplicates)
+    activeSessions.set(visitorId, {
+      sessionId,
+      visitorId,
+      lastSeen: new Date(),
+      page,
+      firstSeen: new Date(),
+      deviceName: deviceName || 'Unknown',
+      deviceType: deviceType || 'Unknown',
+      browser: browser || 'Unknown',
+      os: os || 'Unknown'
+    });
+
+    res.json({ success: true, visitorId, sessionId });
   } catch (error) {
     console.error('Error tracking visitor:', error);
     res.status(500).json({ error: 'Failed to track visitor' });
@@ -461,18 +469,23 @@ app.post('/api/visitors/track', (req, res) => {
 // Heartbeat to keep session alive
 app.post('/api/visitors/heartbeat', (req, res) => {
   try {
-    const { sessionId } = req.body;
+    const { visitorId, sessionId } = req.body;
     const now = new Date();
 
-    if (activeSessions.has(sessionId)) {
-      const session = activeSessions.get(sessionId);
+    // Update in-memory active sessions
+    if (activeSessions.has(visitorId)) {
+      const session = activeSessions.get(visitorId);
       const duration = Math.floor((now - session.firstSeen) / 1000);
       
       session.lastSeen = now;
-      activeSessions.set(sessionId, session);
+      session.sessionId = sessionId; // Update in case session changed
+      activeSessions.set(visitorId, session);
 
       // Update database
       db.updateVisitorSession(sessionId, now.toISOString(), duration);
+    } else {
+      // Session not in memory, but update database anyway
+      db.updateVisitorSession(sessionId, now.toISOString(), 0);
     }
 
     res.json({ success: true });

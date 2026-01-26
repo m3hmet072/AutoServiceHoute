@@ -173,6 +173,9 @@ export async function trackVisitor(deviceInfo) {
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
       referrer: document.referrer || 'direct',
+      visitorId: deviceInfo?.visitorId,
+      sessionId: deviceInfo?.sessionId,
+      isNewSession: deviceInfo?.isNewSession,
       deviceType: deviceInfo?.deviceType,
       deviceName: deviceInfo?.deviceName,
       browser: deviceInfo?.browser,
@@ -185,14 +188,11 @@ export async function trackVisitor(deviceInfo) {
   return await response.json();
 }
 
-export async function sendHeartbeat() {
-  const sessionId = sessionStorage.getItem('visitorSessionId');
-  if (!sessionId) return;
-  
+export async function sendHeartbeat(visitorId, sessionId) {
   const response = await fetch(`${API_BASE_URL}/visitors/heartbeat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sessionId })
+    body: JSON.stringify({ visitorId, sessionId })
   });
   if (!response.ok) throw new Error('Failed to send heartbeat');
   return await response.json();
