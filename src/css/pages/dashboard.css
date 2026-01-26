@@ -259,7 +259,7 @@
   padding: 0.625rem;
   border-radius: 10px;
   transition: background 0.2s ease;
-  cursor: pointer;
+  position: relative;
 }
 
 .user-info:hover {
@@ -303,6 +303,31 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.logout-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6B7280;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.logout-btn:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+  transform: scale(1.05);
+}
+
+.logout-btn:active {
+  transform: scale(0.95);
 }
 
 /* Mobile Toggle */

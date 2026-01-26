@@ -143,6 +143,18 @@ class DashboardManager {
         languageSelect.classList.remove('open');
       }
     });
+
+    // Setup logout button
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+          import('./auth.js').then(auth => {
+            auth.logout();
+          });
+        }
+      });
+    }
   }
 
   applyTranslations() {
