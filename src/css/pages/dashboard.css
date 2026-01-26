@@ -2298,3 +2298,104 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+/* Active Visitors List */
+.active-visitors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.active-visitor-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem;
+  background: #F9FAFB;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+}
+
+.device-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.visitor-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.device-name {
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.875rem;
+}
+
+.device-details {
+  font-size: 0.75rem;
+  color: #6B7280;
+  margin-top: 0.25rem;
+}
+
+.visitor-page {
+  font-size: 0.75rem;
+  color: #9CA3AF;
+  margin-top: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.visitor-duration {
+  font-size: 0.875rem;
+  color: #059669;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Device List */
+.device-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.device-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: #F9FAFB;
+  border-radius: 6px;
+  border: 1px solid #E5E7EB;
+}
+
+.device-stat-item .device-icon {
+  font-size: 1.25rem;
+}
+
+.device-stat-item .device-info {
+  flex: 1;
+}
+
+.device-stat-item .device-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.device-stat-item .device-count {
+  font-size: 0.75rem;
+  color: #6B7280;
+  margin-top: 0.125rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: #9CA3AF;
+  padding: 2rem;
+  font-size: 0.875rem;
+}

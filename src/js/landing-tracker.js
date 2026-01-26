@@ -1,26 +1,105 @@
 import { trackVisitor, sendHeartbeat } from './api.js';
 
+// Parse user agent to get device info
+function getDeviceInfo() {
+  const ua = navigator.userAgent;
+  let deviceType = 'Desktop';
+  let deviceName = 'Unknown';
+  let browser = 'Unknown';
+  let os = 'Unknown';
+
+  // Detect OS
+  if (ua.includes('Windows NT 10.0')) os = 'Windows 10';
+  else if (ua.includes('Windows NT 6.3')) os = 'Windows 8.1';
+  else if (ua.includes('Windows NT 6.2')) os = 'Windows 8';
+  else if (ua.includes('Windows NT 6.1')) os = 'Windows 7';
+  else if (ua.includes('Mac OS X')) {
+    const match = ua.match(/Mac OS X ([\d_]+)/);
+    os = match ? `macOS ${match[1].replace(/_/g, '.')}` : 'macOS';
+  }
+  else if (ua.includes('Android')) {
+    const match = ua.match(/Android ([\d.]+)/);
+    os = match ? `Android ${match[1]}` : 'Android';
+  }
+  else if (ua.includes('iOS') || ua.includes('iPhone') || ua.includes('iPad')) {
+    const match = ua.match(/OS ([\d_]+)/);
+    os = match ? `iOS ${match[1].replace(/_/g, '.')}` : 'iOS';
+  }
+  else if (ua.includes('Linux')) os = 'Linux';
+
+  // Detect Browser
+  if (ua.includes('Chrome') && !ua.includes('Edg')) browser = 'Chrome';
+  else if (ua.includes('Safari') && !ua.includes('Chrome')) browser = 'Safari';
+  else if (ua.includes('Firefox')) browser = 'Firefox';
+  else if (ua.includes('Edg')) browser = 'Edge';
+  else if (ua.includes('Opera') || ua.includes('OPR')) browser = 'Opera';
+
+  // Detect Device Type and Model
+  if (ua.includes('iPhone')) {
+    deviceType = 'Mobile';
+    if (ua.includes('iPhone15')) deviceName = 'iPhone 15';
+    else if (ua.includes('iPhone14')) deviceName = 'iPhone 14';
+    else if (ua.includes('iPhone13')) deviceName = 'iPhone 13';
+    else if (ua.includes('iPhone12')) deviceName = 'iPhone 12';
+    else if (ua.includes('iPhone11')) deviceName = 'iPhone 11';
+    else if (ua.includes('iPhone X')) deviceName = 'iPhone X';
+    else deviceName = 'iPhone';
+  } else if (ua.includes('iPad')) {
+    deviceType = 'Tablet';
+    deviceName = 'iPad';
+    if (ua.includes('iPad Pro')) deviceName = 'iPad Pro';
+    else if (ua.includes('iPad Air')) deviceName = 'iPad Air';
+    else if (ua.includes('iPad Mini')) deviceName = 'iPad Mini';
+  } else if (ua.includes('Android')) {
+    deviceType = ua.includes('Mobile') ? 'Mobile' : 'Tablet';
+    if (ua.includes('SM-S926')) deviceName = 'Samsung Galaxy S24+';
+    else if (ua.includes('SM-S921')) deviceName = 'Samsung Galaxy S24';
+    else if (ua.includes('SM-S928')) deviceName = 'Samsung Galaxy S24 Ultra';
+    else if (ua.includes('SM-S911')) deviceName = 'Samsung Galaxy S23';
+    else if (ua.includes('SM-S918')) deviceName = 'Samsung Galaxy S23 Ultra';
+    else if (ua.includes('SM-S901')) deviceName = 'Samsung Galaxy S22';
+    else if (ua.includes('SM-S908')) deviceName = 'Samsung Galaxy S22 Ultra';
+    else if (ua.includes('SM-G991')) deviceName = 'Samsung Galaxy S21';
+    else if (ua.includes('SM-G998')) deviceName = 'Samsung Galaxy S21 Ultra';
+    else if (ua.includes('SM-A')) deviceName = 'Samsung Galaxy A Series';
+    else if (ua.includes('Pixel 8')) deviceName = 'Google Pixel 8';
+    else if (ua.includes('Pixel 7')) deviceName = 'Google Pixel 7';
+    else if (ua.includes('Pixel 6')) deviceName = 'Google Pixel 6';
+    else if (ua.includes('Pixel')) deviceName = 'Google Pixel';
+    else if (ua.includes('OnePlus')) deviceName = 'OnePlus';
+    else if (ua.includes('Xiaomi')) deviceName = 'Xiaomi';
+    else if (ua.includes('Huawei')) deviceName = 'Huawei';
+    else deviceName = 'Android Device';
+  } else {
+    deviceType = 'Desktop';
+    if (ua.includes('Windows')) deviceName = 'Windows PC';
+    else if (ua.includes('Mac')) deviceName = 'Mac';
+    else if (ua.includes('Linux')) deviceName = 'Linux PC';
+    else deviceName = 'Desktop Computer';
+  }
+
+  return {
+    deviceType,
+    deviceName,
+    browser,
+    os,
+    screenResolution: `${window.screen.width}x${window.screen.height}`,
+    viewport: `${window.innerWidth}x${window.innerHeight}`
+  };
+}
+
 // Initialize visitor tracking
 async function initVisitorTracking() {
   try {
+    const deviceInfo = getDeviceInfo();
+    
     // Check if already tracked in this session
-    let existingSessionId = sessionStorage.getItem('visitorSessionId');
-    
-    if (existingSessionId) {
-      // Verify session still exists on server with heartbeat
-      const heartbeatSuccess = await sendHeartbeat();
-      
-      // If heartbeat fails, session expired on server - create new one
-      if (!heartbeatSuccess) {
-        console.log('Session expired, creating new session');
-        existingSessionId = null;
-      }
-    }
-    
-    // Create new session if no valid existing session
-    if (!existingSessionId) {
-      // Track new visitor (no device info)
-      const response = await trackVisitor();
+    if (sessionStorage.getItem('visitorSessionId')) {
+      // Just send heartbeat for existing session
+      await sendHeartbeat();
+    } else {
+      // Track new visitor with device info
+      const response = await trackVisitor(deviceInfo);
       if (response.sessionId) {
         sessionStorage.setItem('visitorSessionId', response.sessionId);
       }

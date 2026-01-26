@@ -1,6 +1,7 @@
-import { fetchVisitorStats, fetchDailyVisitorStats } from './api.js';
+import { fetchVisitorStats, fetchDailyVisitorStats, fetchDeviceStats, fetchActiveVisitors } from './api.js';
 
 let visitorChart = null;
+let deviceChart = null;
 
 export async function updateVisitorStats() {
   try {
@@ -13,8 +14,122 @@ export async function updateVisitorStats() {
     updateElement('total-visitors-count', stats.totalVisitors || 0);
     updateElement('total-sessions-count', stats.totalSessions || 0);
     updateElement('avg-session-duration', formatDuration(stats.avgSessionDuration || 0));
+
+    // Update active visitors list
+    await updateActiveVisitorsList();
   } catch (error) {
     console.error('Failed to fetch visitor stats:', error);
+  }
+}
+
+async function updateActiveVisitorsList() {
+  try {
+    const activeVisitors = await fetchActiveVisitors();
+    const container = document.getElementById('active-visitors-list');
+    
+    if (!container) return;
+
+    if (activeVisitors.length === 0) {
+      container.innerHTML = '<p class=\"empty-state\">Geen actieve bezoekers op dit moment</p>';
+      return;
+    }
+
+    container.innerHTML = activeVisitors.map(visitor => `
+      <div class=\"active-visitor-card\">
+        <div class=\"device-icon\">
+          ${getDeviceIcon(visitor.deviceType)}
+        </div>
+        <div class=\"visitor-info\">
+          <div class=\"device-name\">${visitor.deviceName}</div>
+          <div class=\"device-details\">
+            ${visitor.browser} • ${visitor.os}
+          </div>
+          <div class=\"visitor-page\">${visitor.page}</div>
+        </div>
+        <div class=\"visitor-duration\">${formatDuration(visitor.duration)}</div>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Failed to fetch active visitors:', error);
+  }
+}
+
+export async function loadDeviceChart() {
+  try {
+    const deviceStats = await fetchDeviceStats();
+    
+    const chartContainer = document.getElementById('device-chart');
+    if (!chartContainer) return;
+
+    // Group by device type
+    const deviceTypes = {};
+    deviceStats.forEach(stat => {
+      if (!deviceTypes[stat.device_type]) {
+        deviceTypes[stat.device_type] = 0;
+      }
+      deviceTypes[stat.device_type] += stat.count;
+    });
+
+    if (window.Chart) {
+      if (deviceChart) {
+        deviceChart.destroy();
+      }
+
+      const ctx = chartContainer.getContext('2d');
+      deviceChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(deviceTypes),
+          datasets: [{
+            data: Object.values(deviceTypes),
+            backgroundColor: [
+              'rgba(75, 192, 192, 0.8)',
+              'rgba(255, 99, 132, 0.8)',
+              'rgba(255, 205, 86, 0.8)',
+              'rgba(54, 162, 235, 0.8)'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            },
+            title: {
+              display: true,
+              text: 'Bezoekers per Apparaat Type'
+            }
+          }
+        }
+      });
+    }
+
+    // Display device list
+    const deviceListContainer = document.getElementById('device-list');
+    if (deviceListContainer) {
+      deviceListContainer.innerHTML = deviceStats.slice(0, 10).map(device => `
+        <div class=\"device-stat-item\">
+          <div class=\"device-icon\">${getDeviceIcon(device.device_type)}</div>
+          <div class=\"device-info\">
+            <div class=\"device-name\">${device.device_name}</div>
+            <div class=\"device-count\">${device.count} bezoeken</div>
+          </div>
+        </div>
+      `).join('');
+    }
+  } catch (error) {
+    console.error('Failed to load device chart:', error);
+  }
+}
+
+function getDeviceIcon(deviceType) {
+  switch (deviceType) {
+    case 'Mobile': return '📱';
+    case 'Tablet': return '📱';
+    case 'Desktop': return '💻';
+    default: return '🖥️';
   }
 }
 
@@ -108,3 +223,4 @@ setInterval(updateVisitorStats, 10000);
 // Initial load
 updateVisitorStats();
 loadVisitorChart(30);
+loadDeviceChart();

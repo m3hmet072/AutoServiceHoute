@@ -41,25 +41,6 @@ function initializeDatabase() {
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
-  
-    // Migrate existing visitor_sessions table to add device columns if they don't exist
-    try {
-      const columns = db.prepare("PRAGMA table_info(visitor_sessions)").all();
-      const columnNames = columns.map(col => col.name);
-      
-      if (!columnNames.includes('device_type')) {
-        console.log('⚙️  Migrating visitor_sessions table - adding device columns...');
-        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN device_type TEXT`);
-        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN device_name TEXT`);
-        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN browser TEXT`);
-        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN os TEXT`);
-        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN screen_resolution TEXT`);
-        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN viewport TEXT`);
-        console.log('✓ Migration completed - device columns added');
-      }
-    } catch (migrationError) {
-      console.log('Migration note:', migrationError.message);
-    }
 
   // Work days table (from ICS import)
   db.exec(`
@@ -331,8 +312,9 @@ export function getStats() {
 export function createVisitorSession(session) {
   const stmt = db.prepare(`
     INSERT INTO visitor_sessions 
-    (session_id, page, user_agent, referrer, ip_address, first_seen, last_seen)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    (session_id, page, user_agent, referrer, ip_address, device_type, device_name, 
+     browser, os, screen_resolution, viewport, first_seen, last_seen)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   
   const result = stmt.run(
@@ -341,6 +323,12 @@ export function createVisitorSession(session) {
     session.userAgent,
     session.referrer,
     session.ipAddress,
+    session.deviceType,
+    session.deviceName,
+    session.browser,
+    session.os,
+    session.screenResolution,
+    session.viewport,
     session.firstSeen,
     session.lastSeen
   );
@@ -419,7 +407,7 @@ export function cleanOldSessions(daysAgo) {
   return result.changes;
 }
 
-export function getDeviceStats() {
+export function getDeviceStats(days = 30) {
   const stmt = db.prepare(`
     SELECT 
       device_type,
@@ -427,35 +415,13 @@ export function getDeviceStats() {
       COUNT(*) as count,
       MAX(last_seen) as last_seen
     FROM visitor_sessions
-    WHERE date(first_seen) >= date('now', '-30 days')
+    WHERE date(first_seen) >= date('now', '-' || ? || ' days')
     GROUP BY device_type, device_name
     ORDER BY count DESC
     LIMIT 20
   `);
   
-  return stmt.all();
-}
-
-export function getActiveVisitors(sessionIds) {
-  if (!sessionIds || sessionIds.length === 0) return [];
-  
-  const placeholders = sessionIds.map(() => '?').join(',');
-  const stmt = db.prepare(`
-    SELECT 
-      session_id,
-      device_name,
-      device_type,
-      browser,
-      os,
-      page,
-      first_seen,
-      last_seen
-    FROM visitor_sessions
-    WHERE session_id IN (${placeholders})
-    ORDER BY last_seen DESC
-  `);
-  
-  return stmt.all(...sessionIds);
+  return stmt.all(days);
 }
 
 export default db;

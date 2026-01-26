@@ -6,9 +6,6 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
-// Store SSE clients for real-time updates
-const sseClients = new Set();
-
 // Import database with error handling
 let db;
 try {
@@ -411,34 +408,45 @@ app.post('/api/visitors/track', (req, res) => {
       page, 
       timestamp, 
       userAgent, 
-      referrer
+      referrer,
+      deviceType,
+      deviceName,
+      browser,
+      os,
+      screenResolution,
+      viewport
     } = req.body;
     const ipAddress = req.ip || req.connection.remoteAddress;
     const now = new Date().toISOString();
 
-    // Save to database (minimal info)
+    // Save to database with device info
     const success = db.createVisitorSession({
       sessionId,
       page,
       userAgent,
       referrer,
       ipAddress,
+      deviceType,
+      deviceName,
+      browser,
+      os,
+      screenResolution,
+      viewport,
       firstSeen: now,
       lastSeen: now
     });
 
     if (success) {
-      // Add to active sessions
+      // Add to active sessions with device info
       activeSessions.set(sessionId, {
         lastSeen: new Date(),
         page,
-        firstSeen: new Date()
+        firstSeen: new Date(),
+        deviceName: deviceName || 'Unknown',
+        deviceType: deviceType || 'Unknown',
+        browser: browser || 'Unknown',
+        os: os || 'Unknown'
       });
-        os
-      });
-
-      // Broadcast update to all SSE clients
-      broadcastVisitorCount();
 
       res.json({ sessionId, success: true });
     } else {
@@ -463,17 +471,11 @@ app.post('/api/visitors/heartbeat', (req, res) => {
       session.lastSeen = now;
       activeSessions.set(sessionId, session);
 
-      // Broadcast update to SSE clients
-      broadcastVisitorCount();
-      
       // Update database
       db.updateVisitorSession(sessionId, now.toISOString(), duration);
-      
-      res.json({ success: true, valid: true });
-    } else {
-      // Session not found in active sessions (server restart or timeout)
-      res.json({ success: false, valid: false, message: 'Session expired' });
     }
+
+    res.json({ success: true });
   } catch (error) {
     console.error('Error updating heartbeat:', error);
     res.status(500).json({ error: 'Failed to update heartbeat' });
@@ -520,7 +522,8 @@ app.get('/api/visitors/daily', (req, res) => {
 // Get device statistics
 app.get('/api/visitors/devices', (req, res) => {
   try {
-    const deviceStats = db.getDeviceStats();
+    const days = parseInt(req.query.days) || 30;
+    const deviceStats = db.getDeviceStats(days);
     res.json(deviceStats);
   } catch (error) {
     console.error('Error fetching device stats:', error);
@@ -541,6 +544,10 @@ app.get('/api/visitors/active', (req, res) => {
       } else {
         activeList.push({
           sessionId,
+          deviceName: session.deviceName,
+          deviceType: session.deviceType,
+          browser: session.browser,
+          os: session.os,
           page: session.page,
           duration: Math.floor((now - session.firstSeen) / 1000)
         });
@@ -553,73 +560,6 @@ app.get('/api/visitors/active', (req, res) => {
     res.status(500).json({ error: 'Failed to fetch active visitors' });
   }
 });
-
-// ============= REAL-TIME SSE ENDPOINT =============
-
-// Server-Sent Events stream for real-time visitor count
-app.get('/api/visitors/stream', (req, res) => {
-  // Set headers for SSE
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  
-  // Send initial count
-  const sendUpdate = () => {
-    const now = new Date();
-    let count = 0;
-    
-    // Clean and count active sessions
-    for (const [sessionId, session] of activeSessions.entries()) {
-      if (now - session.lastSeen > 120000) {
-        activeSessions.delete(sessionId);
-      } else {
-        count++;
-      }
-    }
-    
-    res.write(`data: ${JSON.stringify({ activeVisitors: count, timestamp: now.toISOString() })}\n\n`);
-  };
-  
-  // Send immediate update
-  sendUpdate();
-  
-  // Add client to set
-  const client = { id: Date.now(), res, sendUpdate };
-  sseClients.add(client);
-  
-  // Send updates every 5 seconds
-  const interval = setInterval(sendUpdate, 5000);
-  
-  // Clean up on client disconnect
-  req.on('close', () => {
-    clearInterval(interval);
-    sseClients.delete(client);
-    res.end();
-  });
-});
-
-// Broadcast visitor count update to all SSE clients
-function broadcastVisitorCount() {
-  const now = new Date();
-  let count = 0;
-  
-  for (const [sessionId, session] of activeSessions.entries()) {
-    if (now - session.lastSeen <= 120000) {
-      count++;
-    }
-  }
-  
-  const data = JSON.stringify({ activeVisitors: count, timestamp: now.toISOString() });
-  
-  sseClients.forEach(client => {
-    try {
-      client.res.write(`data: ${data}\n\n`);
-    } catch (error) {
-      sseClients.delete(client);
-    }
-  });
-}
 
 // Cleanup old sessions (run periodically)
 setInterval(() => {
