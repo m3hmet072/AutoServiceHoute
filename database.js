@@ -41,6 +41,25 @@ function initializeDatabase() {
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+  
+    // Migrate existing visitor_sessions table to add device columns if they don't exist
+    try {
+      const columns = db.prepare("PRAGMA table_info(visitor_sessions)").all();
+      const columnNames = columns.map(col => col.name);
+      
+      if (!columnNames.includes('device_type')) {
+        console.log('⚙️  Migrating visitor_sessions table - adding device columns...');
+        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN device_type TEXT`);
+        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN device_name TEXT`);
+        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN browser TEXT`);
+        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN os TEXT`);
+        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN screen_resolution TEXT`);
+        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN viewport TEXT`);
+        console.log('✓ Migration completed - device columns added');
+      }
+    } catch (migrationError) {
+      console.log('Migration note:', migrationError.message);
+    }
 
   // Work days table (from ICS import)
   db.exec(`
