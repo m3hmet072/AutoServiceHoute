@@ -76,7 +76,7 @@ function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS visitor_sessions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       session_id TEXT UNIQUE NOT NULL,
-      visitor_id TEXT NOT NULL,
+      visitor_id TEXT,
       page TEXT NOT NULL,
       user_agent TEXT,
       referrer TEXT,
@@ -93,6 +93,21 @@ function initializeDatabase() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+  
+  // Migration: Add visitor_id column if it doesn't exist
+  try {
+    const columns = db.prepare("PRAGMA table_info(visitor_sessions)").all();
+    const hasVisitorId = columns.some(col => col.name === 'visitor_id');
+    
+    if (!hasVisitorId) {
+      console.log('Adding visitor_id column to visitor_sessions...');
+      db.exec(`ALTER TABLE visitor_sessions ADD COLUMN visitor_id TEXT`);
+      db.exec(`UPDATE visitor_sessions SET visitor_id = 'legacy_' || session_id WHERE visitor_id IS NULL`);
+      console.log('✓ visitor_id column added successfully');
+    }
+  } catch (error) {
+    console.error('Migration warning:', error.message);
+  }
 
   // Daily visitor stats table (for faster queries)
   db.exec(`
@@ -318,24 +333,29 @@ export function createVisitorSession(session) {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   
-  const result = stmt.run(
-    session.sessionId,
-    session.visitorId,
-    session.page,
-    session.userAgent,
-    session.referrer,
-    session.ipAddress,
-    session.deviceType,
-    session.deviceName,
-    session.browser,
-    session.os,
-    session.screenResolution,
-    session.viewport,
-    session.firstSeen,
-    session.lastSeen
-  );
-  
-  return result.changes > 0;
+  try {
+    const result = stmt.run(
+      session.sessionId,
+      session.visitorId || `legacy_${session.sessionId}`, // Fallback if visitorId not provided
+      session.page,
+      session.userAgent,
+      session.referrer,
+      session.ipAddress,
+      session.deviceType,
+      session.deviceName,
+      session.browser,
+      session.os,
+      session.screenResolution,
+      session.viewport,
+      session.firstSeen,
+      session.lastSeen
+    );
+    
+    return result.changes > 0;
+  } catch (error) {
+    console.error('Error creating visitor session:', error);
+    return false;
+  }
 }
 
 export function updateVisitorSession(sessionId, lastSeen, duration) {
@@ -350,23 +370,28 @@ export function updateVisitorSession(sessionId, lastSeen, duration) {
 }
 
 export function getVisitorStats(today, yesterday) {
-  // Count unique visitors (by visitor_id) for today
+  // Check if visitor_id column exists
+  const columns = db.prepare("PRAGMA table_info(visitor_sessions)").all();
+  const hasVisitorId = columns.some(col => col.name === 'visitor_id');
+  const distinctField = hasVisitorId ? 'visitor_id' : 'session_id';
+  
+  // Count unique visitors (by visitor_id or session_id as fallback) for today
   const todayVisitors = db.prepare(`
-    SELECT COUNT(DISTINCT visitor_id) as count 
+    SELECT COUNT(DISTINCT ${distinctField}) as count 
     FROM visitor_sessions 
     WHERE date(first_seen) = ?
   `).get(today).count;
   
-  // Count unique visitors (by visitor_id) for yesterday
+  // Count unique visitors (by visitor_id or session_id as fallback) for yesterday
   const yesterdayVisitors = db.prepare(`
-    SELECT COUNT(DISTINCT visitor_id) as count 
+    SELECT COUNT(DISTINCT ${distinctField}) as count 
     FROM visitor_sessions 
     WHERE date(first_seen) = ?
   `).get(yesterday).count;
   
-  // Count total unique visitors (by visitor_id) all time
+  // Count total unique visitors (by visitor_id or session_id as fallback) all time
   const totalVisitors = db.prepare(`
-    SELECT COUNT(DISTINCT visitor_id) as count 
+    SELECT COUNT(DISTINCT ${distinctField}) as count 
     FROM visitor_sessions
   `).get().count;
   
@@ -392,10 +417,15 @@ export function getVisitorStats(today, yesterday) {
 }
 
 export function getDailyVisitorStats(days) {
+  // Check if visitor_id column exists
+  const columns = db.prepare("PRAGMA table_info(visitor_sessions)").all();
+  const hasVisitorId = columns.some(col => col.name === 'visitor_id');
+  const distinctField = hasVisitorId ? 'visitor_id' : 'session_id';
+  
   const stmt = db.prepare(`
     SELECT 
       date(first_seen) as date,
-      COUNT(DISTINCT visitor_id) as uniqueVisitors,
+      COUNT(DISTINCT ${distinctField}) as uniqueVisitors,
       COUNT(*) as totalSessions,
       AVG(session_duration) as avgDuration
     FROM visitor_sessions
