@@ -142,8 +142,10 @@ async function initVisitorTracking() {
   try {
     const deviceInfo = getDeviceInfo();
     const visitorId = getVisitorId();
-    const sessionId = getSessionId();
+    
+    // Check if new session BEFORE calling getSessionId (which creates one)
     const isNewSession = needsNewSession();
+    const sessionId = getSessionId();
     
     // Track visitor with session info
     const response = await trackVisitor({
@@ -154,7 +156,7 @@ async function initVisitorTracking() {
     });
     
     if (response.success) {
-      console.log('Visitor tracking initialized:', { visitorId, sessionId });
+      console.log('Visitor tracking initialized:', { visitorId, sessionId, isNewSession });
     }
 
     // Send heartbeat every 30 seconds to keep session alive
