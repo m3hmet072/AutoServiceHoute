@@ -420,7 +420,10 @@ app.post('/api/visitors/track', (req, res) => {
       viewport
     } = req.body;
     const ipAddress = req.ip || req.connection.remoteAddress;
-    const now = new Date().toISOString();
+    
+    // Use Dutch timezone (Europe/Amsterdam)
+    const dutchTime = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' }));
+    const now = dutchTime.toISOString();
 
     // If this is a new session, save to database
     if (isNewSession) {
@@ -471,6 +474,7 @@ app.post('/api/visitors/heartbeat', (req, res) => {
   try {
     const { visitorId, sessionId } = req.body;
     const now = new Date();
+    const dutchTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' }));
 
     // Update in-memory active sessions
     if (activeSessions.has(visitorId)) {
@@ -481,11 +485,11 @@ app.post('/api/visitors/heartbeat', (req, res) => {
       session.sessionId = sessionId; // Update in case session changed
       activeSessions.set(visitorId, session);
 
-      // Update database
-      db.updateVisitorSession(sessionId, now.toISOString(), duration);
+      // Update database with Dutch time
+      db.updateVisitorSession(sessionId, dutchTime.toISOString(), duration);
     } else {
-      // Session not in memory, but update database anyway
-      db.updateVisitorSession(sessionId, now.toISOString(), 0);
+      // Session not in memory, but update database anyway with Dutch time
+      db.updateVisitorSession(sessionId, dutchTime.toISOString(), 0);
     }
 
     res.json({ success: true });
@@ -498,9 +502,14 @@ app.post('/api/visitors/heartbeat', (req, res) => {
 // Get visitor statistics
 app.get('/api/visitors/stats', (req, res) => {
   try {
+    // Use Dutch timezone (Europe/Amsterdam)
     const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    const yesterday = new Date(now - 86400000).toISOString().split('T')[0];
+    const dutchTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' }));
+    const today = dutchTime.toISOString().split('T')[0];
+    
+    const yesterdayDate = new Date(dutchTime);
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+    const yesterday = yesterdayDate.toISOString().split('T')[0];
 
     // Clean up stale active sessions (older than 2 minutes)
     for (const [sessionId, session] of activeSessions.entries()) {
