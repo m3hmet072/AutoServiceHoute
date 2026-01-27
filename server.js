@@ -420,10 +420,7 @@ app.post('/api/visitors/track', (req, res) => {
       viewport
     } = req.body;
     const ipAddress = req.ip || req.connection.remoteAddress;
-    
-    // Use Dutch timezone (Europe/Amsterdam)
-    const dutchTime = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' }));
-    const now = dutchTime.toISOString();
+    const now = new Date().toISOString(); // UTC timestamp
 
     // If this is a new session, save to database
     if (isNewSession) {
@@ -474,7 +471,7 @@ app.post('/api/visitors/heartbeat', (req, res) => {
   try {
     const { visitorId, sessionId } = req.body;
     const now = new Date();
-    const dutchTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' }));
+    const utcTime = now.toISOString(); // Store UTC in database
 
     // Update in-memory active sessions
     if (activeSessions.has(visitorId)) {
@@ -485,11 +482,11 @@ app.post('/api/visitors/heartbeat', (req, res) => {
       session.sessionId = sessionId; // Update in case session changed
       activeSessions.set(visitorId, session);
 
-      // Update database with Dutch time
-      db.updateVisitorSession(sessionId, dutchTime.toISOString(), duration);
+      // Update database with UTC time
+      db.updateVisitorSession(sessionId, utcTime, duration);
     } else {
-      // Session not in memory, but update database anyway with Dutch time
-      db.updateVisitorSession(sessionId, dutchTime.toISOString(), 0);
+      // Session not in memory, but update database anyway with UTC time
+      db.updateVisitorSession(sessionId, utcTime, 0);
     }
 
     res.json({ success: true });

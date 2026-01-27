@@ -375,18 +375,18 @@ export function getVisitorStats(today, yesterday) {
   const hasVisitorId = columns.some(col => col.name === 'visitor_id');
   const distinctField = hasVisitorId ? 'visitor_id' : 'session_id';
   
-  // Count unique visitors (by visitor_id or session_id as fallback) for today
+  // Convert UTC timestamps to Dutch time (CET = UTC+1, CEST = UTC+2)
+  // Using +1 hour for winter time (this should ideally be dynamic)
   const todayVisitors = db.prepare(`
     SELECT COUNT(DISTINCT ${distinctField}) as count 
     FROM visitor_sessions 
-    WHERE date(first_seen) = ?
+    WHERE date(datetime(first_seen, '+1 hour')) = ?
   `).get(today).count;
   
-  // Count unique visitors (by visitor_id or session_id as fallback) for yesterday
   const yesterdayVisitors = db.prepare(`
     SELECT COUNT(DISTINCT ${distinctField}) as count 
     FROM visitor_sessions 
-    WHERE date(first_seen) = ?
+    WHERE date(datetime(first_seen, '+1 hour')) = ?
   `).get(yesterday).count;
   
   // Count total unique visitors (by visitor_id or session_id as fallback) all time
@@ -422,16 +422,17 @@ export function getDailyVisitorStats(days) {
   const hasVisitorId = columns.some(col => col.name === 'visitor_id');
   const distinctField = hasVisitorId ? 'visitor_id' : 'session_id';
   
+  // Convert UTC to Dutch time (CET = UTC+1)
   const stmt = db.prepare(`
     SELECT 
-      date(first_seen) as date,
+      date(datetime(first_seen, '+1 hour')) as date,
       COUNT(DISTINCT ${distinctField}) as uniqueVisitors,
       COUNT(*) as totalSessions,
       AVG(session_duration) as avgDuration
     FROM visitor_sessions
-    WHERE date(first_seen) >= date('now', '-' || ? || ' days')
-    GROUP BY date(first_seen)
-    ORDER BY date(first_seen) ASC
+    WHERE date(datetime(first_seen, '+1 hour')) >= date('now', 'localtime', '-' || ? || ' days')
+    GROUP BY date(datetime(first_seen, '+1 hour'))
+    ORDER BY date(datetime(first_seen, '+1 hour')) ASC
   `);
   
   return stmt.all(days);
