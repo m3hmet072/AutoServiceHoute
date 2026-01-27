@@ -99,6 +99,23 @@ const translations = {
     november: 'November',
     december: 'December',
     
+    // Website Info (Visitor Tracking)
+    websiteInfo: 'Website Info',
+    websiteInfoDesc: 'View statistics about visitors on your website',
+    activeNow: 'Active Now',
+    liveVisitors: 'Live visitors',
+    today: 'Today',
+    uniqueVisitorsToday: 'Unique visitors today',
+    yesterday: 'Yesterday',
+    uniqueVisitorsYesterday: 'Unique visitors yesterday',
+    totalVisitors: 'Total Visitors',
+    allTime: 'All time',
+    totalSessions: 'Total Sessions',
+    allSessions: 'All sessions',
+    averageDuration: 'Average Duration',
+    perSession: 'Per session',
+    visitorTrends: 'Visitor Trends',
+    
     // Notifications & Messages
     newTestEmailAdded: 'New test e-mail added!',
     appointmentAlreadyExists: 'An appointment already exists for this message',
@@ -321,6 +338,23 @@ const translations = {
     november: 'Kasım',
     december: 'Aralık',
     
+    // Website Info (Visitor Tracking)
+    websiteInfo: 'Website Bilgisi',
+    websiteInfoDesc: 'Web sitenize gelen ziyaretçiler hakkında istatistikleri görüntüleyin',
+    activeNow: 'Şu Anda Aktif',
+    liveVisitors: 'Canlı ziyaretçiler',
+    today: 'Bugün',
+    uniqueVisitorsToday: 'Bugünün benzersiz ziyaretçileri',
+    yesterday: 'Dün',
+    uniqueVisitorsYesterday: 'Dünün benzersiz ziyaretçileri',
+    totalVisitors: 'Toplam Ziyaretçiler',
+    allTime: 'Tüm zamanlar',
+    totalSessions: 'Toplam Oturumlar',
+    allSessions: 'Tüm oturumlar',
+    averageDuration: 'Ortalama Süre',
+    perSession: 'Oturum başına',
+    visitorTrends: 'Ziyaretçi Trendleri',
+    
     // Notifications & Messages
     newTestEmailAdded: 'Yeni test e-postası eklendi!',
     appointmentAlreadyExists: 'Bu mesaj için zaten bir randevu var',
@@ -542,6 +576,23 @@ const translations = {
     october: 'Oktober',
     november: 'November',
     december: 'December',
+    
+    // Website Info (Visitor Tracking)
+    websiteInfo: 'Website Info',
+    websiteInfoDesc: 'Bekijk statistieken over bezoekers op uw website',
+    activeNow: 'Nu Actief',
+    liveVisitors: 'Live bezoekers',
+    today: 'Vandaag',
+    uniqueVisitorsToday: 'Unieke bezoekers vandaag',
+    yesterday: 'Gisteren',
+    uniqueVisitorsYesterday: 'Unieke bezoekers gisteren',
+    totalVisitors: 'Totaal Bezoekers',
+    allTime: 'Alle tijd',
+    totalSessions: 'Totaal Sessies',
+    allSessions: 'Alle sessies',
+    averageDuration: 'Gemiddelde Duur',
+    perSession: 'Per sessie',
+    visitorTrends: 'Bezoeker Trends',
     
     // Notifications & Messages
     newTestEmailAdded: 'Nieuwe test e-mail toegevoegd!',
