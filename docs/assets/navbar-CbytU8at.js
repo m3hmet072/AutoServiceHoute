@@ -63,6 +63,7 @@ function M(){document.body.insertAdjacentHTML("afterbegin",`<nav class="navbar">
         <ul class="nav-menu" id="navMenu">
           <li><a href="/apk.html" class="nav-link">APK</a></li>
           <li><a href="/banden.html" class="nav-link">Banden</a></li>
+          <li><a href="/onderhoud.html" class="nav-link">Onderhoud</a></li>
           <li><a href="/airco.html" class="nav-link">Airconditionering</a></li>
           <li><a href="/occasions.html" class="nav-link">Occasions</a></li>
           <li><a href="#contact" class="btn btn-primary btn-nav">Afspraak Inplanen</a></li>
