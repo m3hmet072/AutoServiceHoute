@@ -5,5 +5,6 @@ import '../css/pages/occasions.css'
 import '../css/footer.css'
 
 import { loadNavbar } from './navbar'
+import './landing-tracker'
 
 loadNavbar()
