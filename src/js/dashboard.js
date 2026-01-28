@@ -643,41 +643,78 @@ class DashboardManager {
 
   // Emails
   setupEmails() {
-    const testEmailBtn = document.getElementById('test-email-btn');
+    const addManualEmailBtn = document.getElementById('add-manual-email-btn');
+    const manualEmailForm = document.getElementById('manual-email-form');
+    const cancelBtn = document.getElementById('cancel-manual-entry');
+    const entryForm = document.getElementById('manual-entry-form');
     
-    if (testEmailBtn) {
-      testEmailBtn.addEventListener('click', () => {
-        this.addTestEmail();
+    // Set minimum date to today
+    const dateInput = document.getElementById('preferred-date');
+    if (dateInput) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.setAttribute('min', today);
+    }
+    
+    if (addManualEmailBtn) {
+      addManualEmailBtn.addEventListener('click', () => {
+        manualEmailForm.style.display = manualEmailForm.style.display === 'none' ? 'block' : 'none';
+        if (manualEmailForm.style.display === 'block') {
+          document.getElementById('customer-name').focus();
+        }
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        manualEmailForm.style.display = 'none';
+        entryForm.reset();
+      });
+    }
+
+    if (entryForm) {
+      entryForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await this.addManualEmail(new FormData(entryForm));
       });
     }
   }
 
-  addTestEmail() {
-    const testNames = ['Jan Bakker', 'Maria de Vries', 'Peter van Dijk', 'Sophie Jansen'];
-    const testIssues = [
-      'APK keuring nodig voor mijn auto',
-      'Banden vervangen voor de winter',
-      'Airco werkt niet meer goed',
-      'Onderhoudsbeurt voor mijn occasion'
-    ];
-    
+  async addManualEmail(formData) {
     const email = {
       id: String(Date.now()),
-      name: testNames[Math.floor(Math.random() * testNames.length)],
-      email: 'test@example.com',
-      phone: '+31 6 12345678',
-      subject: testIssues[Math.floor(Math.random() * testIssues.length)],
-      description: 'Dit is een test e-mail voor demonstratie doeleinden.',
-      license: 'AB-123-CD',
-      date: new Date().toISOString(),
-      read: false
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone') || '',
+      service: formData.get('service'),
+      subject: `${formData.get('service')} - ${formData.get('contactMethod')}`,
+      description: formData.get('message') || 'Geen extra opmerkingen',
+      contactMethod: formData.get('contactMethod'),
+      preferredDate: formData.get('preferredDate') || '',
+      preferredTime: formData.get('preferredTime') || '',
+      created_at: new Date().toISOString(),
+      read: false,
+      manualEntry: true
     };
     
     this.emails.unshift(email);
-    this.saveData('emails', this.emails);
+    
+    try {
+      // Save to database
+      await api.saveEmail(email);
+      this.showNotification(this.translate('emailAddedSuccess') || 'Contact succesvol toegevoegd aan de lijst!');
+    } catch (error) {
+      console.error('Error saving manual email:', error);
+      // Fallback to localStorage
+      this.saveData('emails', this.emails);
+      this.showNotification(this.translate('emailAddedSuccess') || 'Contact succesvol toegevoegd!');
+    }
+    
     this.renderEmails();
     this.updateStats();
-    this.showNotification(this.translate('newTestEmailAdded'));
+    
+    // Hide and reset form
+    document.getElementById('manual-email-form').style.display = 'none';
+    document.getElementById('manual-entry-form').reset();
   }
 
   renderEmails() {

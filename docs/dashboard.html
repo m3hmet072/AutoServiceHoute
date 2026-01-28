@@ -10,12 +10,12 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
     rel="stylesheet">
-  <script type="module" crossorigin src="/assets/dashboard-DsQcQic6.js"></script>
+  <script type="module" crossorigin src="/assets/dashboard-BX-a-zBZ.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/base-D7JJuB-E.js">
   <link rel="modulepreload" crossorigin href="/assets/auth-C_FCBoUG.js">
   <link rel="modulepreload" crossorigin href="/assets/api-D_EHRH8l.js">
   <link rel="stylesheet" crossorigin href="/assets/base-C6PS8gDc.css">
-  <link rel="stylesheet" crossorigin href="/assets/dashboard-SV7X8ern.css">
+  <link rel="stylesheet" crossorigin href="/assets/dashboard-Br6LpMl1.css">
   <link rel="stylesheet" crossorigin href="/assets/components-WoXlFGiS.css">
 </head>
 
@@ -303,7 +303,100 @@
     <section class="content-section" id="section-emails">
       <div class="section-header">
         <h1 data-translate="emails">E-mails</h1>
-        <button class="btn btn-primary" id="test-email-btn" data-translate="addTestEmail">Test E-mail Toevoegen</button>
+        <button class="btn btn-primary" id="add-manual-email-btn" data-translate="addManualEmail">Handmatige E-mail Toevoegen</button>
+      </div>
+
+      <!-- Manual Email Entry Form -->
+      <div class="manual-email-form" id="manual-email-form" style="display: none;">
+        <h3 data-translate="manualEntryTitle">Nieuwe Klantgegevens Invoeren</h3>
+        <p data-translate="manualEntryDesc">Vul onderstaande gegevens in wanneer een klant belt of contact opneemt</p>
+        
+        <form id="manual-entry-form" class="entry-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="customer-name" data-translate="customerName">Naam *</label>
+              <input type="text" id="customer-name" name="name" required placeholder="Voor- en achternaam">
+            </div>
+            
+            <div class="form-group">
+              <label for="customer-email" data-translate="customerEmail">E-mail *</label>
+              <input type="email" id="customer-email" name="email" required placeholder="voorbeeld@email.nl">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="customer-phone" data-translate="customerPhone">Telefoonnummer</label>
+              <input type="tel" id="customer-phone" name="phone" placeholder="+31 6 12345678">
+            </div>
+
+            <div class="form-group">
+              <label for="customer-service" data-translate="serviceType">Service Type *</label>
+              <select id="customer-service" name="service" required>
+                <option value="">Selecteer service...</option>
+                <option value="APK">APK</option>
+                <option value="Banden">Banden</option>
+                <option value="Onderhoud">Onderhoud</option>
+                <option value="Airconditionering">Airconditionering</option>
+                <option value="Occasions">Occasions</option>
+                <option value="Anders">Anders</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="preferred-date" data-translate="preferredDate">Gewenste Datum</label>
+              <input type="date" id="preferred-date" name="preferredDate" min="">
+            </div>
+
+            <div class="form-group">
+              <label for="preferred-time" data-translate="preferredTime">Gewenste Tijd</label>
+              <select id="preferred-time" name="preferredTime">
+                <option value="">Selecteer tijd...</option>
+                <option value="08:00">08:00</option>
+                <option value="08:30">08:30</option>
+                <option value="09:00">09:00</option>
+                <option value="09:30">09:30</option>
+                <option value="10:00">10:00</option>
+                <option value="10:30">10:30</option>
+                <option value="11:00">11:00</option>
+                <option value="11:30">11:30</option>
+                <option value="12:00">12:00</option>
+                <option value="12:30">12:30</option>
+                <option value="13:00">13:00</option>
+                <option value="13:30">13:30</option>
+                <option value="14:00">14:00</option>
+                <option value="14:30">14:30</option>
+                <option value="15:00">15:00</option>
+                <option value="15:30">15:30</option>
+                <option value="16:00">16:00</option>
+                <option value="16:30">16:30</option>
+                <option value="17:00">17:00</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="customer-message" data-translate="customerMessage">Bericht/Opmerking</label>
+            <textarea id="customer-message" name="message" rows="4" placeholder="Extra informatie of vragen van de klant..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="contact-method" data-translate="contactMethod">Contact Methode</label>
+            <select id="contact-method" name="contactMethod">
+              <option value="Telefonisch">Telefonisch</option>
+              <option value="E-mail">E-mail</option>
+              <option value="WhatsApp">WhatsApp</option>
+              <option value="Persoonlijk">Persoonlijk</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="cancel-manual-entry" data-translate="cancel">Annuleren</button>
+            <button type="submit" class="btn btn-primary" data-translate="saveToList">Opslaan in Lijst</button>
+          </div>
+        </form>
       </div>
 
       <div class="emails-container" id="emails-container">
