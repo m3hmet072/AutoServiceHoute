@@ -60,7 +60,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, rgba(225, 229, 245, 0) 0%, rgba(225, 229, 245, 0.485562) 74.21%, #E1E5F5 100%);
+  background: linear-gradient(180deg, rgba(225, 229, 245, 0.705) 0%, rgba(225, 229, 245, 0.485562) 74.21%, #E1E5F5 100%);
   z-index: 1;
   pointer-events: none;
 }

@@ -832,7 +832,7 @@ class DashboardManager {
     
     try {
       // Save to database
-      await api.saveEmail(email);
+      await api.createEmail(email);
       this.showNotification(this.translate('emailAddedSuccess') || 'Contact succesvol toegevoegd aan de lijst!');
     } catch (error) {
       console.error('Error saving manual email:', error);
