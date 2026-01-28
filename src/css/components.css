@@ -7,6 +7,7 @@
   font-weight: 600;
   font-size: 16px;
   transition: all 0.2s ease;
+  font-family: 'Comfortaa', cursive;
   border: none;
   cursor: pointer;
 }
@@ -74,6 +75,14 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
+}
+
+.hero-content h2 {
+  font-size: 48px;
+  text-align: center;
+  color: #15141A;
+  position: relative;
+  z-index: 1;
 }
 
 .hero h1 {
