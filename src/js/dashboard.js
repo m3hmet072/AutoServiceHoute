@@ -1,6 +1,7 @@
 // Dashboard Manager for AutoServiceHoute
 import translations from './translations.js';
 import * as api from './api.js';
+import * as rdw from './rdw-api.js';
 import './dashboard-visitors.js';
 
 class DashboardManager {
@@ -647,6 +648,8 @@ class DashboardManager {
     const manualEmailForm = document.getElementById('manual-email-form');
     const cancelBtn = document.getElementById('cancel-manual-entry');
     const entryForm = document.getElementById('manual-entry-form');
+    const kentekenLookupBtn = document.getElementById('kenteken-lookup-btn');
+    const kentekenInput = document.getElementById('customer-kenteken');
     
     // Set minimum date to today
     const dateInput = document.getElementById('preferred-date');
@@ -668,6 +671,7 @@ class DashboardManager {
       cancelBtn.addEventListener('click', () => {
         manualEmailForm.style.display = 'none';
         entryForm.reset();
+        document.getElementById('rdw-info').style.display = 'none';
       });
     }
 
@@ -677,20 +681,148 @@ class DashboardManager {
         await this.addManualEmail(new FormData(entryForm));
       });
     }
+
+    // RDW Kenteken Lookup
+    if (kentekenLookupBtn && kentekenInput) {
+      kentekenLookupBtn.addEventListener('click', async () => {
+        await this.lookupKenteken();
+      });
+
+      kentekenInput.addEventListener('keypress', async (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          await this.lookupKenteken();
+        }
+      });
+
+      // Format kenteken as user types
+      kentekenInput.addEventListener('input', (e) => {
+        const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (value.length >= 6) {
+          e.target.value = rdw.formatLicensePlateDisplay(value);
+        }
+      });
+    }
+  }
+
+  async lookupKenteken() {
+    const kentekenInput = document.getElementById('customer-kenteken');
+    const rdwInfo = document.getElementById('rdw-info');
+    const lookupBtn = document.getElementById('kenteken-lookup-btn');
+    
+    const kenteken = kentekenInput.value.trim();
+    
+    if (!kenteken || kenteken.length < 4) {
+      rdwInfo.style.display = 'block';
+      rdwInfo.className = 'rdw-info error';
+      rdwInfo.innerHTML = '⚠️ Voer een geldig kenteken in (minimaal 4 tekens)';
+      return;
+    }
+
+    // Show loading state
+    rdwInfo.style.display = 'block';
+    rdwInfo.className = 'rdw-info loading';
+    rdwInfo.innerHTML = '<div style="display: flex; align-items: center; gap: 0.5rem;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" opacity="0.75"/></svg> Zoeken in RDW database...</div>';
+    lookupBtn.disabled = true;
+
+    try {
+      const vehicleInfo = await rdw.fetchVehicleInfo(kenteken);
+      const apkInfo = await rdw.fetchAPKStatus(kenteken);
+      
+      // Format kenteken in input
+      kentekenInput.value = rdw.formatLicensePlateDisplay(vehicleInfo.kenteken);
+      
+      // Store vehicle info for later use
+      this.currentVehicleInfo = vehicleInfo;
+      
+      // Display vehicle information
+      rdwInfo.className = 'rdw-info success';
+      
+      let html = `<div class="rdw-info-grid">
+        <div class="rdw-info-row">
+          <span class="rdw-info-label">Merk</span>
+          <span class="rdw-info-value">${vehicleInfo.merk || '-'}</span>
+        </div>
+        <div class="rdw-info-row">
+          <span class="rdw-info-label">Model</span>
+          <span class="rdw-info-value">${vehicleInfo.handelsbenaming || '-'}</span>
+        </div>
+        <div class="rdw-info-row">
+          <span class="rdw-info-label">Brandstof</span>
+          <span class="rdw-info-value">${vehicleInfo.brandstof_omschrijving || vehicleInfo.brandstof || '-'}</span>
+        </div>
+        <div class="rdw-info-row">
+          <span class="rdw-info-label">Kleur</span>
+          <span class="rdw-info-value">${vehicleInfo.eerste_kleur || '-'}</span>
+        </div>
+        <div class="rdw-info-row">
+          <span class="rdw-info-label">Bouwjaar</span>
+          <span class="rdw-info-value">${vehicleInfo.datum_eerste_toelating ? vehicleInfo.datum_eerste_toelating.substring(0, 4) : '-'}</span>
+        </div>
+        <div class="rdw-info-row">
+          <span class="rdw-info-label">APK Vervaldatum</span>
+          <span class="rdw-info-value">${vehicleInfo.vervaldatum_apk ? rdw.formatDate(vehicleInfo.vervaldatum_apk) : '-'}</span>
+        </div>
+      </div>`;
+      
+      // Check APK expiry
+      if (vehicleInfo.vervaldatum_apk) {
+        const isExpiringSoon = rdw.isAPKExpiringSoon(vehicleInfo.vervaldatum_apk);
+        
+        // Parse expiry date
+        let expiryDate;
+        const dateStr = vehicleInfo.vervaldatum_apk;
+        if (dateStr.length === 8 && !dateStr.includes('-')) {
+          const year = parseInt(dateStr.substring(0, 4));
+          const month = parseInt(dateStr.substring(4, 6));
+          const day = parseInt(dateStr.substring(6, 8));
+          expiryDate = new Date(year, month - 1, day);
+        } else {
+          expiryDate = new Date(vehicleInfo.vervaldatum_apk);
+        }
+        
+        const today = new Date();
+        const isExpired = expiryDate < today;
+        
+        if (isExpired) {
+          html += `<div class="rdw-apk-warning rdw-apk-expired">
+            ⚠️ APK is verlopen! De APK is verlopen op ${rdw.formatDate(vehicleInfo.vervaldatum_apk)}
+          </div>`;
+        } else if (isExpiringSoon) {
+          html += `<div class="rdw-apk-warning">
+            ⚠️ APK verloopt binnenkort op ${rdw.formatDate(vehicleInfo.vervaldatum_apk)}
+          </div>`;
+        }
+      }
+      
+      rdwInfo.innerHTML = html;
+      
+    } catch (error) {
+      console.error('RDW Lookup Error:', error);
+      rdwInfo.className = 'rdw-info error';
+      rdwInfo.innerHTML = `⚠️ ${error.message || 'Kenteken niet gevonden in RDW database'}`;
+      this.currentVehicleInfo = null;
+    } finally {
+      lookupBtn.disabled = false;
+    }
   }
 
   async addManualEmail(formData) {
+    const message = formData.get('message') || 'Geen extra opmerkingen';
     const email = {
       id: String(Date.now()),
       name: formData.get('name'),
       email: formData.get('email'),
       phone: formData.get('phone') || '',
+      kenteken: formData.get('kenteken') || '',
       service: formData.get('service'),
       subject: `${formData.get('service')} - ${formData.get('contactMethod')}`,
-      description: formData.get('message') || 'Geen extra opmerkingen',
+      message: message,
+      description: message,
       contactMethod: formData.get('contactMethod'),
       preferredDate: formData.get('preferredDate') || '',
       preferredTime: formData.get('preferredTime') || '',
+      vehicleInfo: this.currentVehicleInfo || null,
       created_at: new Date().toISOString(),
       read: false,
       manualEntry: true
@@ -715,6 +847,8 @@ class DashboardManager {
     // Hide and reset form
     document.getElementById('manual-email-form').style.display = 'none';
     document.getElementById('manual-entry-form').reset();
+    document.getElementById('rdw-info').style.display = 'none';
+    this.currentVehicleInfo = null;
   }
 
   renderEmails() {
@@ -752,7 +886,7 @@ class DashboardManager {
                 ${email.kenteken ? `<span>🚗 ${email.kenteken}</span>` : ''}
                 <span class="subject-badge">${email.subject}</span>
               </div>
-              <p class="email-message">${email.message}</p>
+              <p class="email-message">${email.message || email.description || ''}</p>
             </div>
           </div>
           <div class="email-right">
@@ -799,16 +933,20 @@ class DashboardManager {
       return;
     }
     
+    // Use preferred date/time if available, otherwise use current date
+    const appointmentDate = email.preferredDate || this.formatDateString(new Date());
+    const appointmentTime = email.preferredTime || '09:00';
+    
     const appointment = {
       id: String(Date.now()),
       name: email.name,
       email: email.email,
-      phone: email.phone,
+      phone: email.phone || '',
       kenteken: email.kenteken || '',
-      date: this.formatDateString(new Date()),
-      time: '09:00',
-      service: email.subject,
-      notes: email.message,
+      date: appointmentDate,
+      time: appointmentTime,
+      service: email.service || email.subject,
+      notes: email.message || email.description || '',
       status: 'nieuwe-aanvraag',
       createdFrom: 'email',
       emailId: email.id
@@ -1042,7 +1180,7 @@ class DashboardManager {
         </div>
         <div class="detail-row">
           <span class="detail-label">${this.translate('message')}</span>
-          <div class="detail-value message-box">${email.message}</div>
+          <div class="detail-value message-box">${email.message || email.description || '-'}</div>
         </div>
       </div>
       

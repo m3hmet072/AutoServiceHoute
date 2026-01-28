@@ -1290,6 +1290,131 @@
   }
 }
 
+/* RDW Kenteken Lookup Styling */
+.kenteken-input-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.kenteken-input-wrapper input {
+  flex: 1;
+}
+
+.btn-kenteken-lookup {
+  padding: 0.75rem;
+  background: #374CFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-kenteken-lookup:hover {
+  background: #2A3DD9;
+  transform: translateY(-1px);
+}
+
+.btn-kenteken-lookup:active {
+  transform: translateY(0);
+}
+
+.btn-kenteken-lookup:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.rdw-info {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.rdw-info.loading {
+  text-align: center;
+  color: #6B7280;
+}
+
+.rdw-info.error {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #DC2626;
+}
+
+.rdw-info.success {
+  background: #ECFDF5;
+  border-color: #A7F3D0;
+}
+
+.rdw-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.rdw-info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.rdw-info-label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rdw-info-value {
+  color: #1F2937;
+  font-weight: 500;
+}
+
+.rdw-apk-warning {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: #FEF3C7;
+  border: 1px solid #FCD34D;
+  border-radius: 6px;
+  color: #92400E;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rdw-apk-expired {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #991B1B;
+}
+
+@media (max-width: 768px) {
+  .rdw-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Spinner animation for RDW lookup */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Email Cards - Modern Clean Design */
 .emails-container {
   display: flex;

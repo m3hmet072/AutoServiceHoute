@@ -10,12 +10,12 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
     rel="stylesheet">
-  <script type="module" crossorigin src="/assets/dashboard-BX-a-zBZ.js"></script>
+  <script type="module" crossorigin src="/assets/dashboard-CMzgVlpe.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/base-D7JJuB-E.js">
   <link rel="modulepreload" crossorigin href="/assets/auth-C_FCBoUG.js">
   <link rel="modulepreload" crossorigin href="/assets/api-D_EHRH8l.js">
   <link rel="stylesheet" crossorigin href="/assets/base-C6PS8gDc.css">
-  <link rel="stylesheet" crossorigin href="/assets/dashboard-Br6LpMl1.css">
+  <link rel="stylesheet" crossorigin href="/assets/dashboard-P82vMf0j.css">
   <link rel="stylesheet" crossorigin href="/assets/components-WoXlFGiS.css">
 </head>
 
@@ -319,8 +319,8 @@
             </div>
             
             <div class="form-group">
-              <label for="customer-email" data-translate="customerEmail">E-mail *</label>
-              <input type="email" id="customer-email" name="email" required placeholder="voorbeeld@email.nl">
+              <label for="customer-email" data-translate="customerEmail">E-mail</label>
+              <input type="email" id="customer-email" name="email" placeholder="voorbeeld@email.nl">
             </div>
           </div>
 
@@ -331,6 +331,22 @@
             </div>
 
             <div class="form-group">
+              <label for="customer-kenteken" data-translate="licensePlate">Kenteken</label>
+              <div class="kenteken-input-wrapper">
+                <input type="text" id="customer-kenteken" name="kenteken" placeholder="AB-123-CD" style="text-transform: uppercase;" maxlength="8">
+                <button type="button" class="btn-kenteken-lookup" id="kenteken-lookup-btn" title="Zoek voertuiggegevens">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="rdw-info" id="rdw-info" style="display: none;"></div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
               <label for="customer-service" data-translate="serviceType">Service Type *</label>
               <select id="customer-service" name="service" required>
                 <option value="">Selecteer service...</option>
@@ -340,6 +356,16 @@
                 <option value="Airconditionering">Airconditionering</option>
                 <option value="Occasions">Occasions</option>
                 <option value="Anders">Anders</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-method" data-translate="contactMethod">Contact Methode</label>
+              <select id="contact-method" name="contactMethod">
+                <option value="Telefonisch">Telefonisch</option>
+                <option value="E-mail">E-mail</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="Persoonlijk">Persoonlijk</option>
               </select>
             </div>
           </div>
@@ -380,16 +406,6 @@
           <div class="form-group">
             <label for="customer-message" data-translate="customerMessage">Bericht/Opmerking</label>
             <textarea id="customer-message" name="message" rows="4" placeholder="Extra informatie of vragen van de klant..."></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="contact-method" data-translate="contactMethod">Contact Methode</label>
-            <select id="contact-method" name="contactMethod">
-              <option value="Telefonisch">Telefonisch</option>
-              <option value="E-mail">E-mail</option>
-              <option value="WhatsApp">WhatsApp</option>
-              <option value="Persoonlijk">Persoonlijk</option>
-            </select>
           </div>
 
           <div class="form-actions">
