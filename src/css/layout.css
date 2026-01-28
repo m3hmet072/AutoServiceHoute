@@ -281,17 +281,17 @@
   }
 
   .logo-link {
-    min-width: 80px;
+    min-width: 90px;
   }
 
   .logo-link svg {
-    width: clamp(22px, 5vw, 28px);
-    height: clamp(32px, 7vw, 40px);
+    width: clamp(28px, 5vw, 32px);
+    height: clamp(38px, 7vw, 46px);
   }
 
   .tire-icon {
-    width: clamp(26px, 6vw, 28px);
-    height: clamp(26px, 6vw, 28px);
+    width: clamp(30px, 6vw, 32px);
+    height: clamp(30px, 6vw, 32px);
   }
 
   .nav-link {
@@ -313,17 +313,17 @@
   }
 
   .logo-link {
-    min-width: 70px;
+    min-width: 85px;
   }
 
   .logo-link svg {
-    width: 20px;
-    height: 30px;
+    width: 26px;
+    height: 36px;
   }
 
   .tire-icon {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
   .nav-link {
