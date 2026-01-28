@@ -7,6 +7,7 @@
   top: 0;
   z-index: 2000;
   transition: background 0.3s ease;
+  width: 100%;
 }
 
 .navbar-container {
@@ -17,30 +18,34 @@
   align-items: center;
   padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 4vw, 2rem);
   width: 100%;
+  box-sizing: border-box;
 }
 
 .logo-link {
   display: flex;
   width: auto;
-  min-width: 150px;
+  min-width: 100px;
   max-width: 187px;
   align-items: center;
   text-decoration: none;
   flex-shrink: 0;
+  z-index: 2001;
 }
 
 .logo-link svg {
-  width: clamp(28px, 6vw, 32px);
-  height: clamp(40px, 8vw, 46px);
+  width: clamp(24px, 5vw, 32px);
+  height: clamp(36px, 7vw, 46px);
+  transition: all 0.3s ease;
 }
 
 .nav-menu {
   display: flex;
   list-style: none;
-  gap: clamp(1.5rem, 3vw, 2rem);
+  gap: clamp(1rem, 2.5vw, 2rem);
   align-items: center;
   margin: 0;
   padding: 0;
+  flex-wrap: nowrap;
 }
 
 .nav-link {
@@ -52,6 +57,7 @@
   position: relative;
   padding-bottom: 0.25rem;
   white-space: nowrap;
+  display: inline-block;
 }
 
 .nav-link::after {
@@ -70,10 +76,11 @@
 }
 
 .btn-nav {
-  padding: clamp(0.5rem, 1vw, 0.6rem) clamp(0.8rem, 2vw, 1.2rem);
+  padding: clamp(0.5rem, 1vw, 0.65rem) clamp(1rem, 2vw, 1.3rem);
   font-size: 16px;
   text-align: center;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-menu li:last-child a {
@@ -87,11 +94,14 @@
   gap: 5px;
   padding: 0.5rem;
   transition: all 0.3s ease;
+  z-index: 2001;
+  background: none;
+  border: none;
 }
 
 .tire-icon {
-  width: 32px;
-  height: 32px;
+  width: clamp(28px, 6vw, 32px);
+  height: clamp(28px, 6vw, 32px);
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -99,50 +109,77 @@
   transform: rotate(360deg);
 }
 
-/* Responsive Navbar */
-@media (max-width: 1200px) {
+/* Responsive Navbar - Progressive Breakpoints */
+@media (max-width: 1400px) {
+  .navbar-container {
+    padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 3vw, 2rem);
+  }
+
   .nav-menu {
     gap: clamp(0.8rem, 2vw, 1.5rem);
   }
+}
+
+@media (max-width: 1200px) {
+  .navbar-container {
+    padding: clamp(0.75rem, 2vw, 1rem) clamp(1.25rem, 2.5vw, 1.5rem);
+  }
+
+  .nav-menu {
+    gap: clamp(0.6rem, 1.5vw, 1.2rem);
+  }
+
+
+
+  .btn-nav {
+    padding: clamp(0.45rem, 1vw, 0.6rem) clamp(0.9rem, 1.8vw, 1.2rem);
+  }
+}
+
+@media (max-width: 1100px) {
+  .nav-menu {
+    gap: clamp(0.5rem, 1.2vw, 1rem);
+  }
 
   .nav-link {
-    font-size: 15px;
+    padding-bottom: 0.2rem;
+  }
+
+  .btn-nav {
+    padding: clamp(0.4rem, 0.9vw, 0.55rem) clamp(0.8rem, 1.5vw, 1rem);
   }
 }
 
 @media (max-width: 1024px) {
   .navbar-container {
-    padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem);
+    padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 2vw, 1.25rem);
   }
 
   .nav-menu {
-    gap: clamp(0.6rem, 1.5vw, 1rem);
+    gap: clamp(0.8rem, 1.5vw, 1.2rem);
   }
 
-  .nav-link {
-    font-size: 14px;
-    padding-bottom: 0.2rem;
+
+
+
+}
+
+@media (max-width: 950px) {
+  .nav-menu {
+    gap: clamp(0.6rem, 1.2vw, 1rem);
   }
+
+
 
   .btn-nav {
-    font-size: 14px;
-    padding: clamp(0.4rem, 1vw, 0.5rem) clamp(0.6rem, 1.5vw, 0.9rem);
+    padding: clamp(0.4rem, 0.8vw, 0.5rem) clamp(0.7rem, 1.2vw, 0.9rem);
   }
 }
 
+/* Mobile Menu - Hamburger */
 @media (max-width: 900px) {
-  .nav-menu {
-    gap: clamp(0.4rem, 1vw, 0.8rem);
-  }
-
-  .nav-link {
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 768px) {
   .navbar-container {
-    padding: 1rem;
+    padding: 0.875rem 1rem;
   }
 
   .hamburger {
@@ -151,32 +188,58 @@
 
   .nav-menu {
     position: fixed;
-    top: 68px;
+    top: 0;
     left: 0;
-    width: 100vw;
-    height: calc(100vh - 68px);
+    width: 100%;
+    height: 100vh;
     background: #E1E5F5;
     flex-direction: column;
     gap: 0;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
-    z-index: 1000;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2000;
+    padding-top: 70px;
+    box-sizing: border-box;
   }
 
   .nav-menu.active {
-    max-height: calc(100vh - 68px);
-    padding: 1rem 0;
+    max-height: 100vh;
+    padding-top: 70px;
+    padding-bottom: 1rem;
+    overflow-y: auto;
   }
 
   .nav-menu li {
     width: 100%;
     border-bottom: 1px solid rgba(21, 20, 26, 0.05);
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
+
+  .nav-menu.active li {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .nav-menu.active li:nth-child(1) { transition-delay: 0.1s; }
+  .nav-menu.active li:nth-child(2) { transition-delay: 0.15s; }
+  .nav-menu.active li:nth-child(3) { transition-delay: 0.2s; }
+  .nav-menu.active li:nth-child(4) { transition-delay: 0.25s; }
+  .nav-menu.active li:nth-child(5) { transition-delay: 0.3s; }
+  .nav-menu.active li:nth-child(6) { transition-delay: 0.35s; }
 
   .nav-link {
     display: block;
-    padding: 1rem 2rem;
+    padding: 1.125rem 1.5rem;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .nav-link:hover {
+    background: rgba(75, 90, 255, 0.08);
   }
 
   .nav-link::after {
@@ -189,16 +252,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 1rem;
   }
 
   .nav-menu li:last-child a {
     display: flex !important;
-    margin: 1rem 2rem 0 2rem;
-    padding: 0.75rem 1rem;
+    margin: 0 1.5rem;
+    padding: 0.875rem 1.5rem;
     text-align: center;
-    width: calc(100% - 4rem);
+    width: calc(100% - 3rem);
     box-sizing: border-box;
     justify-content: center;
+    font-size: 16px;
   }
 
   .btn-nav {
@@ -207,11 +272,70 @@
 
   .nav-menu li:last-child .btn-nav {
     display: flex !important;
-    width: 90%;
-    margin: 0;
-    padding: 0.75rem 1rem;
-    text-align: center;
-    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0.75rem 0.875rem;
+  }
+
+  .logo-link {
+    min-width: 80px;
+  }
+
+  .logo-link svg {
+    width: clamp(22px, 5vw, 28px);
+    height: clamp(32px, 7vw, 40px);
+  }
+
+  .tire-icon {
+    width: clamp(26px, 6vw, 28px);
+    height: clamp(26px, 6vw, 28px);
+  }
+
+  .nav-link {
+    padding: 1rem 1.25rem;
+    font-size: 15px;
+  }
+
+  .nav-menu li:last-child a {
+    margin: 0 1.25rem;
+    padding: 0.75rem 1.25rem;
+    width: calc(100% - 2.5rem);
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 360px) {
+  .navbar-container {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .logo-link {
+    min-width: 70px;
+  }
+
+  .logo-link svg {
+    width: 20px;
+    height: 30px;
+  }
+
+  .tire-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .nav-link {
+    padding: 0.875rem 1rem;
+    font-size: 14px;
+  }
+
+  .nav-menu li:last-child a {
+    margin: 0 1rem;
+    padding: 0.625rem 1rem;
+    width: calc(100% - 2rem);
+    font-size: 14px;
   }
 }
 

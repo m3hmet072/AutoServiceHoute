@@ -1,4 +1,4 @@
-function M(){document.body.insertAdjacentHTML("afterbegin",`<nav class="navbar">
+function n(){document.body.insertAdjacentHTML("afterbegin",`<nav class="navbar">
       <div class="navbar-container">
         <a href="/" class="logo-link">
           <svg width="32" height="46" viewBox="0 0 32 46" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -71,4 +71,4 @@ function M(){document.body.insertAdjacentHTML("afterbegin",`<nav class="navbar">
 
         <a href="#contact" class="btn btn-primary btn-nav">Afspraak Inplanen</a>
       </div>
-    </nav>`);const C=document.getElementById("hamburger"),l=document.getElementById("navMenu");C&&l&&(C.addEventListener("click",()=>{C.classList.toggle("active"),l.classList.toggle("active")}),document.querySelectorAll(".nav-link").forEach(a=>{a.addEventListener("click",()=>{C.classList.remove("active"),l.classList.remove("active")})}))}export{M as l};
+    </nav>`);const l=document.getElementById("hamburger"),C=document.getElementById("navMenu");if(l&&C){l.addEventListener("click",()=>{const a=l.classList.toggle("active");C.classList.toggle("active"),a?document.body.style.overflow="hidden":document.body.style.overflow=""}),document.querySelectorAll(".nav-link").forEach(a=>{a.addEventListener("click",()=>{l.classList.remove("active"),C.classList.remove("active"),document.body.style.overflow=""})}),document.addEventListener("click",a=>{C.classList.contains("active")&&!C.contains(a.target)&&!l.contains(a.target)&&(l.classList.remove("active"),C.classList.remove("active"),document.body.style.overflow="")});let t;window.addEventListener("resize",()=>{clearTimeout(t),t=setTimeout(()=>{window.innerWidth>900&&C.classList.contains("active")&&(l.classList.remove("active"),C.classList.remove("active"),document.body.style.overflow="")},250)})}}export{n as l};

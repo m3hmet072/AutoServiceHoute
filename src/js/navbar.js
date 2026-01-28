@@ -84,8 +84,15 @@ export function loadNavbar() {
 
   if (hamburger && navMenu) {
     hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('active')
+      const isActive = hamburger.classList.toggle('active')
       navMenu.classList.toggle('active')
+      
+      // Prevent body scroll when menu is open on mobile
+      if (isActive) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = ''
+      }
     })
 
     // Close menu when clicking on a link
@@ -93,7 +100,32 @@ export function loadNavbar() {
       link.addEventListener('click', () => {
         hamburger.classList.remove('active')
         navMenu.classList.remove('active')
+        document.body.style.overflow = ''
       })
+    })
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (navMenu.classList.contains('active') && 
+          !navMenu.contains(e.target) && 
+          !hamburger.contains(e.target)) {
+        hamburger.classList.remove('active')
+        navMenu.classList.remove('active')
+        document.body.style.overflow = ''
+      }
+    })
+
+    // Handle window resize - close menu and reset body scroll if switching from mobile to desktop
+    let resizeTimer
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(() => {
+        if (window.innerWidth > 900 && navMenu.classList.contains('active')) {
+          hamburger.classList.remove('active')
+          navMenu.classList.remove('active')
+          document.body.style.overflow = ''
+        }
+      }, 250)
     })
   }
 }
