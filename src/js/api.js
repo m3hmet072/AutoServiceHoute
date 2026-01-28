@@ -21,9 +21,6 @@ const getApiBaseUrl = () => {
 
 const API_BASE_URL = getApiBaseUrl();
 
-// Log current API endpoint (remove in production)
-console.log('API Endpoint:', API_BASE_URL);
-
 // ============= APPOINTMENTS API =============
 
 export async function fetchAppointments() {
