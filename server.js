@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import compression from 'compression';
 
 // Load environment variables
 dotenv.config();
@@ -24,6 +25,7 @@ const PORT = process.env.PORT || 3001;
 // Middleware - CORS configuration
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://localhost:5174',
   'http://localhost:3000',
   'http://127.0.0.1:5173',
   'https://m3hmet072.github.io',
@@ -35,6 +37,11 @@ app.use(cors({
   origin: function(origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
+    
+    // Allow GitHub Codespaces domains
+    if (origin && origin.includes('app.github.dev')) {
+      return callback(null, true);
+    }
     
     if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
       callback(null, true);
@@ -51,6 +58,48 @@ app.use(cors({
 
 // Handle preflight requests
 app.options('*', cors());
+
+// Additional CORS headers middleware for Codespaces
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  
+  // Allow all Codespaces domains and other allowed origins
+  if (origin && (origin.includes('app.github.dev') || 
+      origin.includes('github.io') || 
+      origin.includes('autoservicehoute.nl') ||
+      origin.includes('localhost'))) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.setHeader('Access-Control-Allow-Credentials', 'false');
+  }
+  
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+// Enable gzip compression
+app.use(compression());
+
+// Cache static assets for 1 year
+app.use(express.static('public', {
+  maxAge: '1y',
+  etag: true,
+  lastModified: true,
+  setHeaders: (res, path) => {
+    if (path.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'public, max-age=3600'); // 1 hour for HTML
+    } else if (path.match(/\.(jpg|jpeg|png|gif|svg|webp)$/)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable'); // 1 year for images
+    } else if (path.match(/\.(css|js)$/)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable'); // 1 year for CSS/JS
+    }
+  }
+}));
 
 app.use(express.json());
 

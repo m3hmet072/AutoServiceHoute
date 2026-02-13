@@ -8,6 +8,8 @@ export default defineConfig({
     outDir: 'docs',
     assetsDir: 'assets',
     emptyOutDir: true,
+    minify: 'esbuild',
+    cssMinify: true,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
@@ -18,7 +20,8 @@ export default defineConfig({
         occasions: resolve(__dirname, 'occasions.html'),
         dashboard: resolve(__dirname, 'dashboard.html'),
         login: resolve(__dirname, 'login.html')
-      }
-    }
+      },
+    },
+    chunkSizeWarningLimit: 1000
   }
 })

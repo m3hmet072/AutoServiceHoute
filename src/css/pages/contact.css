@@ -18,7 +18,7 @@
   opacity: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 9999;
-  font-family: 'Comfortaa', cursive;
+  font-family: 'Inter', sans-serif;
 }
 
 .custom-toast.show {
@@ -66,19 +66,19 @@
   height: 16px;
 }
 
-/* Success Toast (Green) */
+/* Success Toast */
 .custom-toast.toast-success .toast-icon {
   background: #10b981;
   color: white;
 }
 
-/* Error Toast (Red) */
+/* Error Toast */
 .custom-toast.toast-error .toast-icon {
   background: #ef4444;
   color: white;
 }
 
-/* Warning Toast (Orange/Yellow) */
+/* Warning Toast */
 .custom-toast.toast-warning .toast-icon {
   background: #f59e0b;
   color: white;
@@ -100,41 +100,43 @@
   }
 }
 
+/* Kenteken Status */
 .kenteken-status {
   display: block;
   margin-top: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 
 .kenteken-status.checking {
-  color: #666;
+  color: rgba(225, 229, 245, 0.6);
 }
 
 .kenteken-status.valid {
-  color: #28a745;
+  color: #10b981;
 }
 
 .kenteken-status.invalid {
-  color: #dc3545;
+  color: #ef4444;
 }
 
 .kenteken-status.error {
-  color: #ffc107;
+  color: #f59e0b;
 }
 
+/* Vehicle Info Display */
 .vehicle-info {
-  background: rgba(225, 229, 245, 0.1);
-  border: 1px solid rgba(225, 229, 245, 0.2);
-  border-radius: 6px;
-  padding: clamp(0.75rem, 1.5vw, 1rem);
-  margin-bottom: 1rem;
+  background: rgba(225, 229, 245, 0.08);
+  border: 1px solid rgba(225, 229, 245, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.5rem;
 }
 
 .vehicle-info p {
   margin: 0.5rem 0;
-  font-size: 14px;
-  color: #E1E5F5;
+  font-size: 13px;
+  color: rgba(225, 229, 245, 0.8);
 }
 
 .vehicle-info strong {
@@ -143,14 +145,14 @@
   font-weight: 600;
 }
 
-#submit-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .vehicle-info {
-    font-size: 0.9rem;
+    font-size: 12px;
+    padding: 0.875rem;
+  }
+  
+  .vehicle-info p {
+    font-size: 12px;
   }
 }

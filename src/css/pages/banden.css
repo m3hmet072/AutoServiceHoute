@@ -2,6 +2,8 @@
 .banden-page {
   min-height: 100vh;
   background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* Service Card Hover Effects */
@@ -28,25 +30,38 @@
   /* Make service cards stack better on mobile */
   .service-card {
     min-width: 100%;
+    padding: clamp(1.25rem, 3vw, 1.5rem) !important;
   }
 
   /* Adjust contact buttons on mobile */
   .contact-buttons {
     width: 100%;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .contact-buttons a {
+    width: 100%;
+    text-align: center;
   }
 }
 
 @media (max-width: 480px) {
   /* Further optimize for very small screens */
   .offer-card {
-    padding: 20px !important;
+    padding: clamp(1rem, 3vw, 1.25rem) !important;
   }
   
   .service-card {
-    padding: 20px !important;
+    padding: clamp(1rem, 3vw, 1.25rem) !important;
   }
 
   .benefit-card {
-    padding: 20px !important;
+    padding: clamp(1rem, 3vw, 1.25rem) !important;
+  }
+
+  .contact-buttons a {
+    padding: 0.75rem 1rem;
+    font-size: 14px;
   }
 }

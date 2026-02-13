@@ -75,6 +75,29 @@ function formatKenteken(kenteken) {
   return kenteken.replace(/[-\s]/g, '').toUpperCase();
 }
 
+// Auto-format kenteken as user types (XX-123-XX format)
+function autoFormatKenteken(input) {
+  let value = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  
+  if (value.length > 6) {
+    // Format: XX-123-XX or similar patterns
+    if (/^[A-Z]{2}[0-9]{2}/.test(value)) {
+      value = value.substring(0, 2) + '-' + value.substring(2, 4) + '-' + value.substring(4, 6);
+    } else if (/^[0-9]{2}[A-Z]{2}/.test(value)) {
+      value = value.substring(0, 2) + '-' + value.substring(2, 4) + '-' + value.substring(4, 6);
+    } else if (/^[A-Z]{2}[0-9]{3}/.test(value)) {
+      value = value.substring(0, 2) + '-' + value.substring(2, 5) + '-' + value.substring(5, 6);
+    } else {
+      // Generic format
+      value = value.substring(0, 2) + '-' + value.substring(2, 5) + '-' + value.substring(5, 7);
+    }
+  } else if (value.length > 2) {
+    value = value.substring(0, 2) + '-' + value.substring(2);
+  }
+  
+  input.value = value.substring(0, 9); // Max length with dashes
+}
+
 // Validate kenteken with RDW API
 async function validateKenteken(kenteken) {
   const formatted = formatKenteken(kenteken);
@@ -89,7 +112,7 @@ async function validateKenteken(kenteken) {
   }
   
   try {
-    statusEl.textContent = '⏳ Kenteken controleren...';
+    statusEl.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-11a1 1 0 112 0v4a1 1 0 11-2 0V7zm1 6a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd"/></svg> Kenteken controleren...';
     statusEl.className = 'kenteken-status checking';
     
     // RDW Open Data API
@@ -110,7 +133,7 @@ async function validateKenteken(kenteken) {
     
     if (data && data.length > 0) {
       vehicleData = data[0];
-      statusEl.textContent = '✓ Kenteken gevonden in RDW';
+      statusEl.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Kenteken gevonden';
       statusEl.className = 'kenteken-status valid';
       
       // Display vehicle information
@@ -129,7 +152,7 @@ async function validateKenteken(kenteken) {
       vehicleInfo.style.display = 'block';
       return true;
     } else {
-      statusEl.textContent = '✗ Kenteken niet gevonden in RDW database';
+      statusEl.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg> Kenteken niet gevonden';
       statusEl.className = 'kenteken-status invalid';
       vehicleInfo.style.display = 'none';
       vehicleData = null;
@@ -137,7 +160,7 @@ async function validateKenteken(kenteken) {
     }
   } catch (error) {
     console.error('Error validating kenteken:', error);
-    statusEl.textContent = '⚠ Fout bij het controleren van kenteken';
+    statusEl.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Controleer uw kenteken';
     statusEl.className = 'kenteken-status error';
     vehicleInfo.style.display = 'none';
     return false;
@@ -207,9 +230,20 @@ async function saveToAdminDashboard(formData) {
     
     // Try to save to database via API
     try {
-      const API_URL = window.location.hostname === 'm3hmet072.github.io' || window.location.hostname === 'autoservicehoute.nl'
-        ? 'https://autoservicehoute-production.up.railway.app/api'
-        : 'http://localhost:3001/api';
+      const isProduction = window.location.hostname === 'm3hmet072.github.io' || window.location.hostname === 'autoservicehoute.nl';
+      const isCodespaces = window.location.hostname.includes('app.github.dev');
+      
+      let API_URL;
+      if (isProduction) {
+        API_URL = 'https://autoservicehoute-production.up.railway.app/api';
+      } else if (isCodespaces) {
+        // For GitHub Codespaces, use the forwarded port URL
+        const baseUrl = window.location.hostname.replace('-5173', '-3001');
+        API_URL = `https://${baseUrl}/api`;
+      } else {
+        // Use localhost for local dev
+        API_URL = 'http://localhost:3001/api';
+      }
       
       console.log('Attempting to save email to:', `${API_URL}/emails`);
       
@@ -259,11 +293,28 @@ export function initContactForm() {
   // Debounced kenteken validation
   const debouncedValidate = debounce(async (kenteken) => {
     await validateKenteken(kenteken);
-  }, 500);
+  }, 300);
   
   // Listen to kenteken input changes
   kentekenInput.addEventListener('input', (e) => {
-    debouncedValidate(e.target.value);
+    autoFormatKenteken(e.target);
+    const formatted = formatKenteken(e.target.value);
+    
+    // Start searching immediately when we have any character
+    if (formatted.length >= 1) {
+      debouncedValidate(e.target.value);
+    } else {
+      // Clear status if empty
+      const statusEl = document.getElementById('kenteken-status');
+      const vehicleInfo = document.getElementById('vehicle-info');
+      if (statusEl) {
+        statusEl.textContent = '';
+        statusEl.className = 'kenteken-status';
+      }
+      if (vehicleInfo) {
+        vehicleInfo.style.display = 'none';
+      }
+    }
   });
   
   // Handle form submission

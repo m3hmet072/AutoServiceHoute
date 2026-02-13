@@ -10,6 +10,12 @@ const getApiBaseUrl = () => {
     return 'https://autoservicehoute-production.up.railway.app/api';
   }
   
+  // Check if we're on GitHub Codespaces
+  if (window.location.hostname.includes('app.github.dev')) {
+    const baseUrl = window.location.hostname.replace('-5173', '-3001');
+    return `https://${baseUrl}/api`;
+  }
+  
   // Check if we're on localhost
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3001/api';
