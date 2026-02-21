@@ -1,4 +1,4 @@
-import{t as f,s as u}from"./api-D05Ix88Y.js";function Z(){document.body.insertAdjacentHTML("afterbegin",`<nav class="navbar">
+import{t as f,s as u}from"./api-DOQVHmw1.js";function Z(){document.body.insertAdjacentHTML("afterbegin",`<nav class="navbar">
       <div class="navbar-container">
         <a href="/" class="logo-link">
           <div class="logo-text">

@@ -38,22 +38,17 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   
   <!-- Existing Links -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Inter:wght@300;400;500;600;700&family=Titan+One&display=swap"
-    rel="stylesheet"
-    media="print"
-    onload="this.media='all'">
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" defer></script>
-  <script type="module" crossorigin src="/assets/main-DjMdF2cj.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/base-DDYcgz68.js">
-  <link rel="modulepreload" crossorigin href="/assets/api-D05Ix88Y.js">
-  <link rel="modulepreload" crossorigin href="/assets/landing-tracker-Chs6PZhM.js">
-  <link rel="modulepreload" crossorigin href="/assets/contact-form-CIj8IYzY.js">
-  <link rel="stylesheet" crossorigin href="/assets/base-DTz_vKyG.css">
-  <link rel="stylesheet" crossorigin href="/assets/api-BWk7knP_.css">
-  <link rel="stylesheet" crossorigin href="/assets/landing-tracker-DPyXdZdd.css">
-  <link rel="stylesheet" crossorigin href="/assets/main-BN_Tf6sA.css">
-  <link rel="stylesheet" crossorigin href="/assets/home-i88NQXqL.css">
+  <script type="module" crossorigin src="/assets/main-Cj54oJ16.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/base-DE2XCYnY.js">
+  <link rel="modulepreload" crossorigin href="/assets/api-DOQVHmw1.js">
+  <link rel="modulepreload" crossorigin href="/assets/landing-tracker-B4_0zUzg.js">
+  <link rel="modulepreload" crossorigin href="/assets/contact-form-BkZgo4_2.js">
+  <link rel="stylesheet" crossorigin href="/assets/base-BCgs0S0x.css">
+  <link rel="stylesheet" crossorigin href="/assets/api-0kM2nXcs.css">
+  <link rel="stylesheet" crossorigin href="/assets/landing-tracker-Bp6orlYN.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-ClELZ2l5.css">
+  <link rel="stylesheet" crossorigin href="/assets/home-DcwxYaEI.css">
 </head>
 
 <body>
@@ -128,23 +123,45 @@
                 <small id="kenteken-status" class="kenteken-status"></small>
               </div>
               <div id="vehicle-info" class="vehicle-info" style="display: none;">
-                <p><strong>Merk:</strong> <span id="merk"></span></p>
-                <p><strong>Model:</strong> <span id="handelsbenaming"></span></p>
-                <p><strong>Bouwjaar:</strong> <span id="datum_eerste_toelating"></span></p>
+                <h4 id="vehicle-title" class="vehicle-title">Onbekend voertuig</h4>
+                <div class="vehicle-details-grid">
+                  <div class="vehicle-detail-column">
+                    <div class="vehicle-detail-item">
+                      <span class="vehicle-detail-label">Bouwjaar</span>
+                      <span id="vehicle-bouwjaar" class="vehicle-detail-value">-</span>
+                    </div>
+                    <div class="vehicle-detail-item">
+                      <span class="vehicle-detail-label">Kleur</span>
+                      <span id="vehicle-kleur" class="vehicle-detail-value">-</span>
+                    </div>
+                  </div>
+                  <div class="vehicle-detail-column">
+                    <div class="vehicle-detail-item">
+                      <span class="vehicle-detail-label">Je APK verloopt op</span>
+                      <span id="vehicle-apk" class="vehicle-detail-value">-</span>
+                    </div>
+                    <div class="vehicle-detail-item">
+                      <span class="vehicle-detail-label">Brandstof</span>
+                      <span id="vehicle-brandstof" class="vehicle-detail-value">-</span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <label>Onderwerp *</label>
-                <select name="onderwerp" required>
-                  <option value="">Kies een onderwerp</option>
-                  <option value="APK">APK</option>
-                  <option value="Banden">Banden</option>
-                  <option value="Onderhoud">Onderhoud</option>
-                  <option value="Airconditioning">Airconditioning</option>
-                </select>
+                <fieldset class="subject-options" id="onderwerp-options" aria-label="Onderwerp selectie">
+                  <label class="subject-option"><input type="checkbox" name="onderwerp" value="APK"><span>APK</span></label>
+                  <label class="subject-option"><input type="checkbox" name="onderwerp" value="Banden"><span>Banden</span></label>
+                  <label class="subject-option"><input type="checkbox" name="onderwerp" value="Onderhoud"><span>Onderhoud</span></label>
+                  <label class="subject-option"><input type="checkbox" name="onderwerp" value="Airconditioning"><span>Airconditioning</span></label>
+                  <label class="subject-option"><input type="checkbox" name="onderwerp" value="Kleine beurt"><span>Kleine beurt</span></label>
+                  <label class="subject-option"><input type="checkbox" name="onderwerp" value="Grote beurt"><span>Grote beurt</span></label>
+                </fieldset>
+                <small id="onderwerp-status" class="onderwerp-status"></small>
               </div>
               <div class="form-group">
-                <label>E-mail adres *</label>
-                <input type="email" name="email" placeholder="uw@email.com" required>
+                <label>E-mail adres (optioneel)</label>
+                <input type="email" name="email" placeholder="uw@email.com">
               </div>
               <div class="form-group">
                 <label>Telefoonnummer *</label>
@@ -168,7 +185,10 @@
         <!-- Logo Section -->
         <div class="footer-logo-section">
           <a href="index.html" class="footer-logo">
-            🔧 <span class="footer-logo-text">AutoService Houte</span>
+         <div class="logo-text" style="color:white; font-weight: 500;">
+            <div class="logo-line1">Autoservice</div>
+            <div class="logo-line2">houte</div>
+          </div>
           </a>
           <p class="footer-description">
             Uw vertrouwde partner voor professionele autoservice in Heemskerk.

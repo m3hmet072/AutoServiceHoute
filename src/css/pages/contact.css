@@ -18,7 +18,6 @@
   opacity: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 9999;
-  font-family: 'Inter', sans-serif;
 }
 
 .custom-toast.show {
@@ -133,16 +132,106 @@
   margin-top: 0.5rem;
 }
 
-.vehicle-info p {
-  margin: 0.5rem 0;
-  font-size: 13px;
-  color: rgba(225, 229, 245, 0.8);
+.vehicle-title {
+  margin: 0 0 0.85rem;
+  color: #E1E5F5;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
-.vehicle-info strong {
+.vehicle-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+}
+
+.vehicle-detail-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.vehicle-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.vehicle-detail-label {
+  color: rgba(225, 229, 245, 0.72);
+  font-size: 12px;
+}
+
+.vehicle-detail-value {
   color: #E1E5F5;
-  margin-right: 0.5rem;
+  font-size: 14px;
   font-weight: 600;
+}
+
+.subject-options {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.subject-option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  background: rgba(225, 229, 245, 0.08);
+  border: 1px solid rgba(225, 229, 245, 0.2);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  color: #E1E5F5;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.subject-option input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.subject-option span {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.subject-option:has(input[type="checkbox"]:checked) {
+  border-color: #FF521B;
+  background: rgba(255, 82, 27, 0.16);
+}
+
+.subject-option:has(input[type="checkbox"]:focus-visible) {
+  outline: 2px solid rgba(255, 82, 27, 0.8);
+  outline-offset: 2px;
+}
+
+.subject-option:hover {
+  border-color: rgba(255, 82, 27, 0.6);
+}
+
+.onderwerp-status {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #ef4444;
 }
 
 /* Responsive adjustments */
@@ -152,7 +241,11 @@
     padding: 0.875rem;
   }
   
-  .vehicle-info p {
-    font-size: 12px;
+  .vehicle-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .subject-options {
+    grid-template-columns: 1fr;
   }
 }

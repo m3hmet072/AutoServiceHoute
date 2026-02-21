@@ -1,7 +1,6 @@
 /* Navbar Styles */
 .navbar {
   background: #f1f1f1;
-  ;
   position: fixed;
   top: 0;
   top: 0;
@@ -34,7 +33,7 @@
 
 .logo-text {
   font-family: 'Titan One', cursive;
-  color: #15141A;
+  color: #05060F;
   line-height: 1;
   text-transform: capitalize;
 }
@@ -59,7 +58,7 @@
 }
 
 .nav-link {
-  color: #15141A;
+  color: #05060F;
   text-decoration: none;
   font-weight: 500;
   font-size: 14px;

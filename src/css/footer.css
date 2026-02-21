@@ -1,11 +1,12 @@
 /* Footer Styles */
 footer {
   color: #989898;
-  background: #141516;
+  background: #05060F;
   padding: 80px 0 40px;
   border-top: 1px solid rgba(75, 90, 255, 0.1);
   margin-top: auto;
   position: relative;
+
   overflow: hidden;
 }
 

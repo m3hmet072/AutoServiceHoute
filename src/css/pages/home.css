@@ -9,6 +9,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+
   justify-content: center;
 }
 
@@ -314,7 +315,9 @@
   font-size: 48px;
   text-align: center;
   margin-bottom: clamp(0.25rem, 1vw, 0.5rem);
+  letter-spacing: -5%;
   color: #15141A;
+  font-weight: 900;
 }
 
 .contact .section-subtitle {
@@ -409,7 +412,7 @@
   display: block;
   margin-bottom: clamp(0.35rem, 1vw, 0.5rem);
   color: #E1E5F5;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 14px;
 }
 
@@ -424,7 +427,6 @@
   color: #E1E5F5;
   font-size: 14px;
   transition: all 0.2s ease;
-  font-family: 'Comfortaa', cursive;
 }
 
 .form-group input:focus,
@@ -451,6 +453,9 @@
 
 .contact-form .btn {
   width: 100%;
+  font-family: "Google Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 

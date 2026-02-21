@@ -75,6 +75,27 @@ function formatKenteken(kenteken) {
   return kenteken.replace(/[-\s]/g, '').toUpperCase();
 }
 
+function formatRdwDate(dateValue) {
+  if (!dateValue || dateValue.length !== 8) {
+    return 'Onbekend';
+  }
+
+  return `${dateValue.substring(6, 8)}-${dateValue.substring(4, 6)}-${dateValue.substring(0, 4)}`;
+}
+
+function getBouwjaar(vehicle) {
+  if (!vehicle || !vehicle.datum_eerste_toelating || vehicle.datum_eerste_toelating.length < 4) {
+    return 'Onbekend';
+  }
+
+  return vehicle.datum_eerste_toelating.substring(0, 4);
+}
+
+function getSelectedOnderwerpen(formElement) {
+  const formData = new FormData(formElement);
+  return formData.getAll('onderwerp').map((value) => value.toString().trim()).filter(Boolean);
+}
+
 // Auto-format kenteken as user types (XX-123-XX format)
 function autoFormatKenteken(input) {
   let value = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
@@ -136,18 +157,19 @@ async function validateKenteken(kenteken) {
       statusEl.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Kenteken gevonden';
       statusEl.className = 'kenteken-status valid';
       
-      // Display vehicle information
-      document.getElementById('merk').textContent = vehicleData.merk || 'Onbekend';
-      document.getElementById('handelsbenaming').textContent = vehicleData.handelsbenaming || 'Onbekend';
-      
-      // Format date if available
-      if (vehicleData.datum_eerste_toelating) {
-        const date = vehicleData.datum_eerste_toelating;
-        const formatted_date = `${date.substring(6, 8)}-${date.substring(4, 6)}-${date.substring(0, 4)}`;
-        document.getElementById('datum_eerste_toelating').textContent = formatted_date;
-      } else {
-        document.getElementById('datum_eerste_toelating').textContent = 'Onbekend';
-      }
+      const merk = vehicleData.merk || 'Onbekend merk';
+      const model = vehicleData.handelsbenaming || 'Onbekend model';
+      const voertuigNaam = `${merk} ${model}`.trim();
+      const bouwjaar = getBouwjaar(vehicleData);
+      const apkVervalt = formatRdwDate(vehicleData.vervaldatum_apk);
+      const kleur = vehicleData.eerste_kleur || 'Onbekend';
+      const brandstof = vehicleData.brandstof_omschrijving || 'Onbekend';
+
+      document.getElementById('vehicle-title').textContent = voertuigNaam;
+      document.getElementById('vehicle-bouwjaar').textContent = bouwjaar;
+      document.getElementById('vehicle-apk').textContent = apkVervalt;
+      document.getElementById('vehicle-kleur').textContent = kleur;
+      document.getElementById('vehicle-brandstof').textContent = brandstof;
       
       vehicleInfo.style.display = 'block';
       return true;
@@ -191,7 +213,7 @@ async function sendEmail(formData) {
   const templateParams = {
     name: formData.naam,
     subject: formData.onderwerp,
-    email: formData.email,
+    email: formData.email || 'Niet opgegeven',
     phone: formData.telefoon,
     license: formData.kenteken,
     message: formData.bericht
@@ -285,10 +307,13 @@ export function initContactForm() {
   const form = document.getElementById('contact-form');
   const kentekenInput = document.getElementById('kenteken');
   const submitBtn = document.getElementById('submit-btn');
+  const onderwerpStatus = document.getElementById('onderwerp-status');
   
   if (!form || !kentekenInput) {
     return;
   }
+
+  const onderwerpCheckboxes = form.querySelectorAll('input[name="onderwerp"]');
   
   // Debounced kenteken validation
   const debouncedValidate = debounce(async (kenteken) => {
@@ -316,13 +341,50 @@ export function initContactForm() {
       }
     }
   });
+
+  onderwerpCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', () => {
+      if (!onderwerpStatus) {
+        return;
+      }
+
+      const selected = getSelectedOnderwerpen(form);
+      onderwerpStatus.textContent = selected.length > 0 ? '' : 'Selecteer minimaal één onderwerp.';
+    });
+  });
   
   // Handle form submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    const geselecteerdeOnderwerpen = getSelectedOnderwerpen(form);
+    const data = {
+      ...Object.fromEntries(formData.entries()),
+      onderwerp: geselecteerdeOnderwerpen.join(', ')
+    };
+
+    if (!data.naam || !data.naam.trim()) {
+      showToast('Vul uw naam in.', 'warning');
+      return;
+    }
+
+    if (!data.kenteken || !data.kenteken.trim()) {
+      showToast('Vul een kenteken in.', 'warning');
+      return;
+    }
+
+    if (geselecteerdeOnderwerpen.length === 0) {
+      if (onderwerpStatus) {
+        onderwerpStatus.textContent = 'Selecteer minimaal één onderwerp.';
+      }
+      showToast('Kies minimaal één onderwerp.', 'warning');
+      return;
+    }
+    
+    if (onderwerpStatus) {
+      onderwerpStatus.textContent = '';
+    }
     
     // Validate kenteken before submitting
     const isValid = await validateKenteken(data.kenteken);
@@ -348,6 +410,9 @@ export function initContactForm() {
         vehicleData = null;
         document.getElementById('kenteken-status').textContent = '';
         document.getElementById('vehicle-info').style.display = 'none';
+        if (onderwerpStatus) {
+          onderwerpStatus.textContent = '';
+        }
       } else {
         throw new Error('Failed to send email');
       }

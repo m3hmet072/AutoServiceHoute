@@ -1373,43 +1373,57 @@ class DashboardManager {
         </div>
       `;
     } else {
+      const serviceItems = (appointment.service || '')
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+      const serviceChips = serviceItems.length > 0
+        ? serviceItems.map((item) => `<span class="service-chip">${item}</span>`).join('')
+        : '<span class="detail-value">-</span>';
+
       modalBody.innerHTML = `
-        <div class="detail-grid">
-          <div class="detail-row">
+        <div class="appointment-detail-layout">
+          <div class="appointment-status-panel">
             <span class="detail-label">${this.translate('status')}</span>
             <span class="status-badge ${appointment.status}">${statusText}</span>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">${this.translate('name')}</span>
-            <span class="detail-value">${appointment.name}</span>
+
+          <div class="appointment-detail-grid">
+            <div class="appointment-detail-card">
+              <span class="detail-label">${this.translate('name')}</span>
+              <span class="detail-value">${appointment.name || '-'}</span>
+            </div>
+            <div class="appointment-detail-card">
+              <span class="detail-label">${this.translate('email')}</span>
+              <span class="detail-value">${appointment.email || '-'}</span>
+            </div>
+            <div class="appointment-detail-card">
+              <span class="detail-label">${this.translate('phone')}</span>
+              <span class="detail-value">${appointment.phone || '-'}</span>
+            </div>
+            <div class="appointment-detail-card">
+              <span class="detail-label">${this.translate('licensePlate')}</span>
+              <span class="detail-value">${appointment.kenteken || '-'}</span>
+            </div>
+            <div class="appointment-detail-card">
+              <span class="detail-label">${this.translate('date')}</span>
+              <span class="detail-value">${formattedDate}</span>
+            </div>
+            <div class="appointment-detail-card">
+              <span class="detail-label">${this.translate('time')}</span>
+              <span class="detail-value">${appointment.time || '-'}</span>
+            </div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">${this.translate('email')}</span>
-            <span class="detail-value">${appointment.email || '-'}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">${this.translate('phone')}</span>
-            <span class="detail-value">${appointment.phone || '-'}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">${this.translate('licensePlate')}</span>
-            <span class="detail-value">${appointment.kenteken || '-'}</span>
-          </div>
-          <div class="detail-row">
+
+          <div class="appointment-detail-card">
             <span class="detail-label">${this.translate('service')}</span>
-            <span class="detail-value">${appointment.service || '-'}</span>
+            <div class="service-chip-list">${serviceChips}</div>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">${this.translate('date')}</span>
-            <span class="detail-value">${formattedDate}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">${this.translate('time')}</span>
-            <span class="detail-value">${appointment.time}</span>
-          </div>
-          <div class="detail-row">
+
+          <div class="appointment-detail-card">
             <span class="detail-label">${this.translate('message')}</span>
-            <div class="detail-value message-box">${appointment.notes || ''}</div>
+            <div class="detail-value message-box">${appointment.notes || '-'}</div>
           </div>
         </div>
         
