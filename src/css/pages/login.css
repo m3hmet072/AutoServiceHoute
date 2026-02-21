@@ -5,7 +5,7 @@
   padding: 0;
   min-height: 100vh;
   background: #F5F7FA;
-  font-family: 'Manrope', sans-serif;
+  font-family: "Google Sans", sans-serif;
   overflow: hidden;
 }
 
@@ -42,7 +42,7 @@
 }
 
 .login-logo span {
-  font-family: 'Comfortaa', sans-serif;
+  font-family: "Google Sans", sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
   color: #15141A;
@@ -78,7 +78,7 @@
   color: white;
   font-size: 0.95rem;
   font-weight: 600;
-  font-family: 'Manrope', sans-serif;
+  font-family: "Google Sans", sans-serif;
   border-radius: 12px;
   cursor: default;
   transition: all 0.2s ease;
@@ -115,7 +115,7 @@
   border: 1px solid #E5E7EB;
   border-radius: 12px;
   font-size: 0.95rem;
-  font-family: 'Manrope', sans-serif;
+  font-family: "Google Sans", sans-serif;
   background: #F9FAFB;
   transition: all 0.2s ease;
 }
@@ -218,7 +218,7 @@
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
-  font-family: 'Manrope', sans-serif;
+  font-family: "Google Sans", sans-serif;
   cursor: pointer;
   transition: all 0.2s ease;
   margin-top: 0.5rem;

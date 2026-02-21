@@ -34,6 +34,7 @@ footer {
 
 .footer-logo {
   font-size: 28px;
+  font-family: "Titan One", sans-serif;
   font-weight: 700;
   color: #ffffff;
   text-decoration: none;
@@ -50,6 +51,7 @@ footer {
 }
 
 .footer-logo-text {
+  font-family: "Titan One", sans-serif;
   color: #ffffff;
 }
 

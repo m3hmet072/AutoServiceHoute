@@ -424,6 +424,7 @@
   background: rgba(225, 229, 245, 0.1);
   border: 1px solid rgba(225, 229, 245, 0.2);
   border-radius: 6px;
+    font-family: "Google Sans", sans-serif;
   color: #E1E5F5;
   font-size: 14px;
   transition: all 0.2s ease;
