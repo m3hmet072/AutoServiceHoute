@@ -2951,6 +2951,10 @@
     padding: 1.25rem;
   }
 
+  .appointments-overview-head span {
+    font-size: 0.875rem;
+  }
+
   .email-actions {
     width: 100%;
   }
@@ -3042,6 +3046,11 @@
   .email-col-actions .email-actions {
     justify-content: flex-start;
     margin-top: 0.25rem;
+  }
+
+  .dashboard-card-header {
+    flex-wrap: wrap;
+    gap: 0.65rem;
   }
 }
 

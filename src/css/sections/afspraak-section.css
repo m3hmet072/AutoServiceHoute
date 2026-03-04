@@ -40,6 +40,7 @@
   max-width: 1200px;
   margin: 0 auto;
   align-items: center;
+ 
 }
 
 
@@ -321,6 +322,41 @@
   color: #101010;
   font-size: 14px;
   font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .appointment {
+    padding: 32px 0 56px;
+  }
+
+  .appointment-grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .appointment-right {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .appointment-left h2 {
+    font-size: 30px;
+  }
+
+  .appointment-right {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .appointment-right .vehicle-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .appointment-right .vehicle-detail-column {
+    gap: 8px;
+  }
 }
 
 .appointment-right .onderwerp-status {

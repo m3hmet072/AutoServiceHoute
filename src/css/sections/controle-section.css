@@ -12,6 +12,8 @@
   gap: 5px;
   align-items: center;
   text-align: center;
+  width: 100%;
+  max-width: 1200px;
 }
 
 /* modifier for optional section background; styled via class instead of inline color
@@ -23,6 +25,7 @@
   width: 100%;
   border-radius: 32px;
   max-width: 1200px;
+  padding-inline: 30px;
   border: 1px solid rgba(0, 130, 251, 0.2);
 }
 
@@ -59,8 +62,9 @@
 
 .controle-grid {
   display: grid;
-  grid-template-columns: repeat(var(--cols, 4), 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
+  width: 100%;
 }
 
 .control-item {
@@ -96,4 +100,30 @@
   max-width: 150px;
   text-align: left;
   color: #101010;
+}
+
+@media (max-width: 768px) {
+  .controle-section {
+    padding: 72px 10px;
+  }
+
+  .controle-section.bg,
+  .controle-section.has-bg {
+    border-radius: 20px;
+    padding-inline: 10px;
+  }
+
+  .controle-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .control-item {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 520px) {
+  .controle-grid {
+    grid-template-columns: 1fr;
+  }
 }

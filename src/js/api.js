@@ -329,10 +329,33 @@ export async function trackVisitor(deviceInfo) {
 
   const now = toUtcIso();
 
-  if (deviceInfo?.isNewSession) {
+  const sessionId = deviceInfo?.sessionId;
+  const visitorId = deviceInfo?.visitorId || `legacy_${sessionId}`;
+
+  if (!sessionId) {
+    return {
+      success: false,
+      skipped: true,
+      reason: 'missing_session_id',
+      visitorId,
+      sessionId: null
+    };
+  }
+
+  const { data: existingSession, error: existingSessionError } = await client
+    .from('visitor_sessions')
+    .select('session_id, first_seen')
+    .eq('session_id', sessionId)
+    .maybeSingle();
+
+  if (existingSessionError) {
+    throw existingSessionError;
+  }
+
+  if (!existingSession) {
     const payload = {
-      session_id: deviceInfo?.sessionId,
-      visitor_id: deviceInfo?.visitorId || `legacy_${deviceInfo?.sessionId}`,
+      session_id: sessionId,
+      visitor_id: visitorId,
       page: window.location.pathname,
       user_agent: navigator.userAgent,
       referrer: document.referrer || 'direct',
@@ -348,16 +371,37 @@ export async function trackVisitor(deviceInfo) {
       session_duration: 0
     };
 
-    const { error } = await client.from('visitor_sessions').insert(payload);
-    if (error && error.code !== '23505') {
-      throw error;
+    const { error: insertError } = await client.from('visitor_sessions').insert(payload);
+    if (insertError && insertError.code !== '23505') {
+      throw insertError;
+    }
+  } else {
+    const { error: updateError } = await client
+      .from('visitor_sessions')
+      .update({
+        visitor_id: visitorId,
+        page: window.location.pathname,
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || 'direct',
+        device_type: deviceInfo?.deviceType || null,
+        device_name: deviceInfo?.deviceName || null,
+        browser: deviceInfo?.browser || null,
+        os: deviceInfo?.os || null,
+        screen_resolution: deviceInfo?.screenResolution || null,
+        viewport: deviceInfo?.viewport || null,
+        last_seen: now
+      })
+      .eq('session_id', sessionId);
+
+    if (updateError) {
+      throw updateError;
     }
   }
 
   return {
     success: true,
-    visitorId: deviceInfo?.visitorId,
-    sessionId: deviceInfo?.sessionId
+    visitorId,
+    sessionId
   };
 }
 
@@ -370,6 +414,10 @@ export async function sendHeartbeat(visitorId, sessionId) {
   const now = new Date();
   const nowIso = now.toISOString();
 
+  if (!sessionId) {
+    return { success: false, skipped: true, reason: 'missing_session_id' };
+  }
+
   const { data: existing, error: fetchError } = await client
     .from('visitor_sessions')
     .select('first_seen')
@@ -377,6 +425,27 @@ export async function sendHeartbeat(visitorId, sessionId) {
     .single();
 
   if (fetchError) throw fetchError;
+
+  if (!existing) {
+    const { error: insertError } = await client
+      .from('visitor_sessions')
+      .insert({
+        session_id: sessionId,
+        visitor_id: visitorId || `legacy_${sessionId}`,
+        page: window.location.pathname,
+        user_agent: navigator.userAgent,
+        referrer: document.referrer || 'direct',
+        first_seen: nowIso,
+        last_seen: nowIso,
+        session_duration: 0
+      });
+
+    if (insertError && insertError.code !== '23505') {
+      throw insertError;
+    }
+
+    return { success: true };
+  }
 
   const startedAt = new Date(existing.first_seen);
   const duration = Math.max(0, Math.floor((now.getTime() - startedAt.getTime()) / 1000));
@@ -466,7 +535,7 @@ export async function fetchVisitorStats(startDate = null, endDate = null) {
     totalVisitors: totalVisitorSet.size,
     totalSessions: (totalRows || []).length,
     avgSessionDuration,
-    activeVisitors: new Set((activeRows || []).map((row) => row.visitor_id).filter(Boolean)).size
+    activeVisitors: new Set((activeRows || []).map((row) => row.visitor_id || row.session_id).filter(Boolean)).size
   };
 }
 

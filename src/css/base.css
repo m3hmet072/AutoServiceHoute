@@ -37,6 +37,15 @@
   box-sizing: border-box;
 }
 
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
 html {
   scroll-behavior: smooth;
   /* Responsive font size */
@@ -167,6 +176,7 @@ main {
   flex: 1;
   display: flex;
   gap: 100px;
+      padding: 0 20px;
   flex-direction: column;
 }body::selection{
   background: rgba(0, 130, 251, 0.15);
@@ -178,4 +188,42 @@ main {
   padding: 0 clamp(1rem, 3vw, 2rem);
   width: 100%;
   box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .main-container {
+    padding: 76px 20px 0;
+  }
+
+  main {
+    gap: 72px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    padding: 72px 14px 0;
+  }
+
+  .inner-main-container {
+    gap: 28px;
+  }
+
+  main {
+    gap: 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-container {
+    padding: 68px 10px 0;
+  }
+
+  .inner-main-container {
+    gap: 22px;
+  }
+
+  main {
+    gap: 44px;
+  }
 }

@@ -1,4 +1,4 @@
-import"./base-ocf6tOUh.js";/* empty css               */import"./api-B3fETs2y.js";import{l as t,r as o,a as i,b as s,c as r,i as n}from"./footer-section-JEYM759Y.js";import{r as d}from"./pricing-section-SmS46JZg.js";import{r as a}from"./stappen-section-BCA8J1aQ.js";function l(){const e=document.getElementById("score-section");e&&(e.innerHTML=`
+import"./base-DEg1Y3Il.js";/* empty css               */import"./api-CLM0aaL7.js";import{l as t,r as o,a as i,b as s,c as r,i as n}from"./footer-section-Dj78KfEy.js";import{r as d}from"./pricing-section-BfjaHvDW.js";import{r as a}from"./stappen-section-_hBGvEJ8.js";function l(){const e=document.getElementById("score-section");e&&(e.innerHTML=`
 <section class="stats-section">
   <div class="stat-card">
     <div class="stat-icon">

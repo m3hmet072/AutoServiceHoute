@@ -1,4 +1,4 @@
-import{c as x,t as B,s as M}from"./api-B3fETs2y.js";function E(e){const n=e;return`
+import{c as x,t as B,s as M}from"./api-CLM0aaL7.js";function E(e){const n=e;return`
 <nav class="navbar">
   <div class="navbar-container">
     <a href="${n}" class="logo-link">

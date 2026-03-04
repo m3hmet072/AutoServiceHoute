@@ -110,12 +110,26 @@
   z-index: 2001;
   background: none;
   border: none;
+  color: #101010;
+}
+
+.hamburger::before {
+  content: '☰';
+  color: #101010;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.hamburger.active::before {
+  content: '✕';
 }
 
 .tire-icon {
   width: clamp(32px, 6vw, 32px);
   height: clamp(32px, 6vw, 32px);
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  color: #101010;
 }
 
 .hamburger.active .tire-icon {
