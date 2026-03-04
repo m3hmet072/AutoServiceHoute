@@ -1,214 +1,520 @@
-// API configuration with environment detection
-const getApiBaseUrl = () => {
-  const isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV;
+import { createClient } from '@supabase/supabase-js';
 
-  // Check if we're on GitHub Pages
-  if (window.location.hostname === 'm3hmet072.github.io') {
-    return 'https://autoservicehoute-production.up.railway.app/api';
-  }
-  
-  // Check if we're on custom domain
-  if (window.location.hostname === 'autoservicehoute.nl') {
-    return 'https://autoservicehoute-production.up.railway.app/api';
-  }
-  
-  // In dev (localhost / Codespaces), use Vite proxy and same-origin /api
-  if (isDev && (window.location.hostname.includes('app.github.dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-    return '/api';
-  }
-  
-  // Default to Railway
-  return 'https://autoservicehoute-production.up.railway.app/api';
-};
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const API_BASE_URL = getApiBaseUrl();
+let supabase = null;
+let hasWarnedAboutMissingSupabase = false;
+
+if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+  supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+function getSupabaseClient() {
+  if (!supabase) {
+    throw new Error('Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+  }
+  return supabase;
+}
+
+function getSupabaseClientOptional() {
+  if (!supabase) {
+    if (!hasWarnedAboutMissingSupabase) {
+      console.warn('Supabase is not configured yet. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to enable persistence.');
+      hasWarnedAboutMissingSupabase = true;
+    }
+    return null;
+  }
+  return supabase;
+}
+
+function toUtcIso(value = new Date()) {
+  return value instanceof Date ? value.toISOString() : new Date(value).toISOString();
+}
+
+function toDateKey(value) {
+  return new Date(value).toISOString().split('T')[0];
+}
 
 // ============= APPOINTMENTS API =============
 
 export async function fetchAppointments() {
-  const response = await fetch(`${API_BASE_URL}/appointments`);
-  if (!response.ok) throw new Error('Failed to fetch appointments');
-  return await response.json();
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from('appointments')
+    .select('*')
+    .order('date', { ascending: false })
+    .order('time', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
 }
 
 export async function fetchAppointmentById(id) {
-  const response = await fetch(`${API_BASE_URL}/appointments/${id}`);
-  if (!response.ok) throw new Error('Failed to fetch appointment');
-  return await response.json();
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from('appointments')
+    .select('*')
+    .eq('id', String(id))
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function createAppointment(appointment) {
-  const response = await fetch(`${API_BASE_URL}/appointments`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(appointment)
-  });
-  if (!response.ok) throw new Error('Failed to create appointment');
-  return await response.json();
+  const client = getSupabaseClient();
+  const payload = {
+    id: String(appointment.id),
+    name: appointment.name || 'Niet opgegeven',
+    email: appointment.email || 'Niet opgegeven',
+    phone: appointment.phone || '',
+    kenteken: appointment.kenteken || '',
+    service: appointment.service || '',
+    date: appointment.date,
+    time: appointment.time,
+    status: appointment.status || 'pending',
+    notes: appointment.notes || '',
+    created_from: appointment.createdFrom || null,
+    email_id: appointment.emailId || null
+  };
+
+  const { data, error } = await client
+    .from('appointments')
+    .insert(payload)
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function updateAppointment(id, updates) {
-  const response = await fetch(`${API_BASE_URL}/appointments/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(updates)
-  });
-  if (!response.ok) throw new Error('Failed to update appointment');
-  return await response.json();
+  const client = getSupabaseClient();
+  const payload = { ...updates };
+
+  if (payload.createdFrom !== undefined) {
+    payload.created_from = payload.createdFrom;
+    delete payload.createdFrom;
+  }
+
+  if (payload.emailId !== undefined) {
+    payload.email_id = payload.emailId;
+    delete payload.emailId;
+  }
+
+  const { data, error } = await client
+    .from('appointments')
+    .update(payload)
+    .eq('id', String(id))
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function deleteAppointment(id) {
-  const response = await fetch(`${API_BASE_URL}/appointments/${id}`, {
-    method: 'DELETE'
-  });
-  if (!response.ok) throw new Error('Failed to delete appointment');
-  return await response.json();
+  const client = getSupabaseClient();
+  const { error } = await client
+    .from('appointments')
+    .delete()
+    .eq('id', String(id));
+
+  if (error) throw error;
+  return { success: true };
 }
 
 // ============= WORK DAYS API =============
 
 export async function fetchWorkDays(startDate = null, endDate = null) {
-  let url = `${API_BASE_URL}/workdays`;
+  const client = getSupabaseClient();
+  let query = client
+    .from('work_days')
+    .select('*')
+    .order('date', { ascending: true });
+
   if (startDate && endDate) {
-    url += `?startDate=${startDate}&endDate=${endDate}`;
+    query = query.gte('date', startDate).lte('date', endDate);
   }
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Failed to fetch work days');
-  return await response.json();
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data || [];
 }
 
 export async function createWorkDay(workDay) {
-  const response = await fetch(`${API_BASE_URL}/workdays`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(workDay)
-  });
-  if (!response.ok) throw new Error('Failed to create work day');
-  return await response.json();
+  const client = getSupabaseClient();
+  const payload = {
+    date: workDay.date,
+    shift: workDay.shift,
+    start_time: workDay.startTime || workDay.start_time || '',
+    end_time: workDay.endTime || workDay.end_time || ''
+  };
+
+  const { data, error } = await client
+    .from('work_days')
+    .upsert(payload, { onConflict: 'date,shift' })
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function importWorkDaysBulk(workDays) {
-  const response = await fetch(`${API_BASE_URL}/workdays/bulk`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ workDays })
-  });
-  if (!response.ok) throw new Error('Failed to import work days');
-  return await response.json();
+  const client = getSupabaseClient();
+  const payload = (workDays || []).map((workDay) => ({
+    date: workDay.date,
+    shift: workDay.shift,
+    start_time: workDay.startTime || workDay.start_time || '',
+    end_time: workDay.endTime || workDay.end_time || ''
+  }));
+
+  if (payload.length === 0) {
+    return { success: true, imported: 0 };
+  }
+
+  const { error } = await client
+    .from('work_days')
+    .upsert(payload, { onConflict: 'date,shift' });
+
+  if (error) throw error;
+  return { success: true, imported: payload.length };
 }
 
 export async function deleteWorkDay(id) {
-  const response = await fetch(`${API_BASE_URL}/workdays/${id}`, {
-    method: 'DELETE'
-  });
-  if (!response.ok) throw new Error('Failed to delete work day');
-  return await response.json();
+  const client = getSupabaseClient();
+  const { error } = await client
+    .from('work_days')
+    .delete()
+    .eq('id', Number(id));
+
+  if (error) throw error;
+  return { success: true };
 }
 
 export async function clearAllWorkDays() {
-  const response = await fetch(`${API_BASE_URL}/workdays`, {
-    method: 'DELETE'
-  });
-  if (!response.ok) throw new Error('Failed to clear work days');
-  return await response.json();
+  const client = getSupabaseClient();
+  const { error } = await client
+    .from('work_days')
+    .delete()
+    .not('id', 'is', null);
+
+  if (error) throw error;
+  return { success: true };
 }
 
 // ============= EMAILS API =============
 
 export async function fetchEmails() {
-  const response = await fetch(`${API_BASE_URL}/emails`);
-  if (!response.ok) throw new Error('Failed to fetch emails');
-  return await response.json();
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from('emails')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
 }
 
 export async function fetchEmailById(id) {
-  const response = await fetch(`${API_BASE_URL}/emails/${id}`);
-  if (!response.ok) throw new Error('Failed to fetch email');
-  return await response.json();
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from('emails')
+    .select('*')
+    .eq('id', String(id))
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function createEmail(email) {
-  const response = await fetch(`${API_BASE_URL}/emails`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(email)
-  });
-  if (!response.ok) throw new Error('Failed to save email');
-  return await response.json();
+  const client = getSupabaseClient();
+  let vehicleInfoValue = null;
+
+  if (typeof email.vehicleInfo === 'string') {
+    vehicleInfoValue = email.vehicleInfo;
+  } else if (email.vehicleInfo && typeof email.vehicleInfo === 'object') {
+    vehicleInfoValue = JSON.stringify(email.vehicleInfo);
+  }
+
+  const payload = {
+    id: String(email.id),
+    name: email.name || 'Niet opgegeven',
+    email: email.email || 'Niet opgegeven',
+    phone: email.phone || '',
+    kenteken: email.kenteken || '',
+    subject: email.subject || '',
+    message: email.message || '',
+    vehicle_info: vehicleInfoValue,
+    read: !!email.read
+  };
+
+  const { data, error } = await client
+    .from('emails')
+    .insert(payload)
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function markEmailAsRead(id) {
-  const response = await fetch(`${API_BASE_URL}/emails/${id}/read`, {
-    method: 'PUT'
-  });
-  if (!response.ok) throw new Error('Failed to mark email as read');
-  return await response.json();
+  const client = getSupabaseClient();
+  const { data, error } = await client
+    .from('emails')
+    .update({ read: true })
+    .eq('id', String(id))
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function deleteEmail(id) {
-  const response = await fetch(`${API_BASE_URL}/emails/${id}`, {
-    method: 'DELETE'
-  });
-  if (!response.ok) throw new Error('Failed to delete email');
-  return await response.json();
+  const client = getSupabaseClient();
+  const { error } = await client
+    .from('emails')
+    .delete()
+    .eq('id', String(id));
+
+  if (error) throw error;
+  return { success: true };
 }
 
 // ============= STATS API =============
 
 export async function fetchStats() {
-  const response = await fetch(`${API_BASE_URL}/stats`);
-  if (!response.ok) throw new Error('Failed to fetch stats');
-  return await response.json();
+  const client = getSupabaseClient();
+
+  const [{ count: totalAppointments, error: appointmentsError },
+    { count: completedAppointments, error: completedError },
+    { count: totalEmails, error: totalEmailsError },
+    { count: unreadEmails, error: unreadEmailsError }] = await Promise.all([
+    client.from('appointments').select('*', { count: 'exact', head: true }),
+    client.from('appointments').select('*', { count: 'exact', head: true }).in('status', ['afgerond', 'completed']),
+    client.from('emails').select('*', { count: 'exact', head: true }),
+    client.from('emails').select('*', { count: 'exact', head: true }).eq('read', false)
+  ]);
+
+  if (appointmentsError || completedError || totalEmailsError || unreadEmailsError) {
+    throw appointmentsError || completedError || totalEmailsError || unreadEmailsError;
+  }
+
+  return {
+    totalAppointments: totalAppointments || 0,
+    completedAppointments: completedAppointments || 0,
+    totalEmails: totalEmails || 0,
+    unreadEmails: unreadEmails || 0
+  };
 }
 
 // ============= VISITOR TRACKING API =============
 
 export async function trackVisitor(deviceInfo) {
-  const response = await fetch(`${API_BASE_URL}/visitors/track`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      page: window.location.pathname,
-      timestamp: new Date().toISOString(),
-      userAgent: navigator.userAgent,
-      referrer: document.referrer || 'direct',
+  const client = getSupabaseClientOptional();
+  if (!client) {
+    return {
+      success: false,
+      skipped: true,
+      reason: 'supabase_not_configured',
       visitorId: deviceInfo?.visitorId,
-      sessionId: deviceInfo?.sessionId,
-      isNewSession: deviceInfo?.isNewSession,
-      deviceType: deviceInfo?.deviceType,
-      deviceName: deviceInfo?.deviceName,
-      browser: deviceInfo?.browser,
-      os: deviceInfo?.os,
-      screenResolution: deviceInfo?.screenResolution,
-      viewport: deviceInfo?.viewport
-    })
-  });
-  if (!response.ok) throw new Error('Failed to track visitor');
-  return await response.json();
+      sessionId: deviceInfo?.sessionId
+    };
+  }
+
+  const now = toUtcIso();
+
+  if (deviceInfo?.isNewSession) {
+    const payload = {
+      session_id: deviceInfo?.sessionId,
+      visitor_id: deviceInfo?.visitorId || `legacy_${deviceInfo?.sessionId}`,
+      page: window.location.pathname,
+      user_agent: navigator.userAgent,
+      referrer: document.referrer || 'direct',
+      ip_address: null,
+      device_type: deviceInfo?.deviceType || null,
+      device_name: deviceInfo?.deviceName || null,
+      browser: deviceInfo?.browser || null,
+      os: deviceInfo?.os || null,
+      screen_resolution: deviceInfo?.screenResolution || null,
+      viewport: deviceInfo?.viewport || null,
+      first_seen: now,
+      last_seen: now,
+      session_duration: 0
+    };
+
+    const { error } = await client.from('visitor_sessions').insert(payload);
+    if (error && error.code !== '23505') {
+      throw error;
+    }
+  }
+
+  return {
+    success: true,
+    visitorId: deviceInfo?.visitorId,
+    sessionId: deviceInfo?.sessionId
+  };
 }
 
 export async function sendHeartbeat(visitorId, sessionId) {
-  const response = await fetch(`${API_BASE_URL}/visitors/heartbeat`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ visitorId, sessionId })
-  });
-  if (!response.ok) throw new Error('Failed to send heartbeat');
-  return await response.json();
+  const client = getSupabaseClientOptional();
+  if (!client) {
+    return { success: false, skipped: true, reason: 'supabase_not_configured' };
+  }
+
+  const now = new Date();
+  const nowIso = now.toISOString();
+
+  const { data: existing, error: fetchError } = await client
+    .from('visitor_sessions')
+    .select('first_seen')
+    .eq('session_id', sessionId)
+    .single();
+
+  if (fetchError) throw fetchError;
+
+  const startedAt = new Date(existing.first_seen);
+  const duration = Math.max(0, Math.floor((now.getTime() - startedAt.getTime()) / 1000));
+
+  const { error } = await client
+    .from('visitor_sessions')
+    .update({
+      last_seen: nowIso,
+      session_duration: duration,
+      visitor_id: visitorId
+    })
+    .eq('session_id', sessionId);
+
+  if (error) throw error;
+  return { success: true };
 }
 
 export async function fetchVisitorStats(startDate = null, endDate = null) {
-  let url = `${API_BASE_URL}/visitors/stats`;
-  if (startDate && endDate) {
-    url += `?startDate=${startDate}&endDate=${endDate}`;
+  const client = getSupabaseClientOptional();
+  if (!client) {
+    return {
+      todayVisitors: 0,
+      yesterdayVisitors: 0,
+      totalVisitors: 0,
+      totalSessions: 0,
+      avgSessionDuration: 0,
+      activeVisitors: 0
+    };
   }
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Failed to fetch visitor stats');
-  return await response.json();
+
+  const now = new Date();
+  const todayDate = toDateKey(now);
+  const yesterdayDateObj = new Date(now);
+  yesterdayDateObj.setDate(yesterdayDateObj.getDate() - 1);
+  const yesterdayDate = toDateKey(yesterdayDateObj);
+  const rangeStart = startDate || yesterdayDate;
+  const rangeEnd = endDate || todayDate;
+
+  const [{ data: periodRows, error: periodError },
+    { data: totalRows, error: totalError },
+    { data: activeRows, error: activeError }] = await Promise.all([
+    client
+      .from('visitor_sessions')
+      .select('visitor_id,session_id,session_duration,first_seen')
+      .gte('first_seen', `${rangeStart}T00:00:00.000Z`)
+      .lte('first_seen', `${rangeEnd}T23:59:59.999Z`),
+    client
+      .from('visitor_sessions')
+      .select('visitor_id,session_id'),
+    client
+      .from('visitor_sessions')
+      .select('visitor_id,last_seen')
+      .gte('last_seen', new Date(Date.now() - 120000).toISOString())
+  ]);
+
+  if (periodError || totalError || activeError) {
+    throw periodError || totalError || activeError;
+  }
+
+  const todaySet = new Set();
+  const yesterdaySet = new Set();
+  const durations = [];
+
+  (periodRows || []).forEach((row) => {
+    const key = row.visitor_id || row.session_id;
+    const dateKey = toDateKey(row.first_seen);
+    if (dateKey === todayDate && key) todaySet.add(key);
+    if (dateKey === yesterdayDate && key) yesterdaySet.add(key);
+    if (row.session_duration && row.session_duration > 0) {
+      durations.push(Number(row.session_duration));
+    }
+  });
+
+  const totalVisitorSet = new Set(
+    (totalRows || [])
+      .map((row) => row.visitor_id || row.session_id)
+      .filter(Boolean)
+  );
+
+  const avgSessionDuration = durations.length
+    ? durations.reduce((sum, value) => sum + value, 0) / durations.length
+    : 0;
+
+  return {
+    todayVisitors: todaySet.size,
+    yesterdayVisitors: yesterdaySet.size,
+    totalVisitors: totalVisitorSet.size,
+    totalSessions: (totalRows || []).length,
+    avgSessionDuration,
+    activeVisitors: new Set((activeRows || []).map((row) => row.visitor_id).filter(Boolean)).size
+  };
 }
 
 export async function fetchDailyVisitorStats(days = 30) {
-  const response = await fetch(`${API_BASE_URL}/visitors/daily?days=${days}`);
-  if (!response.ok) throw new Error('Failed to fetch daily visitor stats');
-  return await response.json();
+  const client = getSupabaseClientOptional();
+  if (!client) {
+    return [];
+  }
+
+  const since = new Date();
+  since.setDate(since.getDate() - Number(days || 30));
+
+  const { data, error } = await client
+    .from('visitor_sessions')
+    .select('first_seen,visitor_id,session_id,session_duration')
+    .gte('first_seen', since.toISOString())
+    .order('first_seen', { ascending: true });
+
+  if (error) throw error;
+
+  const byDate = new Map();
+
+  (data || []).forEach((row) => {
+    const date = toDateKey(row.first_seen);
+    if (!byDate.has(date)) {
+      byDate.set(date, {
+        date,
+        visitorIds: new Set(),
+        totalSessions: 0,
+        totalDuration: 0,
+        durationCount: 0
+      });
+    }
+
+    const day = byDate.get(date);
+    day.totalSessions += 1;
+    day.visitorIds.add(row.visitor_id || row.session_id);
+
+    if (row.session_duration && row.session_duration > 0) {
+      day.totalDuration += Number(row.session_duration);
+      day.durationCount += 1;
+    }
+  });
+
+  return Array.from(byDate.values()).map((day) => ({
+    date: day.date,
+    uniqueVisitors: day.visitorIds.size,
+    totalSessions: day.totalSessions,
+    avgDuration: day.durationCount ? day.totalDuration / day.durationCount : 0
+  }));
 }

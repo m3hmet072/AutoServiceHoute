@@ -1,4 +1,4 @@
-import"./base-ocf6tOUh.js";/* empty css               */import"./api-W8rwW8DE.js";import{l,r as a,a as d,b as h,i as p,c}from"./footer-section-C4dkyFPc.js";/* empty css                          */import{r as u}from"./question-section-CHVjbGAM.js";function v({title:i,subtitle:t,cards:n=[]}={}){const o=document.getElementById("onderhoud-section");if(!o)return;const r=n.map((e,s)=>`
+import"./base-ocf6tOUh.js";/* empty css               */import"./api-B3fETs2y.js";import{l,r as a,a as d,b as h,i as p,c}from"./footer-section-JEYM759Y.js";/* empty css                          */import{r as u}from"./question-section-CHVjbGAM.js";function v({title:i,subtitle:t,cards:n=[]}={}){const o=document.getElementById("onderhoud-section");if(!o)return;const r=n.map((e,s)=>`
     <div class="onderhoud-card ${s===1?"onderhoud-card-featured":""}">
       <div class="stat-icon">
         ${e.svg||""}
