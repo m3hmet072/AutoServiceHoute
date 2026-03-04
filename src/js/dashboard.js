@@ -11,7 +11,7 @@ class DashboardManager {
     this.appointments = [];
     this.emails = [];
     this.workDays = [];
-    this.currentLanguage = this.loadData('language') || 'en';
+    this.currentLanguage = 'en';
     this.translations = translations;
     this.init();
   }
@@ -51,10 +51,9 @@ class DashboardManager {
       console.log('✓ Data loaded from database');
     } catch (error) {
       console.error('Error loading data:', error);
-      // Fallback to localStorage if API fails
-      this.appointments = this.loadData('appointments') || [];
-      this.emails = this.loadData('emails') || [];
-      this.workDays = this.loadData('workDays') || [];
+      this.appointments = [];
+      this.emails = [];
+      this.workDays = [];
     }
   }
 
@@ -117,7 +116,6 @@ class DashboardManager {
         
         // Update language
         this.currentLanguage = value;
-        this.saveData('language', this.currentLanguage);
         this.applyTranslations();
         
         // Re-render dynamic content
@@ -206,16 +204,6 @@ class DashboardManager {
       'afgerond': 'statusCompleted'
     };
     return this.translate(statusMap[status] || status);
-  }
-
-  // Local Storage
-  loadData(key) {
-    const data = localStorage.getItem(`ash_${key}`);
-    return data ? JSON.parse(data) : null;
-  }
-
-  saveData(key, data) {
-    localStorage.setItem(`ash_${key}`, JSON.stringify(data));
   }
 
   // Navigation
@@ -828,17 +816,14 @@ class DashboardManager {
       manualEntry: true
     };
     
-    this.emails.unshift(email);
-    
     try {
-      // Save to database
-      await api.createEmail(email);
+      const savedEmail = await api.createEmail(email);
+      this.emails.unshift(savedEmail?.id ? savedEmail : email);
       this.showNotification(this.translate('emailAddedSuccess') || 'Contact succesvol toegevoegd aan de lijst!');
     } catch (error) {
       console.error('Error saving manual email:', error);
-      // Fallback to localStorage
-      this.saveData('emails', this.emails);
-      this.showNotification(this.translate('emailAddedSuccess') || 'Contact succesvol toegevoegd!');
+      this.showNotification('Opslaan in database mislukt. Probeer opnieuw.', 'error');
+      return;
     }
     
     this.renderEmails();
@@ -861,6 +846,10 @@ class DashboardManager {
     
     let html = '';
     this.emails.forEach(email => {
+      const serviceItems = this.getEmailServiceItems(email);
+      const serviceChips = serviceItems.map((item) => `<span class="subject-badge">${item}</span>`).join('');
+      const previewMessage = (email.message || email.description || '').trim() || 'Geen extra bericht toegevoegd.';
+
       const emailDate = new Date(email.created_at);
       const formattedDate = emailDate.toLocaleDateString(this.getLocale(), { 
         day: 'numeric',
@@ -868,58 +857,54 @@ class DashboardManager {
         hour: '2-digit',
         minute: '2-digit'
       });
-      
-      // Check if appointment already exists for this email
-      const hasAppointment = this.appointments.some(apt => apt.emailId == email.id);
-      
-      html += `<div class="email-card ${!email.read ? 'unread' : ''}" data-id="${email.id}">
-        <div class="email-main-row">
-          <div class="email-left">
-            <div class="email-info-block">
-              <h3 class="sender-name">
-                ${email.name}
-                ${!email.read ? '<span class="unread-dot"></span>' : ''}
-              </h3>
-              <div class="email-meta">
-                <span>📧 ${email.email}</span>
-                ${email.phone ? `<span>📞 ${email.phone}</span>` : ''}
-                ${email.kenteken ? `<span>🚗 ${email.kenteken}</span>` : ''}
-                <span class="subject-badge">${email.subject}</span>
-              </div>
-              <p class="email-message">${email.message || email.description || ''}</p>
-            </div>
-          </div>
-          <div class="email-right">
-            <span class="email-date">${formattedDate}</span>
-            <div class="email-actions">
-              <button class="action-btn btn-email-schedule" onclick="event.stopPropagation(); dashboard.createAppointmentFromEmail('${email.id}')" title="${this.translate('schedule')}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                  <line x1="16" y1="2" x2="16" y2="6"/>
-                  <line x1="8" y1="2" x2="8" y2="6"/>
-                  <line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
-                <span>${this.translate('schedule')}</span>
-              </button>
-              <button class="action-btn btn-email-edit" onclick="event.stopPropagation(); dashboard.showEmailDetails('${email.id}')" title="${this.translate('viewDetails')}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                </svg>
-              </button>
-              <button class="action-btn btn-email-reject" onclick="event.stopPropagation(); dashboard.archiveEmail('${email.id}')" title="${this.translate('reject')}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
-            </div>
+
+      html += `<article class="email-row ${!email.read ? 'unread' : ''}" data-id="${email.id}" onclick="dashboard.showEmailDetails('${email.id}')">
+        <div class="email-col email-col-kenteken">
+          <div class="email-primary">${email.kenteken || '-'}</div>
+        </div>
+        <div class="email-col email-col-phone">
+          <div class="email-primary">${email.phone || '-'}</div>
+        </div>
+        <div class="email-col email-col-subject">
+          ${serviceChips || '<span class="email-sub">Geen onderwerp</span>'}
+        </div>
+        <div class="email-col email-col-message">
+          <p class="email-message">${previewMessage}</p>
+        </div>
+        <div class="email-col email-col-time">
+          <span class="email-date">${formattedDate}</span>
+        </div>
+        <div class="email-col email-col-actions" onclick="event.stopPropagation();">
+          <div class="email-actions">
+            <button class="action-btn btn-email-schedule" onclick="event.stopPropagation(); dashboard.createAppointmentFromEmail('${email.id}')" title="${this.translate('schedule')}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <span>Inplannen</span>
+            </button>
           </div>
         </div>
-      </div>`;
+      </article>`;
     });
-    
-    container.innerHTML = html;
+
+    container.innerHTML = `
+      <div class="emails-table">
+        <div class="emails-table-head" aria-hidden="true">
+          <span>Kenteken</span>
+          <span>Telefoonnummer</span>
+          <span>Onderwerp</span>
+          <span>Bericht</span>
+          <span>Wanneer verzonden</span>
+          <span>Inplannen</span>
+        </div>
+        <div class="emails-table-body">
+          ${html}
+        </div>
+      </div>
+    `;
   }
 
   async createAppointmentFromEmail(emailId) {
@@ -939,7 +924,7 @@ class DashboardManager {
     
     const appointment = {
       id: String(Date.now()),
-      name: email.name,
+      name: this.getEmailDisplayName(email),
       email: email.email,
       phone: email.phone || '',
       kenteken: email.kenteken || '',
@@ -953,25 +938,24 @@ class DashboardManager {
     };
     
     try {
-      await api.createAppointment(appointment);
-      this.appointments.push(appointment);
+      const savedAppointment = await api.createAppointment(appointment);
+      this.appointments.push(savedAppointment?.id ? savedAppointment : appointment);
       
       await api.deleteEmail(emailId);
       this.emails = this.emails.filter(e => e.id != emailId);
     } catch (error) {
       console.error('Error creating appointment:', error);
-      this.appointments.push(appointment);
-      this.saveData('appointments', this.appointments);
-      this.emails = this.emails.filter(e => e.id != emailId);
-      this.saveData('emails', this.emails);
+      this.showNotification('Aanmaken afspraak in database mislukt.', 'error');
+      return;
     }
     
     this.updateStats();
     this.renderEmails();
     this.renderCalendar();
     this.renderAppointments();
+    const createdId = this.appointments[this.appointments.length - 1]?.id || appointment.id;
     this.showNotification(this.translate('appointmentCreated'));
-    this.showAppointmentModal(appointment.id);
+    this.showAppointmentModal(createdId);
   }
 
   async quickPlanToday(emailId, buttonElement) {
@@ -1000,7 +984,7 @@ class DashboardManager {
     
     const appointment = {
       id: String(Date.now()),
-      name: email.name,
+      name: this.getEmailDisplayName(email),
       email: email.email,
       phone: email.phone,
       kenteken: email.kenteken || '',
@@ -1014,17 +998,15 @@ class DashboardManager {
     };
     
     try {
-      await api.createAppointment(appointment);
-      this.appointments.push(appointment);
+      const savedAppointment = await api.createAppointment(appointment);
+      this.appointments.push(savedAppointment?.id ? savedAppointment : appointment);
       
       await api.deleteEmail(emailId);
       this.emails = this.emails.filter(e => e.id != emailId);
     } catch (error) {
       console.error('Error creating appointment:', error);
-      this.appointments.push(appointment);
-      this.saveData('appointments', this.appointments);
-      this.emails = this.emails.filter(e => e.id != emailId);
-      this.saveData('emails', this.emails);
+      this.showNotification('Inplannen in database mislukt.', 'error');
+      return;
     }
     
     this.updateStats();
@@ -1053,7 +1035,7 @@ class DashboardManager {
     
     const appointment = {
       id: String(Date.now()),
-      name: email.name,
+      name: this.getEmailDisplayName(email),
       email: email.email,
       phone: email.phone,
       kenteken: email.kenteken || '',
@@ -1067,17 +1049,15 @@ class DashboardManager {
     };
     
     try {
-      await api.createAppointment(appointment);
-      this.appointments.push(appointment);
+      const savedAppointment = await api.createAppointment(appointment);
+      this.appointments.push(savedAppointment?.id ? savedAppointment : appointment);
       
       await api.deleteEmail(emailId);
       this.emails = this.emails.filter(e => e.id != emailId);
     } catch (error) {
       console.error('Error creating appointment:', error);
-      this.appointments.push(appointment);
-      this.saveData('appointments', this.appointments);
-      this.emails = this.emails.filter(e => e.id != emailId);
-      this.saveData('emails', this.emails);
+      this.showNotification('Inplannen in database mislukt.', 'error');
+      return;
     }
     
     this.updateStats();
@@ -1106,35 +1086,99 @@ class DashboardManager {
   markAsRead(emailId) {
     const email = this.emails.find(e => e.id == emailId);
     if (email) {
+      const previousRead = email.read;
       email.read = true;
-      this.saveData('emails', this.emails);
+      api.markEmailAsRead(emailId).catch((error) => {
+        console.warn('Failed to sync read status to API:', error);
+        email.read = previousRead;
+        this.showNotification('Markeren als gelezen mislukt op de server.', 'error');
+        this.renderEmails();
+        this.updateStats();
+      });
       this.renderEmails();
       this.updateStats();
     }
   }
 
-  archiveEmail(emailId) {
-    this.showConfirmDialog(
-      'Weet je zeker dat je deze aanvraag wilt afwijzen?',
-      () => {
-        this.emails = this.emails.filter(e => e.id != emailId);
-        this.saveData('emails', this.emails);
-        this.renderEmails();
-        this.updateStats();
-        this.showNotification(this.translate('requestRejectedDeleted'));
+  parseVehicleInfo(email) {
+    const source = email?.vehicleInfo ?? email?.vehicle_info;
+    if (!source) return null;
+
+    if (typeof source === 'object') return source;
+
+    if (typeof source === 'string') {
+      try {
+        return JSON.parse(source);
+      } catch {
+        return null;
       }
-    );
+    }
+
+    return null;
+  }
+
+  getEmailServiceItems(email) {
+    return String(email?.subject || '')
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  getEmailDisplayName(email) {
+    const rawName = (email?.name || '').trim();
+    if (rawName && rawName.toLowerCase() !== 'niet opgegeven') {
+      return rawName;
+    }
+
+    if (email?.kenteken) {
+      return `Lead ${email.kenteken}`;
+    }
+
+    const serviceItems = this.getEmailServiceItems(email);
+    if (serviceItems.length > 0) {
+      return `Lead ${serviceItems[0]}`;
+    }
+
+    return 'Nieuwe aanvraag';
+  }
+
+  hasProvidedEmail(emailValue) {
+    const normalized = String(emailValue || '').trim().toLowerCase();
+    return Boolean(normalized)
+      && normalized !== 'niet opgegeven'
+      && normalized !== '-'
+      && normalized !== 'n.v.t.'
+      && normalized !== 'n.v.t';
   }
 
   showEmailDetails(emailId) {
     const email = this.emails.find(e => e.id == emailId);
     if (!email) return;
+
+    const displayName = this.getEmailDisplayName(email);
+    const serviceItems = this.getEmailServiceItems(email);
+    const serviceChips = serviceItems.length
+      ? serviceItems.map((item) => `<span class="service-chip">${item}</span>`).join('')
+      : '<span class="detail-value">-</span>';
+    const vehicleInfo = this.parseVehicleInfo(email);
+    const vehicleCard = vehicleInfo ? `
+      <div class="vehicle-detail-card">
+        <div class="vehicle-detail-header">
+          <span class="detail-label">Voertuig (RDW)</span>
+          ${email.kenteken ? `<span class="service-chip">${email.kenteken}</span>` : ''}
+        </div>
+        <h4 class="vehicle-detail-main">${vehicleInfo.merk || '-'}</h4>
+        <p class="vehicle-detail-sub">${vehicleInfo.handelsbenaming || 'Model onbekend'}</p>
+        <div class="vehicle-detail-meta">
+          ${vehicleInfo.eerste_kleur ? `<span class="vehicle-meta-item">${vehicleInfo.eerste_kleur}</span>` : ''}
+          ${(vehicleInfo.brandstof_omschrijving || vehicleInfo.brandstof) ? `<span class="vehicle-meta-item">${vehicleInfo.brandstof_omschrijving || vehicleInfo.brandstof}</span>` : ''}
+          ${vehicleInfo.vervaldatum_apk ? `<span class="vehicle-meta-item">APK ${rdw.formatDate(vehicleInfo.vervaldatum_apk)}</span>` : ''}
+        </div>
+      </div>
+    ` : '';
     
     // Mark as read
-    email.read = true;
-    this.saveData('emails', this.emails);
-    this.updateStats();
-    this.renderEmails();
+    this.markAsRead(emailId);
     
     const modal = document.getElementById('appointment-modal');
     const modalTitle = document.getElementById('modal-title');
@@ -1150,18 +1194,10 @@ class DashboardManager {
       minute: '2-digit'
     });
     
-    modalTitle.textContent = `${this.translate('requestFrom')} ${email.name}`;
+    modalTitle.textContent = `${this.translate('requestFrom')} ${displayName}`;
     
     modalBody.innerHTML = `
       <div class="detail-grid">
-        <div class="detail-row">
-          <span class="detail-label">${this.translate('name')}</span>
-          <span class="detail-value">${email.name}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">${this.translate('email')}</span>
-          <span class="detail-value">${email.email}</span>
-        </div>
         <div class="detail-row">
           <span class="detail-label">${this.translate('phone')}</span>
           <span class="detail-value">${email.phone || '-'}</span>
@@ -1172,7 +1208,7 @@ class DashboardManager {
         </div>
         <div class="detail-row">
           <span class="detail-label">${this.translate('subject')}</span>
-          <span class="detail-value">${email.subject}</span>
+          <div class="service-chip-list">${serviceChips}</div>
         </div>
         <div class="detail-row">
           <span class="detail-label">${this.translate('receivedOn')}</span>
@@ -1183,6 +1219,7 @@ class DashboardManager {
           <div class="detail-value message-box">${email.message || email.description || '-'}</div>
         </div>
       </div>
+      ${vehicleCard}
       
       <div class="modal-actions">
         <button class="action-btn primary" onclick="dashboard.quickPlanToday('${email.id}'); document.getElementById('appointment-modal').classList.remove('active');">
@@ -1391,14 +1428,6 @@ class DashboardManager {
 
           <div class="appointment-detail-grid">
             <div class="appointment-detail-card">
-              <span class="detail-label">${this.translate('name')}</span>
-              <span class="detail-value">${appointment.name || '-'}</span>
-            </div>
-            <div class="appointment-detail-card">
-              <span class="detail-label">${this.translate('email')}</span>
-              <span class="detail-value">${appointment.email || '-'}</span>
-            </div>
-            <div class="appointment-detail-card">
               <span class="detail-label">${this.translate('phone')}</span>
               <span class="detail-value">${appointment.phone || '-'}</span>
             </div>
@@ -1463,14 +1492,17 @@ class DashboardManager {
   async updateAppointmentStatus(appointmentId, newStatus) {
     const appointment = this.appointments.find(apt => apt.id == appointmentId);
     if (appointment) {
+      const previousStatus = appointment.status;
       appointment.status = newStatus;
+      let statusUpdateSucceeded = true;
       
       try {
         await api.updateAppointment(appointmentId, { status: newStatus });
         await this.loadAllData();
       } catch (error) {
         console.error('Error updating appointment:', error);
-        this.saveData('appointments', this.appointments);
+        appointment.status = previousStatus;
+        statusUpdateSucceeded = false;
       }
       
       this.updateStats();
@@ -1485,8 +1517,12 @@ class DashboardManager {
         'in-behandeling': this.translate('statusInProgress'),
         'afgerond': this.translate('statusCompleted')
       }[newStatus];
-      
-      this.showNotification(this.translate('statusUpdated', { status: statusText }));
+
+      if (statusUpdateSucceeded) {
+        this.showNotification(this.translate('statusUpdated', { status: statusText }), 'success');
+      } else {
+        this.showNotification('Status updaten in database mislukt.', 'error');
+      }
     }
   }
 
@@ -1527,6 +1563,12 @@ class DashboardManager {
   }
 
   async performSaveAppointment(appointment, name, date, time) {
+    const previousState = {
+      name: appointment.name,
+      date: appointment.date,
+      time: appointment.time
+    };
+
     // Update appointment
     appointment.name = name;
     appointment.date = date;
@@ -1542,7 +1584,11 @@ class DashboardManager {
       await this.loadAllData();
     } catch (error) {
       console.error('Error updating appointment:', error);
-      this.saveData('appointments', this.appointments);
+      appointment.name = previousState.name;
+      appointment.date = previousState.date;
+      appointment.time = previousState.time;
+      this.showNotification('Afspraak opslaan in database mislukt.', 'error');
+      return;
     }
     
     this.updateStats();
@@ -1568,8 +1614,8 @@ class DashboardManager {
       this.appointments = this.appointments.filter(apt => apt.id != appointmentId);
     } catch (error) {
       console.error('Error deleting appointment:', error);
-      this.appointments = this.appointments.filter(apt => apt.id != appointmentId);
-      this.saveData('appointments', this.appointments);
+      this.showNotification('Afspraak verwijderen uit database mislukt.', 'error');
+      return;
     }
     
     const modal = document.getElementById('appointment-modal');
@@ -1591,8 +1637,8 @@ class DashboardManager {
           this.emails = this.emails.filter(e => e.id != emailId);
         } catch (error) {
           console.error('Error deleting email:', error);
-          this.emails = this.emails.filter(e => e.id != emailId);
-          this.saveData('emails', this.emails);
+          this.showNotification('Verwijderen uit database mislukt.', 'error');
+          return;
         }
         this.renderEmails();
         this.updateStats();
@@ -1640,14 +1686,9 @@ class DashboardManager {
               this.showNotification(this.translate('workDaysAdded', { count: events.length }));
             } catch (dbError) {
               console.error('Database error:', dbError);
-              // Fallback to localStorage
-              this.workDays = events;
-              this.saveData('workDays', this.workDays);
-              this.renderCalendar();
-              
               if (statusEl) {
-                statusEl.textContent = `✓ ${events.length} werkdagen geïmporteerd (lokaal)`;
-                statusEl.style.color = '#10B981';
+                statusEl.textContent = '✗ Import naar database mislukt';
+                statusEl.style.color = '#EF4444';
                 setTimeout(() => statusEl.textContent = '', 5000);
               }
             }
@@ -1672,20 +1713,30 @@ class DashboardManager {
     }
     
     if (clearDataBtn) {
-      clearDataBtn.addEventListener('click', () => {
+      clearDataBtn.addEventListener('click', async () => {
         this.showConfirmDialog(
           this.translate('clearAllDataConfirm'),
-          () => {
-            localStorage.removeItem('ash_appointments');
-            localStorage.removeItem('ash_emails');
-            this.appointments = [];
-            this.emails = [];
-            this.updateStats();
-            this.renderCalendar();
-            this.renderAppointments();
-            this.renderEmails();
-            this.renderDashboard();
-            this.showNotification(this.translate('allDataCleared'));
+          async () => {
+            try {
+              await Promise.all([
+                ...this.appointments.map((appointment) => api.deleteAppointment(appointment.id)),
+                ...this.emails.map((email) => api.deleteEmail(email.id)),
+                api.clearAllWorkDays()
+              ]);
+
+              this.appointments = [];
+              this.emails = [];
+              this.workDays = [];
+              this.updateStats();
+              this.renderCalendar();
+              this.renderAppointments();
+              this.renderEmails();
+              this.renderDashboard();
+              this.showNotification(this.translate('allDataCleared'));
+            } catch (error) {
+              console.error('Error clearing database data:', error);
+              this.showNotification('Opschonen van database mislukt.', 'error');
+            }
           }
         );
       });
@@ -1822,18 +1873,6 @@ class DashboardManager {
       emailsBadge.textContent = unreadEmails;
       emailsBadge.style.display = unreadEmails > 0 ? 'inline-block' : 'none';
     }
-    
-    // Update quick action badges
-    const today = this.formatDateString(new Date());
-    const todayAppointments = this.appointments.filter(apt => apt.date === today && apt.status !== 'afgerond').length;
-    
-    const quickNewEmails = document.getElementById('quick-new-emails');
-    const quickTodayApts = document.getElementById('quick-today-appointments');
-    const quickPending = document.getElementById('quick-pending');
-    
-    if (quickNewEmails) quickNewEmails.textContent = unreadEmails || '';
-    if (quickTodayApts) quickTodayApts.textContent = todayAppointments || '';
-    if (quickPending) quickPending.textContent = newRequests || '';
   }
 
   showNewEmailsOnly() {
@@ -1846,7 +1885,7 @@ class DashboardManager {
     this.renderEmails();
     
     setTimeout(() => {
-      const firstUnread = document.querySelector('.email-card.unread');
+      const firstUnread = document.querySelector('.email-row.unread, .email-card.unread');
       if (firstUnread) {
         firstUnread.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -1913,41 +1952,39 @@ class DashboardManager {
       let html = '';
       todayAppointments.forEach(apt => {
         const statusText = this.getStatusText(apt.status);
+        const serviceItems = String(apt.service || apt.notes || 'Onbekend')
+          .split(',')
+          .map((item) => item.trim())
+          .filter(Boolean);
+        const serviceChips = serviceItems
+          .slice(0, 2)
+          .map((item) => `<span class="dashboard-service-chip">${item}</span>`)
+          .join('');
         
-        html += `<div class="appointment-item" onclick="dashboard.showAppointmentModal('${apt.id}')">
-          <div class="item-header">
-            <span class="item-title">${apt.name}</span>
-            <span class="item-time">${apt.time}</span>
-          </div>
-          <div class="item-description">
-            <span class="status-badge ${apt.status}">${statusText}</span> - ${apt.notes}
+        html += `<div class="appointments-overview-row" onclick="dashboard.showAppointmentModal('${apt.id}')">
+          <div class="appointments-overview-cell">${apt.kenteken || '-'}</div>
+          <div class="appointments-overview-cell">${apt.phone || '-'}</div>
+          <div class="appointments-overview-cell appointments-service-cell">${serviceChips || '<span class="dashboard-service-chip">Onbekend</span>'}</div>
+          <div class="appointments-overview-cell">${apt.time || '-'}</div>
+          <div class="appointments-overview-cell">
+            <span class="status-badge ${apt.status}">${statusText}</span>
           </div>
         </div>`;
       });
-      todayContainer.innerHTML = html;
-    }
-    
-    // Recent emails
-    const recentEmails = this.emails.slice(0, 5);
-    const emailsContainer = document.getElementById('recent-emails');
-    
-    if (recentEmails.length === 0) {
-      emailsContainer.innerHTML = `<p class="empty-state">${this.translate('noNewEmailsReceived')}</p>`;
-    } else {
-      let html = '';
-      recentEmails.forEach(email => {
-        const date = new Date(email.created_at);
-        const timeAgo = this.getTimeAgo(date);
-        
-        html += `<div class="email-item" onclick="dashboard.createAppointmentFromEmail('${email.id}')">
-          <div class="item-header">
-            <span class="item-title">${email.name}</span>
-            <span class="item-time">${timeAgo}</span>
+      todayContainer.innerHTML = `
+        <div class="appointments-overview-table">
+          <div class="appointments-overview-head" aria-hidden="true">
+            <span>Kenteken</span>
+            <span>Telefoon nummer</span>
+            <span>Service</span>
+            <span>Tijden</span>
+            <span>Status</span>
           </div>
-          <div class="item-description">${email.subject}</div>
-        </div>`;
-      });
-      emailsContainer.innerHTML = html;
+          <div class="appointments-overview-body">
+            ${html}
+          </div>
+        </div>
+      `;
     }
   }
 

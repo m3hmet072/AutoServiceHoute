@@ -1,5 +1,6 @@
 // RDW API Integration and Contact Form Handler
 // Using EmailJS for email sending
+import { createEmail } from './api.js';
 
 let vehicleData = null;
 
@@ -92,6 +93,14 @@ function getBouwjaar(vehicle) {
 }
 
 function getSelectedOnderwerpen(formElement) {
+  const multiSelect = formElement.querySelector('select[name="onderwerp"][multiple]');
+
+  if (multiSelect) {
+    return Array.from(multiSelect.selectedOptions)
+      .map((option) => option.value.toString().trim())
+      .filter(Boolean);
+  }
+
   const formData = new FormData(formElement);
   return formData.getAll('onderwerp').map((value) => value.toString().trim()).filter(Boolean);
 }
@@ -211,7 +220,7 @@ async function sendEmail(formData) {
   
   // Prepare email template parameters matching the EmailJS template variables
   const templateParams = {
-    name: formData.naam,
+    name: formData.naam || 'Niet opgegeven',
     subject: formData.onderwerp,
     email: formData.email || 'Niet opgegeven',
     phone: formData.telefoon,
@@ -236,70 +245,21 @@ async function sendEmail(formData) {
 
 // Save form data to admin dashboard via API
 async function saveToAdminDashboard(formData) {
-  try {
-    // Create new email object matching database format
-    const newEmail = {
-      id: Date.now().toString(),
-      name: formData.naam,
-      email: formData.email,
-      phone: formData.telefoon,
-      kenteken: formData.kenteken,
-      subject: formData.onderwerp,
-      message: formData.bericht,
-      vehicleInfo: vehicleData ? JSON.stringify(vehicleData) : null,
-      read: false
-    };
-    
-    // Try to save to database via API
-    try {
-      const isProduction = window.location.hostname === 'm3hmet072.github.io' || window.location.hostname === 'autoservicehoute.nl';
-      const isCodespaces = window.location.hostname.includes('app.github.dev');
-      
-      let API_URL;
-      if (isProduction) {
-        API_URL = 'https://autoservicehoute-production.up.railway.app/api';
-      } else if (isCodespaces) {
-        // For GitHub Codespaces, use the forwarded port URL
-        const baseUrl = window.location.hostname.replace('-5173', '-3001');
-        API_URL = `https://${baseUrl}/api`;
-      } else {
-        // Use localhost for local dev
-        API_URL = 'http://localhost:3001/api';
-      }
-      
-      console.log('Attempting to save email to:', `${API_URL}/emails`);
-      
-      const response = await fetch(`${API_URL}/emails`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newEmail)
-      });
-      
-      console.log('API Response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error response:', errorText);
-        throw new Error('API request failed');
-      }
-      
-      const result = await response.json();
-      console.log('Form data saved to database via API:', result);
-    } catch (apiError) {
-      console.error('API save failed, falling back to localStorage:', apiError);
-      
-      // Fallback to localStorage if API fails
-      const existingEmails = localStorage.getItem('ash_emails');
-      const emails = existingEmails ? JSON.parse(existingEmails) : [];
-      emails.unshift(newEmail);
-      localStorage.setItem('ash_emails', JSON.stringify(emails));
-      console.log('Form data saved to localStorage (fallback)');
-    }
-  } catch (error) {
-    console.error('Error saving to dashboard:', error);
-  }
+  const newEmail = {
+    id: Date.now().toString(),
+    name: formData.naam || 'Niet opgegeven',
+    email: formData.email || 'Niet opgegeven',
+    phone: formData.telefoon,
+    kenteken: formData.kenteken,
+    subject: formData.onderwerp,
+    message: formData.bericht,
+    vehicleInfo: vehicleData || null,
+    source: 'website-form',
+    read: false
+  };
+
+  const result = await createEmail(newEmail);
+  console.log('Form data saved to database via API:', result);
 }
 
 // Initialize form
@@ -308,12 +268,27 @@ export function initContactForm() {
   const kentekenInput = document.getElementById('kenteken');
   const submitBtn = document.getElementById('submit-btn');
   const onderwerpStatus = document.getElementById('onderwerp-status');
+  const onderwerpPreview = document.getElementById('onderwerp-preview');
+  const onderwerpToggle = document.getElementById('onderwerp-toggle');
+  const onderwerpPanel = document.getElementById('onderwerp-panel');
+  const onderwerpDropdown = document.getElementById('onderwerp-dropdown');
   
   if (!form || !kentekenInput) {
     return;
   }
 
   const onderwerpCheckboxes = form.querySelectorAll('input[name="onderwerp"]');
+
+  const updateOnderwerpPreview = () => {
+    if (!onderwerpPreview) {
+      return;
+    }
+
+    const selected = getSelectedOnderwerpen(form);
+    onderwerpPreview.textContent = selected.length > 0
+      ? `Gekozen: ${selected.join(', ')}`
+      : 'Nog geen onderwerp gekozen.';
+  };
   
   // Debounced kenteken validation
   const debouncedValidate = debounce(async (kenteken) => {
@@ -345,13 +320,46 @@ export function initContactForm() {
   onderwerpCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener('change', () => {
       if (!onderwerpStatus) {
+        updateOnderwerpPreview();
         return;
       }
 
       const selected = getSelectedOnderwerpen(form);
       onderwerpStatus.textContent = selected.length > 0 ? '' : 'Selecteer minimaal één onderwerp.';
+      updateOnderwerpPreview();
     });
   });
+
+  if (onderwerpToggle && onderwerpPanel && onderwerpDropdown) {
+    const openDropdown = () => {
+      onderwerpPanel.hidden = false;
+      onderwerpToggle.setAttribute('aria-expanded', 'true');
+    };
+
+    const closeDropdown = () => {
+      onderwerpPanel.hidden = true;
+      onderwerpToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    onderwerpToggle.addEventListener('click', () => {
+      const isExpanded = onderwerpToggle.getAttribute('aria-expanded') === 'true';
+      if (isExpanded) {
+        closeDropdown();
+      } else {
+        openDropdown();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!onderwerpDropdown.contains(event.target)) {
+        closeDropdown();
+      }
+    });
+
+    closeDropdown();
+  }
+
+  updateOnderwerpPreview();
   
   // Handle form submission
   form.addEventListener('submit', async (e) => {
@@ -361,13 +369,10 @@ export function initContactForm() {
     const geselecteerdeOnderwerpen = getSelectedOnderwerpen(form);
     const data = {
       ...Object.fromEntries(formData.entries()),
+      naam: 'Niet opgegeven',
+      email: formData.get('email') || 'Niet opgegeven',
       onderwerp: geselecteerdeOnderwerpen.join(', ')
     };
-
-    if (!data.naam || !data.naam.trim()) {
-      showToast('Vul uw naam in.', 'warning');
-      return;
-    }
 
     if (!data.kenteken || !data.kenteken.trim()) {
       showToast('Vul een kenteken in.', 'warning');
@@ -395,8 +400,10 @@ export function initContactForm() {
     }
     
     // Disable submit button
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Verzenden...';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verzenden...';
+    }
     
     try {
       const result = await sendEmail(data);
@@ -413,6 +420,7 @@ export function initContactForm() {
         if (onderwerpStatus) {
           onderwerpStatus.textContent = '';
         }
+        updateOnderwerpPreview();
       } else {
         throw new Error('Failed to send email');
       }
@@ -420,8 +428,10 @@ export function initContactForm() {
       console.error('Error sending email:', error);
       showToast('Er is een fout opgetreden bij het verzenden van uw bericht. Probeer het later opnieuw of neem telefonisch contact met ons op.', 'error');
     } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Versturen';
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Bevestig afspraak';
+      }
     }
   });
 }

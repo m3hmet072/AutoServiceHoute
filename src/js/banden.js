@@ -1,10 +1,107 @@
 import '../css/base.css'
-import '../css/layout.css'
+import '../css/navbar.css'
 import '../css/components.css'
-import '../css/pages/banden.css'
+import '../css/sections/hero-section.css'
+import '../css/sections/afspraak-section.css'
+import '../css/sections/diensten-section.css'
+import '../css/sections/score-section.css'
+import '../css/sections/pricing-section.css'
+import '../css/sections/controle-section.css'
+import '../css/sections/stappen-section.css'
+import '../css/pages/home.css'
+import '../css/pages/contact.css'
 import '../css/footer.css'
 
 import { loadNavbar } from './navbar'
+import { initContactForm } from './contact-form'
+import { renderFooterSection } from './components/footer-section'
+import { renderHeroSection } from './components/hero-section'
+import { renderPricingSection } from './components/pricing-section'
+import { renderControleSection } from './components/controle-section'
+import { renderStappenSection } from './components/stappen-section'
+import { renderAfspraakSection } from './components/afspraak-section'
+import { renderQuestionSection } from './components/question-section'
 import './landing-tracker'
 
-loadNavbar()
+window.addEventListener('DOMContentLoaded', () => {
+    loadNavbar()
+    renderHeroSection({
+        omitImage: true,
+        // custom title: first line dark, second line in accent color
+        titleHtml: `Banden Service<br><span class="accent">voor elk seizoen</span>`,
+        badgeText: 'Vakkundige banden service',
+        subtitle: 'Nieuwe banden, wisselen of uitlijnen — wij zorgen ervoor dat u veilig de weg op gaat. Scherpe prijzen, vakkundige montage.',
+        btnAfspraakText: 'APK inplannen',
+        btnBelText: 'Bellen',
+        pageClass: 'hero--center'
+    });
+    renderPricingSection({
+        title: 'Banden wisselen',
+        price: '€20',
+        subtitle: 'Per band, inclusief balanceren',
+        buttontext: 'Direct inplannen',
+        minutes: '±30 min',
+        reviews: '5.0 reviews',
+        svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="#0082FB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.5 12C18.5 15.5899 15.5899 18.5 12 18.5C8.41015 18.5 5.5 15.5899 5.5 12C5.5 8.41015 8.41015 5.5 12 5.5C15.5899 5.5 18.5 8.41015 18.5 12Z" stroke="#0082FB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.6294 8.75L13.2993 11.25M10.7012 12.75L6.37109 15.25" stroke="#0082FB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.6294 15.25L13.2993 12.75M10.7012 11.25L6.37109 8.75" stroke="#0082FB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 5.5V10.5M12 13.5V18.5" stroke="#0082FB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.5 12C13.5 12.8284 12.8284 13.5 12 13.5C11.1716 13.5 10.5 12.8284 10.5 12C10.5 11.1716 11.1716 10.5 12 10.5C12.8284 10.5 13.5 11.1716 13.5 12Z" stroke="#0082FB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+    })
+    renderControleSection({
+        // first control block with background color and no shadows
+        containerId: 'controle-section',
+        columns: 4,
+        items: [
+            'Banden wisselen (zomer/winter)',
+            'Wielbalanceren',
+            'Wieluitlijning',
+            'Bandenreparatie'
+        ],
+        serviceTitle: 'ONZE SERVICE',
+        title: 'Wat kunnen wij voor u doen?',
+        subtitle: 'Tijdens de APK worden alle wettelijk verplichte onderdelen grondig geïnspecteerd.',
+
+    })
+
+    // second control block without background (keeps shadows)
+    renderControleSection({
+        serviceTitle: 'MERKEN',
+        containerId: 'controle-section-alt',
+        columns: 4,
+        items: ['Michelin', 'Continental', 'Bridgestone', 'Goodyear'],
+        title: 'Topmerken op voorraad',
+        subtitle: 'Wij werken met de beste bandenmerken voor elke prijsklasse.',
+        className: 'bg',
+        noShadow: true
+    })
+
+    renderQuestionSection({
+        title: 'Goed om te weten',
+        subtitle: 'VEELGESTELDE VRAGEN',
+        svg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.9248 21H10.0752C5.44476 21 3.12955 21 2.27636 19.4939C1.42317 17.9879 2.60736 15.9914 4.97574 11.9985L6.90057 8.75333C9.17559 4.91778 10.3131 3 12 3C13.6869 3 14.8244 4.91777 17.0994 8.75332L19.0243 11.9985C21.3926 15.9914 22.5768 17.9879 21.7236 19.4939C20.8704 21 18.5552 21 13.9248 21Z" stroke="#0082FB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 9V13.5" stroke="#0082FB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 16.9922V17.0022" stroke="#0082FB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+        questions: [
+            {
+                title: 'Wanneer moet ik mijn banden wisselen?',
+                answer: 'Wij raden aan om vóór november over te stappen op winterbanden en rond april weer naar zomerbanden. Wij sturen u een herinnering.'
+            },
+            {
+                title: 'Hoe lang gaan banden mee?',
+                answer: 'Gemiddeld 40.000 tot 60.000 km, afhankelijk van rijstijl en bandentype. Wij controleren de profieldiepte bij elke beurt.'
+            }
+        ]
+    })
+    renderAfspraakSection()
+    initContactForm()
+
+    renderFooterSection()
+})

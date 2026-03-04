@@ -275,6 +275,14 @@ export function getEmailById(id) {
 }
 
 export function createEmail(email) {
+  let vehicleInfoValue = null;
+
+  if (typeof email.vehicleInfo === 'string') {
+    vehicleInfoValue = email.vehicleInfo;
+  } else if (email.vehicleInfo && typeof email.vehicleInfo === 'object') {
+    vehicleInfoValue = JSON.stringify(email.vehicleInfo);
+  }
+
   const stmt = db.prepare(`
     INSERT INTO emails (id, name, email, phone, kenteken, subject, message, vehicle_info, read)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -288,7 +296,7 @@ export function createEmail(email) {
     email.kenteken,
     email.subject,
     email.message,
-    email.vehicleInfo ? JSON.stringify(email.vehicleInfo) : null,
+    vehicleInfoValue,
     email.read ? 1 : 0
   );
   

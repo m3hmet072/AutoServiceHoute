@@ -1,5 +1,7 @@
 // API configuration with environment detection
 const getApiBaseUrl = () => {
+  const isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV;
+
   // Check if we're on GitHub Pages
   if (window.location.hostname === 'm3hmet072.github.io') {
     return 'https://autoservicehoute-production.up.railway.app/api';
@@ -10,15 +12,9 @@ const getApiBaseUrl = () => {
     return 'https://autoservicehoute-production.up.railway.app/api';
   }
   
-  // Check if we're on GitHub Codespaces
-  if (window.location.hostname.includes('app.github.dev')) {
-    const baseUrl = window.location.hostname.replace('-5173', '-3001');
-    return `https://${baseUrl}/api`;
-  }
-  
-  // Check if we're on localhost
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:3001/api';
+  // In dev (localhost / Codespaces), use Vite proxy and same-origin /api
+  if (isDev && (window.location.hostname.includes('app.github.dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return '/api';
   }
   
   // Default to Railway
