@@ -79,7 +79,7 @@ footer {
 .footer-nav {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 
 .footer-nav h4 {
@@ -179,7 +179,7 @@ footer {
   display: flex;
   justify-content: center;
   /* avoid large space-between gap on wide screens */
-  align-items: center;
+  align-items: start;
   flex-wrap: wrap;
   gap: 24px;
   text-align: center;
@@ -187,7 +187,7 @@ footer {
 
 .footer-bottom p {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+  color: #F5F8FF;
   margin: 0;
 }
 
@@ -201,7 +201,7 @@ footer {
 
 .footer-links a {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.85);
+  color: #B3B3B3;
   text-decoration: none;
   transition: all 0.3s ease;
   position: relative;
@@ -225,6 +225,12 @@ footer {
 .footer-links a:hover::after {
   width: 100%;
 }
+@media (max-width: 1200px) {
+    footer{
+   border-radius: 0px;
+    }
+    
+}
 
 @media (max-width: 1024px) {
   .footer-content {
@@ -239,7 +245,7 @@ footer {
 
 @media (max-width: 768px) {
   footer {
-    padding: 60px 0 30px;
+    padding: 60px 20px 30px;
   }
 
   .footer-content {
@@ -249,8 +255,8 @@ footer {
   }
 
  .footer-logo-section {
-    align-items: center;
-    text-align: center;
+    align-items: start;
+    text-align: start;
     display: flex;
     flex-direction: column;
   }
@@ -260,26 +266,27 @@ footer {
   }
 
   .footer-nav {
-    align-items: center;
+    align-items: start;
+    gap: 15px;
   }
 
   .footer-nav h4 {
-    text-align: center;
+    text-align: start;
   }
 
   .footer-bottom {
     flex-direction: column;
-    text-align: center;
+    text-align: start;
     gap: 15px;
   }
 
   .footer-links {
-    justify-content: center;
+    justify-content: start;
     width: 100%;
   }
 
   .footer-social {
-    justify-content: center;
+    justify-content: start;
   }
 }
 
@@ -290,8 +297,8 @@ footer {
 
 
   .footer-logo-section {
-    align-items: center;
-    text-align: center;
+    align-items: start;
+    text-align: start;
     display: flex;
     flex-direction: column;
   }
@@ -311,21 +318,24 @@ footer {
 
   .footer-nav a {
     font-size: 14px;
+    line-height: 120%;
+    height: fit-content;
+    min-height: fit-content;
   }
 
   .footer-bottom p,
   .footer-links a {
     font-size: 13px;
+    min-height: fit-content;
   }
 
   .footer-links {
     flex-direction: column;
-    gap: 12px;
-    align-items: center;
+    gap: 15px;
+    align-items: start;
   }
 
   .footer-social a {
     width: 40px;
-    height: 40px;
   }
 }

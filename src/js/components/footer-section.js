@@ -19,14 +19,12 @@ export function renderFooterSection() {
 
       <!-- Quick Links -->
       <div class="footer-nav">
-        <h4>Snelle Links</h4>
+        <h4>Paginas</h4>
         <a href="#">Homepage</a>
         <a href="apk.html">APK Keuring</a>
         <a href="airco.html">Airconditioning</a>
         <a href="banden.html">Banden Service</a>
         <a href="occasions.html">Occasions</a>
-        <a href="#about">Over ons</a>
-        <a href="#contact">Contact</a>
       </div>
 
       <!-- Contact Info -->

@@ -13,7 +13,7 @@ let db;
 try {
   db = new Database(DB_PATH);
   console.log('✓ SQLite database connected at:', DB_PATH);
-  
+
   // Enable foreign keys
   db.pragma('foreign_keys = ON');
 } catch (error) {
@@ -42,8 +42,8 @@ function initializeDatabase() {
     )
   `);
 
-  // Work days table (from ICS import)
-  db.exec(`
+    // Work days table (from ICS import)
+    db.exec(`
     CREATE TABLE IF NOT EXISTS work_days (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       date TEXT NOT NULL,
@@ -55,8 +55,8 @@ function initializeDatabase() {
     )
   `);
 
-  // Emails table
-  db.exec(`
+    // Emails table
+    db.exec(`
     CREATE TABLE IF NOT EXISTS emails (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -71,8 +71,8 @@ function initializeDatabase() {
     )
   `);
 
-  // Visitor sessions table
-  db.exec(`
+    // Visitor sessions table
+    db.exec(`
     CREATE TABLE IF NOT EXISTS visitor_sessions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       session_id TEXT UNIQUE NOT NULL,
@@ -93,24 +93,24 @@ function initializeDatabase() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
-  
-  // Migration: Add visitor_id column if it doesn't exist
-  try {
-    const columns = db.prepare("PRAGMA table_info(visitor_sessions)").all();
-    const hasVisitorId = columns.some(col => col.name === 'visitor_id');
-    
-    if (!hasVisitorId) {
-      console.log('Adding visitor_id column to visitor_sessions...');
-      db.exec(`ALTER TABLE visitor_sessions ADD COLUMN visitor_id TEXT`);
-      db.exec(`UPDATE visitor_sessions SET visitor_id = 'legacy_' || session_id WHERE visitor_id IS NULL`);
-      console.log('✓ visitor_id column added successfully');
-    }
-  } catch (error) {
-    console.error('Migration warning:', error.message);
-  }
 
-  // Daily visitor stats table (for faster queries)
-  db.exec(`
+    // Migration: Add visitor_id column if it doesn't exist
+    try {
+      const columns = db.prepare("PRAGMA table_info(visitor_sessions)").all();
+      const hasVisitorId = columns.some(col => col.name === 'visitor_id');
+
+      if (!hasVisitorId) {
+        console.log('Adding visitor_id column to visitor_sessions...');
+        db.exec(`ALTER TABLE visitor_sessions ADD COLUMN visitor_id TEXT`);
+        db.exec(`UPDATE visitor_sessions SET visitor_id = 'legacy_' || session_id WHERE visitor_id IS NULL`);
+        console.log('✓ visitor_id column added successfully');
+      }
+    } catch (error) {
+      console.error('Migration warning:', error.message);
+    }
+
+    // Daily visitor stats table (for faster queries)
+    db.exec(`
     CREATE TABLE IF NOT EXISTS daily_visitor_stats (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       date DATE UNIQUE NOT NULL,
@@ -123,9 +123,9 @@ function initializeDatabase() {
     )
   `);
 
-  // Create indexes for faster queries
-  db.exec(`CREATE INDEX IF NOT EXISTS idx_visitor_sessions_date ON visitor_sessions(date(first_seen))`);
-  db.exec(`CREATE INDEX IF NOT EXISTS idx_daily_stats_date ON daily_visitor_stats(date)`);
+    // Create indexes for faster queries
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_visitor_sessions_date ON visitor_sessions(date(first_seen))`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_daily_stats_date ON daily_visitor_stats(date)`);
 
     console.log('✓ Database tables initialized');
   } catch (error) {
@@ -159,7 +159,7 @@ export function createAppointment(appointment) {
     INSERT INTO appointments (id, name, email, phone, kenteken, service, date, time, status, notes)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
-  
+
   const result = stmt.run(
     String(appointment.id),
     appointment.name,
@@ -172,30 +172,30 @@ export function createAppointment(appointment) {
     appointment.status || 'pending',
     appointment.notes || ''
   );
-  
+
   return result.changes > 0;
 }
 
 export function updateAppointment(id, updates) {
   const fields = [];
   const values = [];
-  
+
   Object.keys(updates).forEach(key => {
     if (key !== 'id') {
       fields.push(`${key} = ?`);
       values.push(updates[key]);
     }
   });
-  
+
   fields.push('updated_at = CURRENT_TIMESTAMP');
   values.push(String(id));
-  
+
   const stmt = db.prepare(`
     UPDATE appointments 
     SET ${fields.join(', ')}
     WHERE id = ?
   `);
-  
+
   const result = stmt.run(...values);
   return result.changes > 0;
 }
@@ -223,14 +223,14 @@ export function createWorkDay(workDay) {
     INSERT OR REPLACE INTO work_days (date, shift, start_time, end_time)
     VALUES (?, ?, ?, ?)
   `);
-  
+
   const result = stmt.run(
     workDay.date,
     workDay.shift,
     workDay.startTime,
     workDay.endTime
   );
-  
+
   return result.changes > 0;
 }
 
@@ -239,13 +239,13 @@ export function createWorkDaysBulk(workDays) {
     INSERT OR REPLACE INTO work_days (date, shift, start_time, end_time)
     VALUES (?, ?, ?, ?)
   `);
-  
+
   const insertMany = db.transaction((workDays) => {
     for (const wd of workDays) {
       stmt.run(wd.date, wd.shift, wd.startTime, wd.endTime);
     }
   });
-  
+
   insertMany(workDays);
   return true;
 }
@@ -287,7 +287,7 @@ export function createEmail(email) {
     INSERT INTO emails (id, name, email, phone, kenteken, subject, message, vehicle_info, read)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
-  
+
   const result = stmt.run(
     String(email.id),
     email.name,
@@ -299,7 +299,7 @@ export function createEmail(email) {
     vehicleInfoValue,
     email.read ? 1 : 0
   );
-  
+
   return result.changes > 0;
 }
 
@@ -322,7 +322,7 @@ export function getStats() {
   const completedAppointments = db.prepare('SELECT COUNT(*) as count FROM appointments WHERE status = ?').get('completed').count;
   const totalEmails = db.prepare('SELECT COUNT(*) as count FROM emails').get().count;
   const unreadEmails = db.prepare('SELECT COUNT(*) as count FROM emails WHERE read = 0').get().count;
-  
+
   return {
     totalAppointments,
     completedAppointments,
@@ -340,7 +340,7 @@ export function createVisitorSession(session) {
      browser, os, screen_resolution, viewport, first_seen, last_seen)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
-  
+
   try {
     const result = stmt.run(
       session.sessionId,
@@ -358,7 +358,7 @@ export function createVisitorSession(session) {
       session.firstSeen,
       session.lastSeen
     );
-    
+
     return result.changes > 0;
   } catch (error) {
     console.error('Error creating visitor session:', error);
@@ -372,7 +372,7 @@ export function updateVisitorSession(sessionId, lastSeen, duration) {
     SET last_seen = ?, session_duration = ? 
     WHERE session_id = ?
   `);
-  
+
   const result = stmt.run(lastSeen, duration, sessionId);
   return result.changes > 0;
 }
@@ -382,7 +382,7 @@ export function getVisitorStats(today, yesterday) {
   const columns = db.prepare("PRAGMA table_info(visitor_sessions)").all();
   const hasVisitorId = columns.some(col => col.name === 'visitor_id');
   const distinctField = hasVisitorId ? 'visitor_id' : 'session_id';
-  
+
   // Convert UTC timestamps to Dutch time (CET = UTC+1, CEST = UTC+2)
   // Using +1 hour for winter time (this should ideally be dynamic)
   const todayVisitors = db.prepare(`
@@ -390,31 +390,31 @@ export function getVisitorStats(today, yesterday) {
     FROM visitor_sessions 
     WHERE date(datetime(first_seen, '+1 hour')) = ?
   `).get(today).count;
-  
+
   const yesterdayVisitors = db.prepare(`
     SELECT COUNT(DISTINCT ${distinctField}) as count 
     FROM visitor_sessions 
     WHERE date(datetime(first_seen, '+1 hour')) = ?
   `).get(yesterday).count;
-  
+
   // Count total unique visitors (by visitor_id or session_id as fallback) all time
   const totalVisitors = db.prepare(`
     SELECT COUNT(DISTINCT ${distinctField}) as count 
     FROM visitor_sessions
   `).get().count;
-  
+
   // Count total sessions (all time)
   const totalSessions = db.prepare(`
     SELECT COUNT(*) as count 
     FROM visitor_sessions
   `).get().count;
-  
+
   const avgDuration = db.prepare(`
     SELECT AVG(session_duration) as avg 
     FROM visitor_sessions 
     WHERE session_duration > 0
   `).get().avg || 0;
-  
+
   return {
     todayVisitors,
     yesterdayVisitors,
@@ -429,7 +429,7 @@ export function getDailyVisitorStats(days) {
   const columns = db.prepare("PRAGMA table_info(visitor_sessions)").all();
   const hasVisitorId = columns.some(col => col.name === 'visitor_id');
   const distinctField = hasVisitorId ? 'visitor_id' : 'session_id';
-  
+
   // Convert UTC to Dutch time (CET = UTC+1)
   const stmt = db.prepare(`
     SELECT 
@@ -442,7 +442,7 @@ export function getDailyVisitorStats(days) {
     GROUP BY date(datetime(first_seen, '+1 hour'))
     ORDER BY date(datetime(first_seen, '+1 hour')) ASC
   `);
-  
+
   return stmt.all(days);
 }
 
