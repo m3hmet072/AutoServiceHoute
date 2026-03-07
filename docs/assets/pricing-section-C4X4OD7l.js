@@ -1,4 +1,4 @@
-import"./footer-section-DtAmPdQ4.js";function d({title:s,price:n,subtitle:i,buttontext:e,minutes:o,reviews:r,svg:c}={}){const t=document.getElementById("pricing-section");t&&(t.innerHTML=`  <section class="pricing-section">
+import"./footer-section-Dz7OoqwR.js";function d({title:s,price:n,subtitle:i,buttontext:e,minutes:o,reviews:r,svg:c}={}){const t=document.getElementById("pricing-section");t&&(t.innerHTML=`  <section class="pricing-section">
     <div class="pricing-card">
      <div class="stat-icon">
        ${c}

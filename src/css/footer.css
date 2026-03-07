@@ -249,7 +249,7 @@ footer {
   }
 
   .footer-content {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 40px;
     margin-bottom: 40px;
   }
@@ -306,6 +306,7 @@ footer {
   .footer-content {
     gap: 30px;
     margin-bottom: 30px;
+     grid-template-columns: 1fr;
   }
 
   .footer-logo {
