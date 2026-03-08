@@ -2,14 +2,18 @@
 
 :root {
   /* Colors */
-  --color-bg: #F5F8FF; /* very light blue from design */
+  --color-bg: #F5F8FF;
+  /* very light blue from design */
   --color-surface: #FFFFFF;
-   --color-text-white: #F5F8FF; /* very light blue from design */
-  --color-primary: #0082FB; /* accent blue */
+  --color-text-white: #F5F8FF;
+  /* very light blue from design */
+  --color-primary: #0082FB;
+  /* accent blue */
   --color-primary-600: #0064E0;
   --color-text: #101010;
   --color-muted: #6F7A8B;
-  --color-accent-ghost: #E9F4FF; /* subtle card tint */
+  --color-accent-ghost: #E9F4FF;
+  /* subtle card tint */
   --color-footer: #101010;
 
   /* Typography */
@@ -141,32 +145,34 @@ label {
     text-size-adjust: 100%;
   }
 }
-.main-container {
-    position: relative;
 
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: left;
-    z-index: 2;
-    color: var(--color-text);
-    overflow: hidden;
-    margin: 0;
-    padding: 80px 0px 0px;
+.main-container {
+  position: relative;
+
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  z-index: 2;
+  color: var(--color-text);
+  overflow: hidden;
+  margin: 0;
+         padding: 76px 20px 0;
 }
+
 .inner-main-container {
-    position: relative;
-    z-index: 10;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    flex-direction: column;
-    gap: clamp(24px, 4vh, 40px);
-    margin: 0 auto;
+  position: relative;
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 4vh, 40px);
+  margin: 0 auto;
 }
 
 main {
@@ -176,9 +182,11 @@ main {
   flex: 1;
   display: flex;
   gap: 100px;
-      padding: 0 20px;
+  padding: 0 20px;
   flex-direction: column;
-}body::selection{
+}
+
+body::selection {
   background: rgba(0, 130, 251, 0.15);
 }
 

@@ -238,12 +238,15 @@
 
 .reviews {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    width: 100%;
     gap: 12px;
 }
 
 .reviews p {
     font-size: 16px;
+    width: fit-content;
 }
 
 .reviews .svg {
