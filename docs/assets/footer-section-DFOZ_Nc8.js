@@ -131,7 +131,7 @@ import{c as x,t as B,s as M}from"./api-CLM0aaL7.js";function E(e){const n=e;retu
     </div>
   </div>`}
 </div>
-  `}function q({containerId:e="controle-section",columns:n=4,items:t=null,className:i="",noShadow:s=!1,serviceTitle:o="",title:d="Wat controleren wij?",subtitle:r="Tijdens de APK worden alle wettelijk verplichte onderdelen grondig geïnspecteerd."}={}){const h=typeof e=="string"?document.getElementById(e):e;if(!h)return;const c=["Remmen & remsysteem","Stuurinrichting","Banden & wielophanging","Uitlaatsysteem & milieu","Carrosserie & chassis","Verlichting & signalering","Ruiten & ruitensproeiers","Gordels & airbags"],a=(Array.isArray(t)&&t.length?t:c).map(u=>`    <div class="control-item">
+  `}function R({containerId:e="controle-section",columns:n=4,items:t=null,className:i="",noShadow:s=!1,serviceTitle:o="",title:d="Wat controleren wij?",subtitle:r="Tijdens de APK worden alle wettelijk verplichte onderdelen grondig geïnspecteerd."}={}){const h=typeof e=="string"?document.getElementById(e):e;if(!h)return;const c=["Remmen & remsysteem","Stuurinrichting","Banden & wielophanging","Uitlaatsysteem & milieu","Carrosserie & chassis","Verlichting & signalering","Ruiten & ruitensproeiers","Gordels & airbags"],a=(Array.isArray(t)&&t.length?t:c).map(u=>`    <div class="control-item">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M17 3.33782C15.5291 2.48697 13.8214 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 11.3151 21.9311 10.6462 21.8 10" stroke="#0082FB" stroke-width="1.5" stroke-linecap="round"/>
       <path d="M8 12.5C8 12.5 9.5 12.5 11.5 16C11.5 16 17.0588 6.83333 22 5" stroke="#0082FB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -146,7 +146,7 @@ import{c as x,t as B,s as M}from"./api-CLM0aaL7.js";function E(e){const n=e;retu
 ${a}
   </div>
 </section>
-  `}function R(){const e=document.getElementById("afspraak-section");e&&(e.innerHTML=`
+  `}function q(){const e=document.getElementById("afspraak-section");e&&(e.innerHTML=`
 <section class="appointment" id="contact">
   <div class="appointment-grid">
     <div class="appointment-left">
@@ -274,7 +274,7 @@ ${a}
         <h4>Contact</h4>
         <a href="mailto:Autoservicehoute@hotmail.com">Autoservicehoute@hotmail.com</a>
         <a href="tel:+31611023141">+31 6 11023141</a>
-        <a href="#">Ambachtsring 9-K<br>1969 NH Heemskerk</a>
+        <a href="https://maps.app.goo.gl/EeXYt8kCKkAzRx6N8">Ambachtsring 9-K<br>1969 NH Heemskerk</a>
       </div>
     </div>
   </div>
@@ -288,4 +288,4 @@ ${a}
     </div>
   </div>
 </footer>
-  `)}export{q as a,R as b,J as c,Z as i,V as l,U as r};
+  `)}export{R as a,q as b,J as c,Z as i,V as l,U as r};

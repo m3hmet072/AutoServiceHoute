@@ -79,7 +79,7 @@ footer {
 .footer-nav {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .footer-nav h4 {
@@ -219,7 +219,7 @@ footer {
 }
 
 .footer-links a:hover {
-  color: #374CFF;
+  color: #0082FB;
 }
 
 .footer-links a:hover::after {

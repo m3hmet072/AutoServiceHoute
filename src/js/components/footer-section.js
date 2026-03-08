@@ -32,7 +32,7 @@ export function renderFooterSection() {
         <h4>Contact</h4>
         <a href="mailto:Autoservicehoute@hotmail.com">Autoservicehoute@hotmail.com</a>
         <a href="tel:+31611023141">+31 6 11023141</a>
-        <a href="#">Ambachtsring 9-K<br>1969 NH Heemskerk</a>
+        <a href="https://maps.app.goo.gl/EeXYt8kCKkAzRx6N8">Ambachtsring 9-K<br>1969 NH Heemskerk</a>
       </div>
     </div>
   </div>

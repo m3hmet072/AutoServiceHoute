@@ -105,10 +105,16 @@
   justify-content: center;
   gap: 8px;
 }
+.pricing-icons-box svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
 
 .pricing-icons-box p {
   font-size: 15px;
   color: #6F7A8B;
   letter-spacing: -1%;
+  width: fit-content;
   line-height: 100%;
 }
