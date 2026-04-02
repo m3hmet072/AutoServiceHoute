@@ -20,7 +20,6 @@ import { renderPricingSection } from './components/pricing-section';
 import { renderControleSection } from './components/controle-section';
 import { renderStappenSection } from './components/stappen-section';
 import { renderAfspraakSection } from './components/afspraak-section';
-import './landing-tracker';
 
 window.addEventListener('DOMContentLoaded', () => {
   loadNavbar();

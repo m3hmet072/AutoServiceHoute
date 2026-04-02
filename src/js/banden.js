@@ -21,7 +21,6 @@ import { renderControleSection } from './components/controle-section'
 import { renderStappenSection } from './components/stappen-section'
 import { renderAfspraakSection } from './components/afspraak-section'
 import { renderQuestionSection } from './components/question-section'
-import './landing-tracker'
 
 window.addEventListener('DOMContentLoaded', () => {
     loadNavbar()

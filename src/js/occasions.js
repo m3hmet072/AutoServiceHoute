@@ -23,7 +23,6 @@ import { renderQuestionSection } from './components/question-section'
 import { renderStappenSection } from './components/stappen-section'
 import { renderAfspraakSection } from './components/afspraak-section'
 import { renderProductSection } from './components/product-section'
-import './landing-tracker'
 
 window.addEventListener('DOMContentLoaded', () => {
   const url = new URL(window.location.href)

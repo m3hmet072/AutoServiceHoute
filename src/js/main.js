@@ -15,7 +15,6 @@ import '../css/footer.css'
 
 import { loadNavbar } from './navbar'
 import { initContactForm } from './contact-form'
-import './landing-tracker'
 import { renderHeroSection } from './components/hero-section'
 import { renderScoreSection } from './components/score-section'
 import { renderDienstenSection } from './components/diensten-section'

@@ -1,8 +1,28 @@
 // RDW API Integration and Contact Form Handler
-// Using EmailJS for email sending
-import { createEmail } from './api.js';
+import { createClient } from '@supabase/supabase-js';
 
 let vehicleData = null;
+let lastSubmitAt = 0;
+let isSubmitting = false;
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const GARAGE_UUID = import.meta.env.VITE_GARAGE_UUID;
+const RATE_LIMIT_WINDOW_MS = 10_000;
+
+let supabase = null;
+
+function getSupabaseClient() {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !GARAGE_UUID) {
+    throw new Error('Supabase config ontbreekt. Stel VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY en VITE_GARAGE_UUID in.');
+  }
+
+  if (!supabase) {
+    supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+
+  return supabase;
+}
 
 // Toast Notification System
 function showToast(message, type = 'success') {
@@ -27,12 +47,6 @@ function showToast(message, type = 'success') {
     warning: `<svg class="toast-icon" viewBox="0 0 20 20" fill="currentColor">
       <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
     </svg>`
-  };
-  
-  const titles = {
-    success: 'Saved Successfully',
-    error: 'Error Occurred',
-    warning: 'Action Required'
   };
   
   toast.innerHTML = `
@@ -66,11 +80,6 @@ function showToast(message, type = 'success') {
   }, 5000);
 }
 
-// EmailJS Configuration
-const EMAILJS_PUBLIC_KEY = 'xKnL-OvHIJbJ6pn8s'; // Get from https://dashboard.emailjs.com/admin/account
-const EMAILJS_SERVICE_ID = 'service_38razxb';  // Get from https://dashboard.emailjs.com/admin
-const EMAILJS_TEMPLATE_ID = 'template_aplhulr'; // Get from https://dashboard.emailjs.com/admin
-
 // Format kenteken to match RDW format (remove dashes and convert to uppercase)
 function formatKenteken(kenteken) {
   return kenteken.replace(/[-\s]/g, '').toUpperCase();
@@ -103,6 +112,102 @@ function getSelectedOnderwerpen(formElement) {
 
   const formData = new FormData(formElement);
   return formData.getAll('onderwerp').map((value) => value.toString().trim()).filter(Boolean);
+}
+
+function normalizeLicensePlate(value) {
+  return (value || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function getOrCreateFeedbackElement(form) {
+  let feedback = form.querySelector('#contact-form-feedback');
+  if (feedback) {
+    return feedback;
+  }
+
+  feedback = document.createElement('small');
+  feedback.id = 'contact-form-feedback';
+  feedback.className = 'onderwerp-status';
+  feedback.setAttribute('aria-live', 'polite');
+  form.appendChild(feedback);
+  return feedback;
+}
+
+function setFormFeedback(form, message, type = 'info') {
+  const feedback = getOrCreateFeedbackElement(form);
+  feedback.textContent = message || '';
+
+  feedback.style.color = '';
+  if (type === 'error') {
+    feedback.style.color = '#dc2626';
+  } else if (type === 'success') {
+    feedback.style.color = '#059669';
+  }
+}
+
+function resetVehicleUi() {
+  const kentekenStatus = document.getElementById('kenteken-status');
+  const vehicleInfo = document.getElementById('vehicle-info');
+
+  if (kentekenStatus) {
+    kentekenStatus.textContent = '';
+    kentekenStatus.className = 'kenteken-status';
+  }
+
+  if (vehicleInfo) {
+    vehicleInfo.style.display = 'none';
+  }
+}
+
+async function insertBooking(bookingPayload) {
+  const client = getSupabaseClient();
+
+  // RLS assumptions:
+  // - anon can insert into public.bookings
+  // - anon cannot select/update/delete public.bookings
+  // - insert is allowed only when garage_id exists in public.garages
+  const { error } = await client
+    .from('bookings')
+    .insert(bookingPayload);
+
+  if (error) {
+    throw error;
+  }
+}
+
+function validateSubmission(values) {
+  if (!values.name) {
+    return 'Vul uw naam in.';
+  }
+
+  if (!values.email) {
+    return 'Vul uw e-mailadres in.';
+  }
+
+  if (!isValidEmail(values.email)) {
+    return 'Vul een geldig e-mailadres in.';
+  }
+
+  if (!values.licensePlate) {
+    return 'Vul een kenteken in.';
+  }
+
+  if (!values.selectedService) {
+    return 'Kies minimaal één onderwerp.';
+  }
+
+  if (values.isOtherService && !values.customService) {
+    return 'Licht bij Overig kort toe welke service u nodig heeft.';
+  }
+
+  if (!values.description || values.description.length < 10) {
+    return 'Beschrijf uw vraag in minimaal 10 tekens.';
+  }
+
+  return null;
 }
 
 // Auto-format kenteken as user types (XX-123-XX format)
@@ -211,57 +316,6 @@ function debounce(func, wait) {
   };
 }
 
-// Send email via EmailJS
-async function sendEmail(formData) {
-  // Initialize EmailJS if not already done
-  if (typeof emailjs === 'undefined') {
-    throw new Error('EmailJS library not loaded');
-  }
-  
-  // Prepare email template parameters matching the EmailJS template variables
-  const templateParams = {
-    name: formData.naam || 'Niet opgegeven',
-    subject: formData.onderwerp,
-    email: formData.email || 'Niet opgegeven',
-    phone: formData.telefoon,
-    license: formData.kenteken,
-    message: formData.bericht
-  };
-  
-  try {
-    const response = await emailjs.send(
-      EMAILJS_SERVICE_ID,
-      EMAILJS_TEMPLATE_ID,
-      templateParams,
-      EMAILJS_PUBLIC_KEY
-    );
-    
-    return { success: true, response };
-  } catch (error) {
-    console.error('EmailJS Error:', error);
-    throw error;
-  }
-}
-
-// Save form data to admin dashboard via API
-async function saveToAdminDashboard(formData) {
-  const newEmail = {
-    id: Date.now().toString(),
-    name: formData.naam || 'Niet opgegeven',
-    email: formData.email || 'Niet opgegeven',
-    phone: formData.telefoon,
-    kenteken: formData.kenteken,
-    subject: formData.onderwerp,
-    message: formData.bericht,
-    vehicleInfo: vehicleData || null,
-    source: 'website-form',
-    read: false
-  };
-
-  const result = await createEmail(newEmail);
-  console.log('Form data saved to database via API:', result);
-}
-
 // Initialize form
 export function initContactForm() {
   const form = document.getElementById('contact-form');
@@ -276,6 +330,13 @@ export function initContactForm() {
   if (!form || !kentekenInput) {
     return;
   }
+
+  const naamInput = form.querySelector('#naam, [name="naam"], [name="name"]');
+  const emailInput = form.querySelector('#email, [name="email"]');
+  const telefoonInput = form.querySelector('#telefoon, [name="telefoon"], [name="phone"]');
+  const berichtInput = form.querySelector('#bericht, [name="bericht"], [name="description"]');
+  const honeypotInput = form.querySelector('[name="website"]');
+  const customServiceInput = form.querySelector('#custom-service, [name="customService"], [name="onderwerp_custom"]');
 
   const onderwerpCheckboxes = form.querySelectorAll('input[name="onderwerp"]');
 
@@ -319,6 +380,14 @@ export function initContactForm() {
 
   onderwerpCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        onderwerpCheckboxes.forEach((otherCheckbox) => {
+          if (otherCheckbox !== checkbox) {
+            otherCheckbox.checked = false;
+          }
+        });
+      }
+
       if (!onderwerpStatus) {
         updateOnderwerpPreview();
         return;
@@ -326,6 +395,15 @@ export function initContactForm() {
 
       const selected = getSelectedOnderwerpen(form);
       onderwerpStatus.textContent = selected.length > 0 ? '' : 'Selecteer minimaal één onderwerp.';
+      const hasOther = selected.some((item) => /^(other|overig)$/i.test(item));
+      if (customServiceInput) {
+        customServiceInput.hidden = !hasOther;
+        customServiceInput.required = hasOther;
+        customServiceInput.disabled = !hasOther;
+        if (!hasOther) {
+          customServiceInput.value = '';
+        }
+      }
       updateOnderwerpPreview();
     });
   });
@@ -360,24 +438,36 @@ export function initContactForm() {
   }
 
   updateOnderwerpPreview();
+  if (customServiceInput) {
+    customServiceInput.hidden = true;
+    customServiceInput.required = false;
+    customServiceInput.disabled = true;
+  }
   
   // Handle form submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    const formData = new FormData(form);
-    const geselecteerdeOnderwerpen = getSelectedOnderwerpen(form);
-    const data = {
-      ...Object.fromEntries(formData.entries()),
-      naam: 'Niet opgegeven',
-      email: formData.get('email') || 'Niet opgegeven',
-      onderwerp: geselecteerdeOnderwerpen.join(', ')
-    };
 
-    if (!data.kenteken || !data.kenteken.trim()) {
-      showToast('Vul een kenteken in.', 'warning');
+    if (honeypotInput && honeypotInput.value.trim()) {
       return;
     }
+
+    if (isSubmitting) {
+      return;
+    }
+
+    if (Date.now() - lastSubmitAt < RATE_LIMIT_WINDOW_MS) {
+      showToast('Wacht een paar seconden voordat u opnieuw verzendt.', 'warning');
+      setFormFeedback(form, 'Wacht een paar seconden voordat u opnieuw verzendt.', 'error');
+      return;
+    }
+
+    const formData = new FormData(form);
+    const geselecteerdeOnderwerpen = getSelectedOnderwerpen(form);
+    const selectedService = geselecteerdeOnderwerpen[0] || '';
+    const isOtherService = /^(other|overig)$/i.test(selectedService);
+    const customService = (customServiceInput ? customServiceInput.value : '').trim();
+    const normalizedPlate = normalizeLicensePlate(kentekenInput.value);
 
     if (geselecteerdeOnderwerpen.length === 0) {
       if (onderwerpStatus) {
@@ -386,48 +476,79 @@ export function initContactForm() {
       showToast('Kies minimaal één onderwerp.', 'warning');
       return;
     }
-    
+
+    const submissionValues = {
+      name: (naamInput ? naamInput.value : formData.get('naam') || formData.get('name') || '').toString().trim(),
+      email: (emailInput ? emailInput.value : formData.get('email') || '').toString().trim(),
+      licensePlate: normalizedPlate,
+      selectedService,
+      isOtherService,
+      customService,
+      description: (berichtInput ? berichtInput.value : formData.get('bericht') || formData.get('description') || '').toString().trim(),
+      phone: telefoonInput ? telefoonInput.value.toString().trim() : ''
+    };
+
+    const validationError = validateSubmission(submissionValues);
+    if (validationError) {
+      showToast(validationError, 'warning');
+      setFormFeedback(form, validationError, 'error');
+      return;
+    }
+
     if (onderwerpStatus) {
       onderwerpStatus.textContent = '';
     }
-    
+
     // Validate kenteken before submitting
-    const isValid = await validateKenteken(data.kenteken);
-    
+    const isValid = await validateKenteken(submissionValues.licensePlate);
+
     if (!isValid) {
       showToast('Het ingevoerde kenteken is niet gevonden in de RDW database. Controleer het kenteken en probeer opnieuw.', 'error');
+      setFormFeedback(form, 'Controleer het kenteken en probeer opnieuw.', 'error');
       return;
     }
-    
+
     // Disable submit button
+    isSubmitting = true;
     if (submitBtn) {
       submitBtn.disabled = true;
       submitBtn.textContent = 'Verzenden...';
     }
-    
+
     try {
-      const result = await sendEmail(data);
-      
-      if (result.success) {
-        // Save to dashboard (async, but don't wait)
-        await saveToAdminDashboard(data);
-        
-        showToast('Uw bericht is succesvol verzonden! We nemen zo spoedig mogelijk contact met u op.', 'success');
-        form.reset();
-        vehicleData = null;
-        document.getElementById('kenteken-status').textContent = '';
-        document.getElementById('vehicle-info').style.display = 'none';
-        if (onderwerpStatus) {
-          onderwerpStatus.textContent = '';
-        }
-        updateOnderwerpPreview();
-      } else {
-        throw new Error('Failed to send email');
+      const serviceValue = isOtherService ? customService : selectedService;
+      const bookingPayload = {
+        garage_id: GARAGE_UUID,
+        license_plate: submissionValues.licensePlate,
+        service: serviceValue,
+        phone: submissionValues.phone || '',
+        message: submissionValues.description
+      };
+
+      await insertBooking(bookingPayload);
+      lastSubmitAt = Date.now();
+
+      showToast('Uw afspraakverzoek is ontvangen. We nemen zo snel mogelijk contact op.', 'success');
+      setFormFeedback(form, 'Uw afspraakverzoek is verzonden.', 'success');
+
+      form.reset();
+      vehicleData = null;
+      resetVehicleUi();
+      if (onderwerpStatus) {
+        onderwerpStatus.textContent = '';
       }
+      if (customServiceInput) {
+        customServiceInput.hidden = true;
+        customServiceInput.required = false;
+        customServiceInput.disabled = true;
+      }
+      updateOnderwerpPreview();
     } catch (error) {
-      console.error('Error sending email:', error);
-      showToast('Er is een fout opgetreden bij het verzenden van uw bericht. Probeer het later opnieuw of neem telefonisch contact met ons op.', 'error');
+      console.error('Error creating booking:', error);
+      showToast('Verzenden is niet gelukt. Probeer het opnieuw of neem telefonisch contact met ons op.', 'error');
+      setFormFeedback(form, 'Verzenden is niet gelukt. Controleer uw invoer en probeer opnieuw.', 'error');
     } finally {
+      isSubmitting = false;
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Bevestig afspraak';

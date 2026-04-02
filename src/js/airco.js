@@ -22,7 +22,6 @@ import { renderControleSection } from './components/controle-section'
 import { renderAfspraakSection } from './components/afspraak-section'
 import { renderStappenSection } from './components/stappen-section'
 import { renderOnderhoudsection } from './components/onderhoud-section'
-import './landing-tracker'
 
 window.addEventListener('DOMContentLoaded', () => {
     loadNavbar()

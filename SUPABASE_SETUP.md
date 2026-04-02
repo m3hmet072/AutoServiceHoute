@@ -18,9 +18,10 @@ Create a `.env.local` file in the project root:
 ```env
 VITE_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
 VITE_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+VITE_GARAGE_UUID=YOUR_GARAGE_UUID
 ```
 
-For production (your host/build pipeline), set the same two variables there.
+For production (your host/build pipeline), set the same three variables there.
 
 ## 4) Install dependencies
 Run:

@@ -44,6 +44,11 @@ export function renderAfspraakSection() {
     </div>
     <div class="appointment-right">
       <form id="contact-form">
+        <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;" />
+
+        <div class="form-group"><input type="text" id="naam" name="naam" placeholder="Uw naam" required></div>
+        <div class="form-group"><input type="email" id="email" name="email" placeholder="Uw e-mailadres" required></div>
+
         <div class="form-group">
           <input type="text" id="kenteken" name="kenteken" placeholder="Uw kenteken" required>
           <small id="kenteken-status" class="kenteken-status" aria-live="polite"></small>
@@ -93,8 +98,10 @@ export function renderAfspraakSection() {
           <small id="onderwerp-status" class="onderwerp-status" aria-live="polite"></small>
         </div>
 
-        <div class="form-group"><input type="tel" id="telefoon" name="telefoon" placeholder="Telefoonnummer" required></div>
-        <div class="form-group"><textarea id="bericht" name="bericht" rows="3" placeholder="Type uw bericht hier..."></textarea></div>
+        <div class="form-group"><input type="text" id="custom-service" name="onderwerp_custom" placeholder="Omschrijf uw servicevraag" hidden disabled></div>
+
+        <div class="form-group"><input type="tel" id="telefoon" name="telefoon" placeholder="Telefoonnummer"></div>
+        <div class="form-group"><textarea id="bericht" name="bericht" rows="3" placeholder="Type uw bericht hier..." required minlength="10"></textarea></div>
         <button type="submit" id="submit-btn" class="btn-afspraak">Bevestig afspraak <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M18.5 12H5" stroke="#F5F8FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             <path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" stroke="#F5F8FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
