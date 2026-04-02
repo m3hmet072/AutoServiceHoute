@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 let vehicleData = null;
 let lastSubmitAt = 0;
 let isSubmitting = false;
+const MAX_CUSTOM_SERVICES = 10;
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -195,12 +196,16 @@ function validateSubmission(values) {
     return 'Vul een kenteken in.';
   }
 
-  if (!values.selectedService) {
+  if (values.selectedServices.length === 0) {
     return 'Kies minimaal één onderwerp.';
   }
 
-  if (values.isOtherService && !values.customService) {
-    return 'Licht bij Overig kort toe welke service u nodig heeft.';
+  if (values.hasOtherService && !values.customService) {
+    return 'Licht bij Overige kort toe welke service u nodig heeft.';
+  }
+
+  if (values.hasPendingCustomService) {
+    return 'Klik op Toevoegen om uw extra onderwerp op te slaan.';
   }
 
   if (!values.description || values.description.length < 10) {
@@ -337,8 +342,64 @@ export function initContactForm() {
   const berichtInput = form.querySelector('#bericht, [name="bericht"], [name="description"]');
   const honeypotInput = form.querySelector('[name="website"]');
   const customServiceInput = form.querySelector('#custom-service, [name="customService"], [name="onderwerp_custom"]');
+  const customServiceGroup = form.querySelector('#custom-service-group');
+  const customServiceAddButton = form.querySelector('#custom-service-add');
+  const customServiceList = form.querySelector('#custom-service-list');
 
   const onderwerpCheckboxes = form.querySelectorAll('input[name="onderwerp"]');
+  const customServices = [];
+
+  const renderCustomServices = () => {
+    if (!customServiceList) {
+      return;
+    }
+
+    customServiceList.innerHTML = customServices.map((item, index) => `
+      <span class="custom-service-item">
+        ${item}
+        <button type="button" class="custom-service-remove" data-custom-service-index="${index}" aria-label="Verwijder ${item}">&times;</button>
+      </span>
+    `).join('');
+
+    customServiceList.querySelectorAll('[data-custom-service-index]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const index = Number(button.getAttribute('data-custom-service-index'));
+        customServices.splice(index, 1);
+        renderCustomServices();
+      });
+    });
+  };
+
+  const clearCustomServices = () => {
+    customServices.length = 0;
+    renderCustomServices();
+  };
+
+  const addCustomService = () => {
+    if (!customServiceInput) {
+      return;
+    }
+
+    const value = customServiceInput.value.trim();
+    if (!value) {
+      showToast('Vul eerst een eigen onderwerp in.', 'warning');
+      return;
+    }
+
+    if (customServices.length >= MAX_CUSTOM_SERVICES) {
+      showToast('U kunt maximaal 10 extra onderwerpen toevoegen.', 'warning');
+      return;
+    }
+
+    if (customServices.some((item) => item.toLowerCase() === value.toLowerCase())) {
+      showToast('Dit extra onderwerp is al toegevoegd.', 'warning');
+      return;
+    }
+
+    customServices.push(value);
+    customServiceInput.value = '';
+    renderCustomServices();
+  };
 
   const updateOnderwerpPreview = () => {
     if (!onderwerpPreview) {
@@ -380,14 +441,6 @@ export function initContactForm() {
 
   onderwerpCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener('change', () => {
-      if (checkbox.checked) {
-        onderwerpCheckboxes.forEach((otherCheckbox) => {
-          if (otherCheckbox !== checkbox) {
-            otherCheckbox.checked = false;
-          }
-        });
-      }
-
       if (!onderwerpStatus) {
         updateOnderwerpPreview();
         return;
@@ -395,14 +448,20 @@ export function initContactForm() {
 
       const selected = getSelectedOnderwerpen(form);
       onderwerpStatus.textContent = selected.length > 0 ? '' : 'Selecteer minimaal één onderwerp.';
-      const hasOther = selected.some((item) => /^(other|overig)$/i.test(item));
+      const hasOther = selected.some((item) => /^(other|overig|overige)$/i.test(item));
+      if (customServiceGroup) {
+        customServiceGroup.hidden = !hasOther;
+      }
       if (customServiceInput) {
-        customServiceInput.hidden = !hasOther;
-        customServiceInput.required = hasOther;
+        customServiceInput.required = false;
         customServiceInput.disabled = !hasOther;
         if (!hasOther) {
           customServiceInput.value = '';
+          clearCustomServices();
         }
+      }
+      if (customServiceAddButton) {
+        customServiceAddButton.disabled = !hasOther;
       }
       updateOnderwerpPreview();
     });
@@ -438,10 +497,24 @@ export function initContactForm() {
   }
 
   updateOnderwerpPreview();
+  if (customServiceGroup) {
+    customServiceGroup.hidden = true;
+  }
   if (customServiceInput) {
-    customServiceInput.hidden = true;
     customServiceInput.required = false;
     customServiceInput.disabled = true;
+  }
+  if (customServiceAddButton) {
+    customServiceAddButton.disabled = true;
+    customServiceAddButton.addEventListener('click', addCustomService);
+  }
+  if (customServiceInput) {
+    customServiceInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        addCustomService();
+      }
+    });
   }
   
   // Handle form submission
@@ -464,9 +537,9 @@ export function initContactForm() {
 
     const formData = new FormData(form);
     const geselecteerdeOnderwerpen = getSelectedOnderwerpen(form);
-    const selectedService = geselecteerdeOnderwerpen[0] || '';
-    const isOtherService = /^(other|overig)$/i.test(selectedService);
-    const customService = (customServiceInput ? customServiceInput.value : '').trim();
+    const hasOtherService = geselecteerdeOnderwerpen.some((item) => /^(other|overig|overige)$/i.test(item));
+    const pendingCustomService = (customServiceInput ? customServiceInput.value : '').trim();
+    const customServiceValues = [...customServices];
     const normalizedPlate = normalizeLicensePlate(kentekenInput.value);
 
     if (geselecteerdeOnderwerpen.length === 0) {
@@ -481,9 +554,11 @@ export function initContactForm() {
       name: (naamInput ? naamInput.value : formData.get('naam') || formData.get('name') || '').toString().trim(),
       email: (emailInput ? emailInput.value : formData.get('email') || '').toString().trim(),
       licensePlate: normalizedPlate,
-      selectedService,
-      isOtherService,
-      customService,
+      selectedServices: geselecteerdeOnderwerpen,
+      hasOtherService,
+      customService: customServiceValues.join(', '),
+      customServiceValues,
+      hasPendingCustomService: Boolean(pendingCustomService),
       description: (berichtInput ? berichtInput.value : formData.get('bericht') || formData.get('description') || '').toString().trim(),
       phone: telefoonInput ? telefoonInput.value.toString().trim() : ''
     };
@@ -516,7 +591,12 @@ export function initContactForm() {
     }
 
     try {
-      const serviceValue = isOtherService ? customService : selectedService;
+      const serviceItems = submissionValues.selectedServices.filter((item) => !/^(other|overig|overige)$/i.test(item));
+      if (submissionValues.hasOtherService && submissionValues.customServiceValues.length > 0) {
+        serviceItems.push(...submissionValues.customServiceValues);
+      }
+
+      const serviceValue = serviceItems.join(', ');
       const bookingPayload = {
         garage_id: GARAGE_UUID,
         license_plate: submissionValues.licensePlate,
@@ -538,10 +618,16 @@ export function initContactForm() {
         onderwerpStatus.textContent = '';
       }
       if (customServiceInput) {
-        customServiceInput.hidden = true;
         customServiceInput.required = false;
         customServiceInput.disabled = true;
       }
+      if (customServiceGroup) {
+        customServiceGroup.hidden = true;
+      }
+      if (customServiceAddButton) {
+        customServiceAddButton.disabled = true;
+      }
+      clearCustomServices();
       updateOnderwerpPreview();
     } catch (error) {
       console.error('Error creating booking:', error);

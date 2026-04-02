@@ -87,10 +87,12 @@ export function renderAfspraakSection() {
             <div id="onderwerp-panel" class="onderwerp-panel" hidden>
               <div class="subject-options-grid">
                 <label class="subject-option"><input type="checkbox" name="onderwerp" value="APK"><span>APK</span></label>
-                <label class="subject-option"><input type="checkbox" name="onderwerp" value="Grote beurt"><span>Grote beurt</span></label>
-                <label class="subject-option"><input type="checkbox" name="onderwerp" value="Banden service"><span>Banden service</span></label>
-                <label class="subject-option"><input type="checkbox" name="onderwerp" value="Airco specialist"><span>Airco specialist</span></label>
-                <label class="subject-option"><input type="checkbox" name="onderwerp" value="Overig"><span>Overig</span></label>
+                <label class="subject-option"><input type="checkbox" name="onderwerp" value="Banden"><span>Banden</span></label>
+                <label class="subject-option"><input type="checkbox" name="onderwerp" value="Onderhoud"><span>Onderhoud</span></label>
+                <label class="subject-option"><input type="checkbox" name="onderwerp" value="Airco"><span>Airco</span></label>
+                <label class="subject-option"><input type="checkbox" name="onderwerp" value="Occasions"><span>Occasions</span></label>
+                <label class="subject-option"><input type="checkbox" name="onderwerp" value="Remmen"><span>Remmen</span></label>
+                <label class="subject-option"><input type="checkbox" name="onderwerp" value="Overige"><span>Overige</span></label>
               </div>
             </div>
           </div>
@@ -98,7 +100,13 @@ export function renderAfspraakSection() {
           <small id="onderwerp-status" class="onderwerp-status" aria-live="polite"></small>
         </div>
 
-        <div class="form-group"><input type="text" id="custom-service" name="onderwerp_custom" placeholder="Omschrijf uw servicevraag" hidden disabled></div>
+        <div class="form-group custom-service-group" id="custom-service-group" hidden>
+          <div class="custom-service-row">
+            <input type="text" id="custom-service" name="onderwerp_custom" placeholder="Voeg zelf een onderwerp toe" disabled>
+            <button type="button" id="custom-service-add" class="custom-service-add" disabled>Toevoegen</button>
+          </div>
+          <div id="custom-service-list" class="custom-service-list" aria-live="polite"></div>
+        </div>
 
         <div class="form-group"><input type="tel" id="telefoon" name="telefoon" placeholder="Telefoonnummer"></div>
         <div class="form-group"><textarea id="bericht" name="bericht" rows="3" placeholder="Type uw bericht hier..." required minlength="10"></textarea></div>

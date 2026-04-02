@@ -277,6 +277,73 @@
   font-weight: 600;
 }
 
+.custom-service-group {
+  gap: 10px;
+}
+
+.custom-service-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.custom-service-row input {
+  flex: 1;
+}
+
+.custom-service-add {
+  min-width: 108px;
+  padding: 0 18px;
+  border: 1px solid #0082FB;
+  background: #0082FB;
+  color: #F5F8FF;
+  border-radius: 16px;
+  font-family: "Google Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.custom-service-add:hover {
+  background: #006ED6;
+  border-color: #006ED6;
+}
+
+.custom-service-add:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.custom-service-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.custom-service-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #EEF4FF;
+  border: 1px solid #D8E6FF;
+  color: #005FC1;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.custom-service-remove {
+  border: none;
+  background: transparent;
+  color: #005FC1;
+  padding: 0;
+  line-height: 1;
+  cursor: pointer;
+  font-size: 16px;
+}
+
 .appointment-right .kenteken-status {
   margin-top: 8px;
   font-size: 12px;
@@ -356,6 +423,15 @@
 
   .appointment-right .vehicle-detail-column {
     gap: 8px;
+  }
+
+  .custom-service-row {
+    flex-direction: column;
+  }
+
+  .custom-service-add {
+    width: 100%;
+    min-height: 52px;
   }
 }
 
