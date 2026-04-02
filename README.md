@@ -12,6 +12,9 @@ VITE_GARAGE_UUID=
 ```
 
 - `VITE_GARAGE_UUID` must be the UUID of the tenant garage row in `public.garages`.
+- `.env.local` is ignored by git and stays local on your machine.
+- Only keep placeholders in `.env.example`.
+- `VITE_*` variables are embedded into the frontend build by Vite. Do not put server-only secrets in `VITE_*` variables.
 
 ### Test a successful submission
 1. Run `npm install` and `npm run dev`.
