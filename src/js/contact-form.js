@@ -119,10 +119,6 @@ function normalizeLicensePlate(value) {
   return (value || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 }
 
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
 function getOrCreateFeedbackElement(form) {
   let feedback = form.querySelector('#contact-form-feedback');
   if (feedback) {
@@ -180,18 +176,6 @@ async function insertBooking(bookingPayload) {
 }
 
 function validateSubmission(values) {
-  if (!values.name) {
-    return 'Vul uw naam in.';
-  }
-
-  if (!values.email) {
-    return 'Vul uw e-mailadres in.';
-  }
-
-  if (!isValidEmail(values.email)) {
-    return 'Vul een geldig e-mailadres in.';
-  }
-
   if (!values.licensePlate) {
     return 'Vul een kenteken in.';
   }
@@ -337,7 +321,6 @@ export function initContactForm() {
   }
 
   const naamInput = form.querySelector('#naam, [name="naam"], [name="name"]');
-  const emailInput = form.querySelector('#email, [name="email"]');
   const telefoonInput = form.querySelector('#telefoon, [name="telefoon"], [name="phone"]');
   const berichtInput = form.querySelector('#bericht, [name="bericht"], [name="description"]');
   const honeypotInput = form.querySelector('[name="website"]');
@@ -368,6 +351,8 @@ export function initContactForm() {
         renderCustomServices();
       });
     });
+
+    updateOnderwerpPreview();
   };
 
   const clearCustomServices = () => {
@@ -407,8 +392,15 @@ export function initContactForm() {
     }
 
     const selected = getSelectedOnderwerpen(form);
-    onderwerpPreview.textContent = selected.length > 0
-      ? `Gekozen: ${selected.join(', ')}`
+    const selectedWithCustom = selected.map((item) => {
+      if (/^(other|overig|overige)$/i.test(item) && customServices.length > 0) {
+        return `Overige (${customServices.join(', ')})`;
+      }
+      return item;
+    });
+
+    onderwerpPreview.textContent = selectedWithCustom.length > 0
+      ? `Gekozen: ${selectedWithCustom.join(', ')}`
       : 'Nog geen onderwerp gekozen.';
   };
   
@@ -526,6 +518,7 @@ export function initContactForm() {
     }
 
     if (isSubmitting) {
+      setFormFeedback(form, 'Uw aanvraag wordt al verzonden. Even geduld alstublieft.', 'error');
       return;
     }
 
@@ -552,7 +545,6 @@ export function initContactForm() {
 
     const submissionValues = {
       name: (naamInput ? naamInput.value : formData.get('naam') || formData.get('name') || '').toString().trim(),
-      email: (emailInput ? emailInput.value : formData.get('email') || '').toString().trim(),
       licensePlate: normalizedPlate,
       selectedServices: geselecteerdeOnderwerpen,
       hasOtherService,
@@ -560,7 +552,7 @@ export function initContactForm() {
       customServiceValues,
       hasPendingCustomService: Boolean(pendingCustomService),
       description: (berichtInput ? berichtInput.value : formData.get('bericht') || formData.get('description') || '').toString().trim(),
-      phone: telefoonInput ? telefoonInput.value.toString().trim() : ''
+      phone: (telefoonInput ? telefoonInput.value : formData.get('telefoon') || formData.get('phone') || '').toString().trim()
     };
 
     const validationError = validateSubmission(submissionValues);
@@ -599,6 +591,7 @@ export function initContactForm() {
       const serviceValue = serviceItems.join(', ');
       const bookingPayload = {
         garage_id: GARAGE_UUID,
+        name: submissionValues.name,
         license_plate: submissionValues.licensePlate,
         service: serviceValue,
         phone: submissionValues.phone || '',

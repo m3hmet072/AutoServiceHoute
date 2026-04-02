@@ -46,8 +46,7 @@ export function renderAfspraakSection() {
       <form id="contact-form">
         <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;" />
 
-        <div class="form-group"><input type="text" id="naam" name="naam" placeholder="Uw naam" required></div>
-        <div class="form-group"><input type="email" id="email" name="email" placeholder="Uw e-mailadres" required></div>
+        <div class="form-group"><input type="text" id="naam" name="naam" placeholder="Uw naam"></div>
 
         <div class="form-group">
           <input type="text" id="kenteken" name="kenteken" placeholder="Uw kenteken" required>
@@ -96,16 +95,17 @@ export function renderAfspraakSection() {
               </div>
             </div>
           </div>
+
+          <div class="custom-service-group" id="custom-service-group" hidden>
+            <div class="custom-service-row">
+              <input type="text" id="custom-service" name="onderwerp_custom" placeholder="Voeg zelf een onderwerp toe" disabled>
+              <button type="button" id="custom-service-add" class="custom-service-add" disabled>Toevoegen</button>
+            </div>
+            <div id="custom-service-list" class="custom-service-list" aria-live="polite"></div>
+          </div>
+
           <small id="onderwerp-preview" class="onderwerp-preview">Nog geen onderwerp gekozen.</small>
           <small id="onderwerp-status" class="onderwerp-status" aria-live="polite"></small>
-        </div>
-
-        <div class="form-group custom-service-group" id="custom-service-group" hidden>
-          <div class="custom-service-row">
-            <input type="text" id="custom-service" name="onderwerp_custom" placeholder="Voeg zelf een onderwerp toe" disabled>
-            <button type="button" id="custom-service-add" class="custom-service-add" disabled>Toevoegen</button>
-          </div>
-          <div id="custom-service-list" class="custom-service-list" aria-live="polite"></div>
         </div>
 
         <div class="form-group"><input type="tel" id="telefoon" name="telefoon" placeholder="Telefoonnummer"></div>
