@@ -109,7 +109,7 @@ export function renderAfspraakSection() {
         </div>
 
         <div class="form-group"><input type="tel" id="telefoon" name="telefoon" placeholder="Telefoonnummer"></div>
-        <div class="form-group"><textarea id="bericht" name="bericht" rows="3" placeholder="Type uw bericht hier..." required minlength="10"></textarea></div>
+        <div class="form-group"><textarea id="bericht" name="bericht" rows="3" placeholder="Type uw bericht hier..." required></textarea></div>
         <button type="submit" id="submit-btn" class="btn-afspraak">Bevestig afspraak <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M18.5 12H5" stroke="#F5F8FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             <path d="M13 18C13 18 19 13.5811 19 12C19 10.4188 13 6 13 6" stroke="#F5F8FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />

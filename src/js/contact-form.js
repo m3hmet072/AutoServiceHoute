@@ -198,8 +198,8 @@ function validateSubmission(values) {
     return 'Klik op Toevoegen om uw extra onderwerp op te slaan.';
   }
 
-  if (!values.description || values.description.length < 10) {
-    return 'Beschrijf uw vraag in minimaal 10 tekens.';
+  if (!values.description) {
+    return 'Beschrijf uw vraag.';
   }
 
   return null;
